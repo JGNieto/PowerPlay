@@ -5,12 +5,16 @@
  */
 
 buildscript {
+    ext {
+        kotlin_version = '1.7.20-RC'
+    }
     repositories {
         mavenCentral()
         google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.2.0'
+        classpath 'com.android.tools.build:gradle:7.3.0'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
 
