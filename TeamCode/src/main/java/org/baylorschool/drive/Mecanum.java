@@ -51,7 +51,7 @@ import static org.baylorschool.drive.DriveConstants.kV;
  * Simple mecanum drive hardware implementation for REV hardware.
  */
 @Config
-public class SampleMecanumDrive extends MecanumDrive {
+public class Mecanum extends MecanumDrive {
     public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(0, 0, 0);
     public static PIDCoefficients HEADING_PID = new PIDCoefficients(0, 0, 0);
 
@@ -74,7 +74,7 @@ public class SampleMecanumDrive extends MecanumDrive {
     private BNO055IMU imu;
     private VoltageSensor batteryVoltageSensor;
 
-    public SampleMecanumDrive(HardwareMap hardwareMap) {
+    public Mecanum(HardwareMap hardwareMap) {
         super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
 
         follower = new HolonomicPIDVAFollower(TRANSLATIONAL_PID, TRANSLATIONAL_PID, HEADING_PID,
@@ -299,8 +299,8 @@ public class SampleMecanumDrive extends MecanumDrive {
     @Override
     public Double getExternalHeadingVelocity() {
         // To work around an SDK bug, use -zRotationRate in place of xRotationRate
-        // and -xRotationRate in place of zRotationRate (yRotationRate behaves as 
-        // expected). This bug does NOT affect orientation. 
+        // and -xRotationRate in place of zRotationRate (yRotationRate behaves as
+        // expected). This bug does NOT affect orientation.
         //
         // See https://github.com/FIRST-Tech-Challenge/FtcRobotController/issues/251 for details.
         return (double) -imu.getAngularVelocity().xRotationRate;

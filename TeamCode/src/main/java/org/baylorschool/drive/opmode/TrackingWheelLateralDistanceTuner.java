@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.RobotLog;
 
-import org.baylorschool.drive.SampleMecanumDrive;
+import org.baylorschool.drive.Mecanum;
 import org.baylorschool.drive.StandardTrackingWheelLocalizer;
 
 /**
@@ -68,7 +68,7 @@ public class TrackingWheelLateralDistanceTuner extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+        Mecanum drive = new Mecanum(hardwareMap);
 
         if (!(drive.getLocalizer() instanceof StandardTrackingWheelLocalizer)) {
             RobotLog.setGlobalErrorMsg("StandardTrackingWheelLocalizer is not being set in the "

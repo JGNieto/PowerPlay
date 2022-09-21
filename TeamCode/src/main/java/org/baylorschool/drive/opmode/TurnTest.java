@@ -4,7 +4,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.baylorschool.drive.SampleMecanumDrive;
+import org.baylorschool.drive.Mecanum;
 
 /*
  * This is a simple routine to test turning capabilities.
@@ -16,7 +16,7 @@ public class TurnTest extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+        Mecanum drive = new Mecanum(hardwareMap);
 
         waitForStart();
 
