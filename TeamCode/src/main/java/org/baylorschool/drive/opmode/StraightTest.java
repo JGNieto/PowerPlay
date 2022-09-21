@@ -14,7 +14,7 @@ import org.baylorschool.drive.SampleMecanumDrive;
  * This is a simple routine to test translational drive capabilities.
  */
 @Config
-@Autonomous(group = "drive")
+@Autonomous(group = "roadrunner-default")
 public class StraightTest extends LinearOpMode {
     public static double DISTANCE = 60; // in
 

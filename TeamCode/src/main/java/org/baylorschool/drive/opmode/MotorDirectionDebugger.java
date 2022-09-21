@@ -40,7 +40,7 @@ import org.baylorschool.drive.SampleMecanumDrive;
  */
 @Disabled
 @Config
-@TeleOp(group = "drive")
+@TeleOp(group = "roadrunner-default")
 public class MotorDirectionDebugger extends LinearOpMode {
     public static double MOTOR_POWER = 0.7;
 
