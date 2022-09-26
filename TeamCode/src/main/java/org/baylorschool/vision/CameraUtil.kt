@@ -2,7 +2,6 @@ package org.baylorschool.vision
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import org.baylorschool.Globals
-import org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName
 import org.openftc.easyopencv.OpenCvCamera.AsyncCameraOpenListener
 import org.openftc.easyopencv.OpenCvCameraFactory
@@ -10,26 +9,25 @@ import org.openftc.easyopencv.OpenCvCameraRotation
 import org.openftc.easyopencv.OpenCvPipeline
 import org.openftc.easyopencv.OpenCvWebcam
 
-
 object CameraUtil {
 
-    fun openWebcam(pipeline: OpenCvPipeline, stream: Boolean = false): OpenCvWebcam {
+    fun openWebcam(opMode: OpMode, pipeline: OpenCvPipeline, stream: Boolean = false): OpenCvWebcam {
         val webcam: OpenCvWebcam?
         if (stream) {
             val cameraMonitorViewId =
-                BlocksOpModeCompanion.opMode.hardwareMap.appContext.resources.getIdentifier(
+                opMode.hardwareMap.appContext.resources.getIdentifier(
                     "cameraMonitorViewId",
                     "id",
-                    BlocksOpModeCompanion.opMode.hardwareMap.appContext.packageName
+                    opMode.hardwareMap.appContext.packageName
                 )
             webcam = OpenCvCameraFactory.getInstance().createWebcam(
-                BlocksOpModeCompanion.opMode.hardwareMap.get(
+                opMode.hardwareMap.get(
                     WebcamName::class.java, "Webcam 1"
                 ), cameraMonitorViewId
             )
         } else {
             webcam = OpenCvCameraFactory.getInstance().createWebcam(
-                BlocksOpModeCompanion.opMode.hardwareMap.get(
+                opMode.hardwareMap.get(
                     WebcamName::class.java, "Webcam 1"
                 )
             )

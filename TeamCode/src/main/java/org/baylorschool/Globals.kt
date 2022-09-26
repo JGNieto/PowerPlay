@@ -2,12 +2,12 @@ package org.baylorschool
 
 object Globals {
     // Motors
-    const val frMotor = "frMotor"
-    const val flMotor = "flMotor"
-    const val brMotor = "brMotor"
-    const val blMotor = "blMotor"
+    const val rearLeft = "rearLeft"
+    const val rearRight = "rearRight"
+    const val frontLeft = "frontLeft"
+    const val frontRight = "frontRight"
 
     // Webcam
-    const val screenHeight = 240
-    const val screenWidth = 320
+    const val screenHeight = 480
+    const val screenWidth = 640
 }

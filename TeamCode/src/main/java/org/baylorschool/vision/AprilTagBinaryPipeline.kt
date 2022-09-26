@@ -1,6 +1,8 @@
 package org.baylorschool.vision
 
 import org.opencv.core.Mat
+import org.opencv.core.Point
+import org.opencv.core.Scalar
 import org.opencv.imgproc.Imgproc
 import org.openftc.apriltag.AprilTagDetection
 import org.openftc.apriltag.AprilTagDetectorJNI
@@ -15,14 +17,14 @@ class AprilTagBinaryPipeline: OpenCvPipeline() {
 
     private var detections = ArrayList<AprilTagDetection>()
 
-    var decimation: Float? = null
-        set(decimation) {
+    var decimation: Float = 2f
+        set(value) {
             needToUpdateDecimation = true
-            field = decimation
+            field = value
         }
 
     private val decimationUpdateSync = Object()
-    private var needToUpdateDecimation = false
+    private var needToUpdateDecimation = true
 
     var visibleAprilTags = ArrayList<AprilTagDetection>()
     private val visibleAprilTagsSync = Object()
@@ -48,13 +50,17 @@ class AprilTagBinaryPipeline: OpenCvPipeline() {
 
         Imgproc.cvtColor(input, greyscale, Imgproc.COLOR_RGBA2GRAY)
 
-        detections = AprilTagDetectorJNI.runAprilTagDetectorSimple(nativeAprilTagPtr!!, greyscale, 0.0, 0.0, 0.0, 0.0, 0.0)
+        detections = AprilTagDetectorJNI.runAprilTagDetectorSimple(nativeAprilTagPtr!!, greyscale, 0.166, 578.272, 578.272, 402.145, 221.506)
 
         synchronized(visibleAprilTagsSync) {
             visibleAprilTags = detections
         }
 
-        return input
+        for (tag in visibleAprilTags) {
+            Imgproc.circle(greyscale, tag.center, 50, Scalar(255.0, 0.0, 0.0, 255.0), 10)
+        }
+
+        return greyscale
     }
 
 }

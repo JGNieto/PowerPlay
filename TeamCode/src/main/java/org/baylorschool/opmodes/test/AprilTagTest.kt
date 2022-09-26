@@ -14,7 +14,7 @@ class AprilTagTest: LinearOpMode() {
         telemetry.update()
 
         val pipeline = AprilTagBinaryPipeline()
-        val webcam = CameraUtil.openWebcam(pipeline, true)
+        val webcam = CameraUtil.openWebcam(this, pipeline, true)
 
         telemetry.addData("Status", "Ready to start")
         telemetry.update()
