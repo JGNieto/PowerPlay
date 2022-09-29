@@ -1,5 +1,8 @@
 package org.baylorschool
 
+import com.acmerobotics.dashboard.config.Config
+
+@Config
 object Globals {
     // Motors
     const val rearLeft = "rearLeft"
@@ -8,10 +11,11 @@ object Globals {
     const val frontRight = "frontRight"
 
     // Lift
-    // TODO: USE CORRECT MOTORS
-    const val liftProximalA = "testA"
-    const val liftProximalB = "testA"
-    const val liftDistal = "testB"
+    const val liftProximalA = "lfProxA"
+    const val liftProximalATicksPerRotation = 537.7
+
+    const val liftProximalB = "lfProxB"
+    const val liftDistal = "lfDist"
 
     const val highProximalAngle = 1.7
     const val highDistalAngle = -3.3

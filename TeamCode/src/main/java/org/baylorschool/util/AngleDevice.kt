@@ -1,7 +1,5 @@
 package org.baylorschool.util
 
-import com.qualcomm.robotcore.eventloop.opmode.OpMode
-
 interface AngleDevice {
 
     /**

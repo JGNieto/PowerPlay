@@ -1,13 +1,30 @@
 package org.baylorschool.util
 
+import com.acmerobotics.dashboard.FtcDashboard
+import com.acmerobotics.dashboard.config.Config
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket
+import com.arcrobotics.ftclib.controller.wpilibcontroller.ArmFeedforward
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorEx
 import com.qualcomm.robotcore.hardware.DcMotorSimple
+import org.baylorschool.util.MotorAngleDeviceConfig.ka
+import org.baylorschool.util.MotorAngleDeviceConfig.kcos
+import org.baylorschool.util.MotorAngleDeviceConfig.ks
+import org.baylorschool.util.MotorAngleDeviceConfig.kv
 import kotlin.math.PI
 
-class MotorAngleDevice(val motor: DcMotorEx, ticksPerTurn: Int): AngleDevice {
-    constructor(opMode: OpMode, motorName: String, ticksPerTurn: Int, direction: DcMotorSimple.Direction = DcMotorSimple.Direction.FORWARD):
+@Config
+object MotorAngleDeviceConfig {
+    @JvmField var ks = 0.6
+    @JvmField var kcos = 0.2
+    @JvmField var kv = -0.2
+    @JvmField var ka = -0.05
+
+}
+
+class MotorAngleDevice(val motor: DcMotorEx, ticksPerTurn: Double): AngleDevice {
+    constructor(opMode: OpMode, motorName: String, ticksPerTurn: Double, direction: DcMotorSimple.Direction = DcMotorSimple.Direction.FORWARD):
             this(opMode.hardwareMap.get(DcMotorEx::class.java, motorName), ticksPerTurn) {
                 motor.direction = direction
             }
@@ -19,7 +36,8 @@ class MotorAngleDevice(val motor: DcMotorEx, ticksPerTurn: Int): AngleDevice {
     private var encoderValueAtZero = 0.0
     private var needToStop = false
     private var motorStatus = MotorStatus.STOP
-    private var wasMoving = false
+
+    private val pid = ArmFeedforward(ks, kcos, kv, ka)
 
     private lateinit var thread: Thread
 
@@ -37,7 +55,10 @@ class MotorAngleDevice(val motor: DcMotorEx, ticksPerTurn: Int): AngleDevice {
     }
 
     // This code is based on the built-in PID loop supplied by FTC. We might want to make our own.
-    private fun iteration() {
+    /*private fun iteration() {
+        val packet = TelemetryPacket()
+        motor.setPIDFCoefficients(DcMotor.RunMode.RUN_TO_POSITION, PIDFCoefficients(p, i, d, f))
+
         if (motorStatus == MotorStatus.STOP) {
             motor.mode = DcMotor.RunMode.RUN_USING_ENCODER
             motor.power = 0.0
@@ -57,6 +78,40 @@ class MotorAngleDevice(val motor: DcMotorEx, ticksPerTurn: Int): AngleDevice {
                 motor.power = stablePower
             }
         }
+        packet.put("Encoder value", motor.currentPosition)
+        packet.put("Position", getPosition())
+        packet.put("Status", motorStatus)
+        packet.put("Zero value", encoderValueAtZero)
+        packet.put("Target angle", targetAngle)
+        packet.put("Target position", motor.targetPosition)
+        packet.put("Target tolerance", motor.targetPositionTolerance)
+        val coeff = motor.getPIDFCoefficients(DcMotor.RunMode.RUN_TO_POSITION)
+        packet.put("P", coeff.p)
+        packet.put("I", coeff.p)
+        packet.put("D", coeff.p)
+        packet.put("F", coeff.p)
+        FtcDashboard.getInstance().sendTelemetryPacket(packet)
+    }*/
+
+    private fun iteration() {
+        if (motorStatus == MotorStatus.STOP) {
+            motor.mode = DcMotor.RunMode.RUN_USING_ENCODER
+            motor.power = 0.0
+        } else {
+            if (motor.mode != DcMotor.RunMode.RUN_WITHOUT_ENCODER)
+                motor.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
+
+            motor.power = clip(pid.calculate(targetAngle - getPosition(), motor.velocity / ticksPerRadian))
+        }
+        val packet = TelemetryPacket()
+        packet.put("Encoder value", motor.currentPosition)
+        packet.put("Power", motor.power)
+        packet.put("Position", getPosition())
+        packet.put("Status", motorStatus)
+        packet.put("Zero value", encoderValueAtZero)
+        packet.put("Target angle", targetAngle)
+        packet.put("Velocity", motor.velocity)
+        FtcDashboard.getInstance().sendTelemetryPacket(packet)
     }
 
     override fun reset(angle: Double) {
@@ -81,9 +136,18 @@ class MotorAngleDevice(val motor: DcMotorEx, ticksPerTurn: Int): AngleDevice {
 
     override fun stop() {
         motorStatus = MotorStatus.STOP
+        motor.mode = DcMotor.RunMode.RUN_USING_ENCODER
+        motor.power = 0.0
     }
 
     override fun cleanup() {
+        stop()
         needToStop = true
+    }
+
+    private fun clip(x: Double): Double {
+        if (x > 1.0) return 1.0
+        if (x < -1.0) return -1.0
+        return x
     }
 }
