@@ -10,8 +10,8 @@ import kotlin.math.pow
 import kotlin.math.sqrt
 
 // Bar lengths
-const val a = 15.0 // in
-const val b = 12.0 // in
+const val a = 15.25 // in
+const val b = 8.0 // in
 
 class MichaelLift(opMode: OpMode) {
     /*

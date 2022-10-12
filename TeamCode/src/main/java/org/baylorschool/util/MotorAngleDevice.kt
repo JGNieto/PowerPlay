@@ -47,12 +47,14 @@ class MotorAngleDevice(val motor: DcMotorEx, ticksPerTurn: Double): AngleDevice 
     private var needToStop = false
     private var motorStatus = MotorStatus.STOP
 
+    private var previousPosition: Double? = null
+
     private val armFeedForward = ArmFeedforward(armKs, armKcos, armKv, armKa)
     private val pid = PIDController(kp, ki, kd)
 
     private lateinit var thread: Thread
 
-    enum class MotorStatus {
+    private enum class MotorStatus {
         STOP, MOVING
     }
 
@@ -65,6 +67,7 @@ class MotorAngleDevice(val motor: DcMotorEx, ticksPerTurn: Double): AngleDevice 
     private fun iteration() {
         val packet = TelemetryPacket()
         if (motorStatus == MotorStatus.STOP) {
+            previousPosition = null
             motor.mode = DcMotor.RunMode.RUN_USING_ENCODER
             motor.power = 0.0
             packet.put("Calculation PID", 0)
@@ -76,11 +79,18 @@ class MotorAngleDevice(val motor: DcMotorEx, ticksPerTurn: Double): AngleDevice 
             val position = getPosition()
 
             val calculationPID = pid.calculate(position, targetAngle)
-            val calculationFeedforward = armFeedForward.calculate(position, calculationPID)
+
+            var acceleration = 0.0
+            if (previousPosition != null && pid.period > 0) {
+                acceleration = pid.period * (previousPosition!! - position)
+            }
+
+            val calculationFeedforward = armFeedForward.calculate(position, calculationPID, acceleration)
 
             packet.put("Calculation PID", calculationPID)
             packet.put("Calculation Feedforward", calculationFeedforward)
 
+            previousPosition = position
             motor.power = clip(calculationFeedforward)
         }
         packet.put("Encoder value", motor.currentPosition)

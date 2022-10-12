@@ -12,10 +12,13 @@ object Globals {
 
     // Lift
     const val liftProximalA = "lfProxA"
-    const val liftProximalATicksPerRotation = 537.7
+    const val liftProximalATicksPerRotation = 2772.0
 
     const val liftProximalB = "lfProxB"
+
+
     const val liftDistal = "lfDist"
+    const val liftDistalTicksPerRotation = 288.0
 
     const val highProximalAngle = 1.7
     const val highDistalAngle = -3.3
