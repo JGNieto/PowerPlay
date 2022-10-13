@@ -2,7 +2,9 @@ package org.baylorschool.opmodes.test
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
+import com.qualcomm.robotcore.hardware.DcMotorSimple
 import org.baylorschool.Globals
+import org.baylorschool.util.BasicMotorAngleDevice
 import org.baylorschool.util.MotorAngleDevice
 import kotlin.math.PI
 
@@ -10,25 +12,34 @@ import kotlin.math.PI
 class MichaelLiftTest: LinearOpMode() {
 
     override fun runOpMode() {
-        val angleMotor = MotorAngleDevice(this, Globals.liftProximalA, Globals.liftProximalATicksPerRotation)
+        val liftProximalA = BasicMotorAngleDevice(this, Globals.liftProximalA, Globals.liftProximalATicksPerRotation, Globals.liftProximalADirection)
+        val liftDistal = BasicMotorAngleDevice(this, Globals.liftDistal, Globals.liftDistalTicksPerRotation, Globals.liftDistalDirection)
 
         telemetry.addData("Status", "Ready to start")
         telemetry.update()
 
-        angleMotor.init()
+        liftDistal.debug = true
+
+        liftProximalA.init()
+        liftDistal.init()
+
+        liftProximalA.reset(0.0)
+        liftDistal.reset(PI)
 
         waitForStart()
 
         telemetry.addData("Status", "Running")
         telemetry.update()
-        angleMotor.moveToAngle(PI / 2)
+        //liftProximalA.moveToAngle(PI / 2, 1)
+        liftDistal.moveToAngle(PI / 2, 1)
 
         while (!isStopRequested && opModeIsActive()) { }
 
         telemetry.addData("Status", "Stopping...")
         telemetry.update()
 
-        angleMotor.cleanup()
+        liftProximalA.cleanup()
+        liftDistal.cleanup()
     }
 
 }

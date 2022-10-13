@@ -1,6 +1,8 @@
 package org.baylorschool.util
 
+import com.acmerobotics.dashboard.FtcDashboard
 import com.acmerobotics.dashboard.config.Config
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorEx
@@ -8,15 +10,18 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple
 import org.baylorschool.util.BasicMotorAngleDeviceConfig.stopSpeed
 import org.baylorschool.util.BasicMotorAngleDeviceConfig.maintainingSpeed
 import org.baylorschool.util.BasicMotorAngleDeviceConfig.movingSpeed
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit
 import kotlin.math.PI
 import kotlin.math.abs
 
 @Config
 object BasicMotorAngleDeviceConfig {
     @JvmField var stopSpeed = 0.0
-    @JvmField var maintainingSpeed = 0.0
+    @JvmField var maintainingSpeed = 0.3
     @JvmField var movingSpeed = 0.8
 }
+
+
 
 class BasicMotorAngleDevice(val motor: DcMotorEx, ticksPerTurn: Double): AngleDevice {
     constructor(opMode: OpMode, motorName: String, ticksPerTurn: Double, direction: DcMotorSimple.Direction = DcMotorSimple.Direction.FORWARD):
@@ -31,9 +36,9 @@ class BasicMotorAngleDevice(val motor: DcMotorEx, ticksPerTurn: Double): AngleDe
     private var encoderValueAtZero = 0.0
     private var needToStop = false
     private var motorStatus = MotorStatus.STOP
+    var debug = false
 
     private var wasBusy = false
-    private var previousPosition: Double? = null
 
     private lateinit var thread: Thread
 
@@ -49,9 +54,10 @@ class BasicMotorAngleDevice(val motor: DcMotorEx, ticksPerTurn: Double): AngleDe
 
     private fun computeTargetAngle(angle: Double, direction: Int): Double {
         val position = getPosition()
-        val baseValue = (position / (2 * PI)).toInt()
-        val lowerValue = baseValue + angle
-        val higherValue = baseValue + angle - 2 * PI
+        // TODO: val baseValue = (position % (2 * PI)).toInt()
+        val baseValue = 0
+        val higherValue = baseValue + angle
+        val lowerValue = baseValue + angle - 2 * PI
 
         return when (direction) {
             1 -> {
@@ -71,25 +77,46 @@ class BasicMotorAngleDevice(val motor: DcMotorEx, ticksPerTurn: Double): AngleDe
     }
 
     private fun iteration() {
-        if (motorStatus == MotorStatus.STOP) {
-            motor.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
-            motor.power = stopSpeed
-        } else {
-            if (!motor.isBusy && wasBusy) {
-                motorStatus = MotorStatus.STOP
+        val packet = TelemetryPacket()
+
+        when (motorStatus) {
+            MotorStatus.STOP -> {
                 motor.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
                 motor.power = stopSpeed
-            } else if (!wasBusy) {
-                val targetAngle = computeTargetAngle(targetAngle, direction)
-                val targetEncoder = targetAngle * ticksPerRadian + encoderValueAtZero
+            }
+            else -> {
+                if (!motor.isBusy && wasBusy) {
+                    motorStatus = MotorStatus.MAINTAINING
+                } else if (!wasBusy) {
+                    val targetAngleComputed = computeTargetAngle(targetAngle, direction)
+                    val targetEncoder = targetAngleComputed * ticksPerRadian + encoderValueAtZero
 
-                motor.targetPosition = targetEncoder.toInt()
-                motor.mode = DcMotor.RunMode.RUN_TO_POSITION
-                motor.power = movingSpeed
+                    motor.targetPosition = targetEncoder.toInt()
+                    motor.mode = DcMotor.RunMode.RUN_TO_POSITION
+                    motor.power = when (motorStatus) {
+                        MotorStatus.MOVING -> movingSpeed
+                        else -> {
+                            maintainingSpeed
+                        }
+                    }
+                }
             }
         }
 
         wasBusy = motor.isBusy
+
+        packet.put("Encoder value", motor.currentPosition)
+        packet.put("Power", motor.power)
+        packet.put("Position", getPosition())
+        packet.put("Status", motorStatus)
+        packet.put("Zero value", encoderValueAtZero)
+        packet.put("Target angle", targetAngle)
+        packet.put("Target position", motor.targetPosition)
+        packet.put("Current position", motor.currentPosition)
+        packet.put("Velocity", motor.getVelocity(AngleUnit.RADIANS))
+
+        if (debug)
+            FtcDashboard.getInstance().sendTelemetryPacket(packet)
     }
 
     override fun reset(angle: Double) {
@@ -105,6 +132,8 @@ class BasicMotorAngleDevice(val motor: DcMotorEx, ticksPerTurn: Double): AngleDe
             return
         }
         motor.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
+        motor.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
+        motor.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
         thread = Thread {
             while (!needToStop)
                 iteration()
