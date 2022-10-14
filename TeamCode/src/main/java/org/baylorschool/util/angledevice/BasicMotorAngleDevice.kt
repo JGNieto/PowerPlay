@@ -1,31 +1,21 @@
-package org.baylorschool.util
+package org.baylorschool.util.angledevice
 
 import com.acmerobotics.dashboard.FtcDashboard
-import com.acmerobotics.dashboard.config.Config
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorEx
 import com.qualcomm.robotcore.hardware.DcMotorSimple
-import org.baylorschool.util.BasicMotorAngleDeviceConfig.stopSpeed
-import org.baylorschool.util.BasicMotorAngleDeviceConfig.maintainingSpeed
-import org.baylorschool.util.BasicMotorAngleDeviceConfig.movingSpeed
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit
 import kotlin.math.PI
 import kotlin.math.abs
 
-@Config
-object BasicMotorAngleDeviceConfig {
-    @JvmField var stopSpeed = 0.0
-    @JvmField var maintainingSpeed = 0.3
-    @JvmField var movingSpeed = 0.8
-}
+data class BasicMotorAngleConfig(val stopSpeed: Double, val maintainingSpeed: Double, val movingSpeed: Double)
 
-
-
-class BasicMotorAngleDevice(val motor: DcMotorEx, ticksPerTurn: Double): AngleDevice {
-    constructor(opMode: OpMode, motorName: String, ticksPerTurn: Double, direction: DcMotorSimple.Direction = DcMotorSimple.Direction.FORWARD):
-            this(opMode.hardwareMap.get(DcMotorEx::class.java, motorName), ticksPerTurn) {
+class BasicMotorAngleDevice(val motor: DcMotorEx, ticksPerTurn: Double, val config: BasicMotorAngleConfig):
+    AngleDevice {
+    constructor(opMode: OpMode, motorName: String, ticksPerTurn: Double, config: BasicMotorAngleConfig, direction: DcMotorSimple.Direction = DcMotorSimple.Direction.FORWARD):
+            this(opMode.hardwareMap.get(DcMotorEx::class.java, motorName), ticksPerTurn, config) {
         motor.direction = direction
     }
 
@@ -82,7 +72,7 @@ class BasicMotorAngleDevice(val motor: DcMotorEx, ticksPerTurn: Double): AngleDe
         when (motorStatus) {
             MotorStatus.STOP -> {
                 motor.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
-                motor.power = stopSpeed
+                motor.power = config.stopSpeed
             }
             else -> {
                 if (!motor.isBusy && wasBusy) {
@@ -94,9 +84,9 @@ class BasicMotorAngleDevice(val motor: DcMotorEx, ticksPerTurn: Double): AngleDe
                     motor.targetPosition = targetEncoder.toInt()
                     motor.mode = DcMotor.RunMode.RUN_TO_POSITION
                     motor.power = when (motorStatus) {
-                        MotorStatus.MOVING -> movingSpeed
+                        MotorStatus.MOVING -> config.movingSpeed
                         else -> {
-                            maintainingSpeed
+                            config.maintainingSpeed
                         }
                     }
                 }

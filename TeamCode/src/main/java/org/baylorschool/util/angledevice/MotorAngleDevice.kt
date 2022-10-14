@@ -1,4 +1,4 @@
-package org.baylorschool.util
+package org.baylorschool.util.angledevice
 
 import com.acmerobotics.dashboard.FtcDashboard
 import com.acmerobotics.dashboard.config.Config
@@ -9,14 +9,14 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorEx
 import com.qualcomm.robotcore.hardware.DcMotorSimple
-import org.baylorschool.util.MotorAngleDeviceConfig.armKa
-import org.baylorschool.util.MotorAngleDeviceConfig.armKcos
-import org.baylorschool.util.MotorAngleDeviceConfig.armKs
-import org.baylorschool.util.MotorAngleDeviceConfig.armKv
-import org.baylorschool.util.MotorAngleDeviceConfig.kd
-import org.baylorschool.util.MotorAngleDeviceConfig.ki
-import org.baylorschool.util.MotorAngleDeviceConfig.kp
-import org.baylorschool.util.MotorAngleDeviceConfig.tolerance
+import org.baylorschool.util.angledevice.MotorAngleDeviceConfig.armKa
+import org.baylorschool.util.angledevice.MotorAngleDeviceConfig.armKcos
+import org.baylorschool.util.angledevice.MotorAngleDeviceConfig.armKs
+import org.baylorschool.util.angledevice.MotorAngleDeviceConfig.armKv
+import org.baylorschool.util.angledevice.MotorAngleDeviceConfig.kd
+import org.baylorschool.util.angledevice.MotorAngleDeviceConfig.ki
+import org.baylorschool.util.angledevice.MotorAngleDeviceConfig.kp
+import org.baylorschool.util.angledevice.MotorAngleDeviceConfig.tolerance
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit
 import kotlin.math.PI
 

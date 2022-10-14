@@ -2,6 +2,7 @@ package org.baylorschool
 
 import com.acmerobotics.dashboard.config.Config
 import com.qualcomm.robotcore.hardware.DcMotorSimple
+import org.baylorschool.util.angledevice.BasicMotorAngleConfig
 
 @Config
 object Globals {
@@ -15,6 +16,7 @@ object Globals {
     const val liftProximalA = "lfProxA"
     const val liftProximalATicksPerRotation = 2772.0
     val liftProximalADirection = DcMotorSimple.Direction.REVERSE
+    val liftProximalConfig = BasicMotorAngleConfig(0.0, 0.3, 1.0)
 
     const val liftProximalB = "lfProxB"
 
@@ -22,6 +24,7 @@ object Globals {
     const val liftDistal = "lfDist"
     const val liftDistalTicksPerRotation = 224.0
     val liftDistalDirection = DcMotorSimple.Direction.FORWARD
+    val liftDistalConfig = BasicMotorAngleConfig(0.0, 0.4, 1.0)
 
     const val highProximalAngle = 1.7
     const val highDistalAngle = -3.3

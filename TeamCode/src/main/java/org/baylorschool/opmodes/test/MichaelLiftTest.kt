@@ -1,45 +1,38 @@
 package org.baylorschool.opmodes.test
 
+import com.acmerobotics.dashboard.config.Config
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
-import com.qualcomm.robotcore.hardware.DcMotorSimple
-import org.baylorschool.Globals
-import org.baylorschool.util.BasicMotorAngleDevice
-import org.baylorschool.util.MotorAngleDevice
+import org.baylorschool.opmodes.test.MichaelLiftTestConfig.x
+import org.baylorschool.opmodes.test.MichaelLiftTestConfig.y
+import org.baylorschool.util.MichaelLift
 import kotlin.math.PI
+
+@Config
+object MichaelLiftTestConfig {
+    @JvmField var x = 20.0
+    @JvmField var y = 7.0
+}
 
 @TeleOp(name = "Michael Lift Test", group = "test")
 class MichaelLiftTest: LinearOpMode() {
-
     override fun runOpMode() {
-        val liftProximalA = BasicMotorAngleDevice(this, Globals.liftProximalA, Globals.liftProximalATicksPerRotation, Globals.liftProximalADirection)
-        val liftDistal = BasicMotorAngleDevice(this, Globals.liftDistal, Globals.liftDistalTicksPerRotation, Globals.liftDistalDirection)
+        val michaelLift = MichaelLift(this)
 
-        telemetry.addData("Status", "Ready to start")
-        telemetry.update()
+        michaelLift.motorA1.reset(0.0)
+        michaelLift.motorA2.reset(0.0)
+        michaelLift.motorB.reset(-PI)
 
-        liftDistal.debug = true
-
-        liftProximalA.init()
-        liftDistal.init()
-
-        liftProximalA.reset(0.0)
-        liftDistal.reset(PI)
+        michaelLift.init()
 
         waitForStart()
 
-        telemetry.addData("Status", "Running")
-        telemetry.update()
-        //liftProximalA.moveToAngle(PI / 2, 1)
-        liftDistal.moveToAngle(PI / 2, 1)
+        michaelLift.goToPosition(x, y)
 
-        while (!isStopRequested && opModeIsActive()) { }
+        while (opModeIsActive()) {
+            michaelLift.iteration()
+        }
 
-        telemetry.addData("Status", "Stopping...")
-        telemetry.update()
-
-        liftProximalA.cleanup()
-        liftDistal.cleanup()
+        michaelLift.cleanup()
     }
-
 }

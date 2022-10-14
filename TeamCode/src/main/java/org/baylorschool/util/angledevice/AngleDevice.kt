@@ -1,4 +1,4 @@
-package org.baylorschool.util
+package org.baylorschool.util.angledevice
 
 interface AngleDevice {
 

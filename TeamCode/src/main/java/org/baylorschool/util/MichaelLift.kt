@@ -1,9 +1,10 @@
 package org.baylorschool.util
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
-import com.qualcomm.robotcore.hardware.DcMotor
-import com.qualcomm.robotcore.hardware.DcMotorEx
 import org.baylorschool.Globals
+import org.baylorschool.util.angledevice.AngleDevice
+import org.baylorschool.util.angledevice.BasicMotorAngleDevice
+import org.baylorschool.util.angledevice.EmptyAngleDevice
 import kotlin.math.PI
 import kotlin.math.atan
 import kotlin.math.pow
@@ -24,26 +25,73 @@ class MichaelLift(opMode: OpMode) {
         HIGH, GROUND
     }
 
-    private var motorA1: DcMotor // Proximal 1
-    private var motorA2: DcMotor // Proximal 2
-    private var motorB: DcMotor  // Distal
+    val motorA1: AngleDevice // Proximal 1
+    val motorA2: AngleDevice // Proximal 2
+    val motorB: AngleDevice  // Distal
 
     init {
-        motorA1 = opMode.hardwareMap.get(DcMotorEx::class.java, Globals.liftProximalA)
-        motorA2 = opMode.hardwareMap.get(DcMotorEx::class.java, Globals.liftProximalB)
-        motorB = opMode.hardwareMap.get(DcMotorEx::class.java, Globals.liftDistal)
+        motorA1 = BasicMotorAngleDevice(opMode, Globals.liftProximalA, Globals.liftProximalATicksPerRotation, Globals.liftProximalConfig, Globals.liftProximalADirection)
+        motorA2 = EmptyAngleDevice()
+        motorB = BasicMotorAngleDevice(opMode, Globals.liftDistal, Globals.liftDistalTicksPerRotation, Globals.liftDistalConfig, Globals.liftDistalDirection)
     }
 
     private var x = 0.0
     private var y = 0.0
+    private var needToUpdate = false
 
+    private var liftMode: LiftMode = LiftMode.GROUND
+
+    fun iteration() {
+        if (!needToUpdate) return
+
+        val angleProximal = when (liftMode) {
+            LiftMode.HIGH -> angleHighProximal()
+            LiftMode.GROUND -> angleGroundProximal()
+        }
+
+        val angleDistal = when (liftMode) {
+            LiftMode.HIGH -> angleHighDistal()
+            LiftMode.GROUND -> angleGroundDistal()
+        }
+
+        val angleDistalRelative = angleDistal - angleProximal
+
+        motorA1.moveToAngle(clamp(angleProximal, 0.0, PI))
+        motorA2.moveToAngle(clamp(angleProximal, 0.0, PI))
+        motorB.moveToAngle(angleDistalRelative)
+
+        needToUpdate = false
+    }
 
     fun changeMode() {
 
     }
 
-    fun stop() {
+    fun init() {
+        motorA1.init()
+        motorA2.init()
+        motorB.init()
+    }
 
+    fun stop() {
+        motorA1.stop()
+        motorA2.stop()
+        motorB.stop()
+    }
+
+    fun cleanup() {
+        motorA1.cleanup()
+        motorA2.cleanup()
+        motorB.cleanup()
+    }
+
+    fun goToPosition(x: Double, y: Double) {
+        this.x = x
+        this.y = y
+
+        if (this.y < 0.0) this.y = 0.0
+
+        this.needToUpdate = true
     }
 
     // Michael's chicken scratch translated into pristine code below
@@ -60,13 +108,13 @@ class MichaelLift(opMode: OpMode) {
     }
 
     // Mode ground
-    private fun angleGroundA(): Double {
+    private fun angleGroundProximal(): Double {
         val numerator = y * ka() + x * k()
         val denominator = x * ka() - y * k()
         return atan(numerator / denominator)
     }
 
-    private fun angleGroundB(): Double {
+    private fun angleGroundDistal(): Double {
         val numerator = y * kb() - x * k()
         val denominator = x * kb() + y * k()
 
@@ -80,13 +128,13 @@ class MichaelLift(opMode: OpMode) {
     }
 
     // Mode high
-    private fun angleHighA(): Double {
+    private fun angleHighProximal(): Double {
         val numerator = y * ka() - x * k()
         val denominator = x * ka() + y * k()
         return atan(numerator / denominator)
     }
 
-    private fun angleHighB(): Double {
+    private fun angleHighDistal(): Double {
         val numerator = y * kb() - x * k()
         val denominator = x * kb() + y * k()
 
@@ -97,6 +145,12 @@ class MichaelLift(opMode: OpMode) {
         } else {
             arctan
         }
+    }
+
+    private fun clamp(value: Double, low: Double, high: Double): Double {
+        if (value < low) return low
+        else if (value > high) return high
+        else return value
     }
 
 }
