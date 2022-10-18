@@ -23,7 +23,7 @@ object Globals {
 
     const val liftDistal = "lfDist"
     const val liftDistalTicksPerRotation = 1120.0
-    val liftDistalDirection = DcMotorSimple.Direction.FORWARD
+    val liftDistalDirection = DcMotorSimple.Direction.REVERSE
     val liftDistalConfig = BasicMotorAngleConfig(0.0, 0.4, 1.0)
 
     const val highProximalAngle = 1.7

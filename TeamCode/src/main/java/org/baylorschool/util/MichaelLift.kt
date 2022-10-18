@@ -1,5 +1,7 @@
 package org.baylorschool.util
 
+import com.acmerobotics.dashboard.FtcDashboard
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import org.baylorschool.Globals
 import org.baylorschool.util.angledevice.AngleDevice
@@ -17,7 +19,7 @@ const val b = 8.0 // in
 class MichaelLift(opMode: OpMode) {
     /*
     Warning for the reader: many variables in this file are not meaningfully named because it is
-    based on Michael's model on Desmos. Please refer to that for better understanding:
+    based on Michael's model on Desmos. Please refer to the masterpiece for better understanding:
     https://www.desmos.com/calculator/3p3siwof5a
      */
 
@@ -42,12 +44,14 @@ class MichaelLift(opMode: OpMode) {
     private var liftMode: LiftMode = LiftMode.GROUND
 
     fun iteration() {
+        val telemetry = FtcDashboard.getInstance().telemetry
         if (!needToUpdate) return
 
         val angleProximal = when (liftMode) {
             LiftMode.HIGH -> angleHighProximal()
             LiftMode.GROUND -> angleGroundProximal()
         }
+
 
         val angleDistal = when (liftMode) {
             LiftMode.HIGH -> angleHighDistal()
@@ -59,6 +63,12 @@ class MichaelLift(opMode: OpMode) {
         motorA1.moveToAngle(clamp(angleProximal, 0.0, PI))
         motorA2.moveToAngle(clamp(angleProximal, 0.0, PI))
         motorB.moveToAngle(angleDistalRelative)
+
+
+        telemetry.addLine("Angle proximal: $angleProximal")
+        telemetry.addLine("Angle distal: $angleDistal")
+        telemetry.addLine("Angle distal relative: $angleDistalRelative")
+        telemetry.update()
 
         needToUpdate = false
     }
@@ -86,15 +96,15 @@ class MichaelLift(opMode: OpMode) {
     }
 
     fun goToPosition(x: Double, y: Double) {
-        this.x = x
-        this.y = y
+        if ((a - b).pow(2) <= x.pow(2) + y.pow(2) && x.pow(2) + y.pow(2) <= (a + b).pow(2)) {
+            this.x = x
+            this.y = y
 
-        if (this.y < 0.0) this.y = 0.0
-
-        this.needToUpdate = true
+            this.needToUpdate = true
+        }
     }
 
-    // Michael's chicken scratch translated into pristine code below
+    // Michael's pristine manuscript translated into barely understandable code below
     private fun k(): Double {
         return sqrt(- ((a + b).pow(2) - x.pow(2) - y.pow(2)) * ((a - b).pow(2) - x.pow(2) - y.pow(2)))
     }
