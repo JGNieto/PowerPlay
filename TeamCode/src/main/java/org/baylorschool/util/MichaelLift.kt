@@ -19,7 +19,7 @@ const val b = 8.0 // in
 class MichaelLift(opMode: OpMode) {
     /*
     Warning for the reader: many variables in this file are not meaningfully named because it is
-    based on Michael's model on Desmos. Please refer to the masterpiece for better understanding:
+    based on Michael's model on Desmos. Please refer to that for better understanding:
     https://www.desmos.com/calculator/3p3siwof5a
      */
 

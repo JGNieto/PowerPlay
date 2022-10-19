@@ -27,6 +27,6 @@ local.properties
 
 build
 .gradle
-local.properties
+**/local.properties
 
 *.hprof

@@ -18,6 +18,8 @@ object MichaelLiftTestConfig {
 
 @TeleOp(name = "Michael Lift Test", group = "test")
 class MichaelLiftTest: LinearOpMode() {
+    val maxSpeed = 2.0
+
     override fun runOpMode() {
         val michaelLift = MichaelLift(this)
 
@@ -41,14 +43,10 @@ class MichaelLiftTest: LinearOpMode() {
         while (opModeIsActive()) {
             val currentTime = System.currentTimeMillis()
             val timeDiff = (currentTime - previousTime) / 1000.0
-            val posDelta = timeDiff * 1.0
 
-            if (gamepad1.b) xPos += posDelta
-            if (gamepad1.x) xPos -= posDelta
-            if (gamepad1.y) yPos += posDelta
-            if (gamepad1.a) yPos -= posDelta
-
-            if (gamepad1.b || gamepad1.x || gamepad1.y || gamepad1.a) {
+            if (gamepad1.right_stick_x != 0f || gamepad1.right_stick_y != 0f) {
+                xPos += gamepad1.right_stick_x * timeDiff * maxSpeed
+                yPos += gamepad1.right_stick_y * timeDiff * maxSpeed
                 michaelLift.goToPosition(xPos, yPos)
             }
 
@@ -58,6 +56,8 @@ class MichaelLiftTest: LinearOpMode() {
 
             telemetry.addData("X", xPos)
             telemetry.addData("Y", yPos)
+            telemetry.addData("Gamepad X", gamepad1.right_stick_x)
+            telemetry.addData("Gamepad Y", gamepad1.right_stick_y)
             telemetry.update()
         }
 
