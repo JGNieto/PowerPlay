@@ -1,5 +1,6 @@
 package org.baylorschool.opmodes.test
 
+import com.acmerobotics.dashboard.FtcDashboard
 import com.acmerobotics.dashboard.config.Config
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
@@ -18,7 +19,7 @@ object MichaelLiftTestConfig {
 
 @TeleOp(name = "Michael Lift Test", group = "test")
 class MichaelLiftTest: LinearOpMode() {
-    val maxSpeed = 2.0
+    val maxSpeed = 4.0
 
     override fun runOpMode() {
         val michaelLift = MichaelLift(this)
@@ -27,7 +28,7 @@ class MichaelLiftTest: LinearOpMode() {
         michaelLift.motorA2.reset(0.0)
         michaelLift.motorB.reset(PI)
 
-        (michaelLift.motorB as BasicMotorAngleDevice).debug = true
+        //(michaelLift.motorB as BasicMotorAngleDevice).debug = true
 
         michaelLift.init()
 
@@ -45,8 +46,8 @@ class MichaelLiftTest: LinearOpMode() {
             val timeDiff = (currentTime - previousTime) / 1000.0
 
             if (gamepad1.right_stick_x != 0f || gamepad1.right_stick_y != 0f) {
-                xPos += gamepad1.right_stick_x * timeDiff * maxSpeed
-                yPos += gamepad1.right_stick_y * timeDiff * maxSpeed
+                xPos += - gamepad1.right_stick_x * timeDiff * maxSpeed
+                yPos += - gamepad1.right_stick_y * timeDiff * maxSpeed
                 michaelLift.goToPosition(xPos, yPos)
             }
 

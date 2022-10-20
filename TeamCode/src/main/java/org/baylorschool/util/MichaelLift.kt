@@ -65,11 +65,10 @@ class MichaelLift(opMode: OpMode) {
         motorB.moveToAngle(angleDistalRelative)
 
 
-        telemetry.addLine("Angle proximal: $angleProximal")
-        telemetry.addLine("Angle distal: $angleDistal")
-        telemetry.addLine("Angle distal relative: $angleDistalRelative")
+        telemetry.addData("Angle proximal", angleProximal)
+        telemetry.addData("Angle distal", angleDistal)
+        telemetry.addData("Angle distal relative", angleDistalRelative)
         telemetry.update()
-
         needToUpdate = false
     }
 
@@ -133,7 +132,7 @@ class MichaelLift(opMode: OpMode) {
         return if (arctan <= 0) {
             arctan
         } else {
-            arctan - PI
+            arctan// - PI
         }
     }
 
@@ -158,9 +157,9 @@ class MichaelLift(opMode: OpMode) {
     }
 
     private fun clamp(value: Double, low: Double, high: Double): Double {
-        if (value < low) return low
-        else if (value > high) return high
-        else return value
+        return if (value < low) low
+        else if (value > high) high
+        else value
     }
 
 }
