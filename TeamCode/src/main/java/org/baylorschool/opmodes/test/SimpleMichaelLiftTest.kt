@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import org.baylorschool.Globals
 import org.baylorschool.util.angledevice.BasicMotorAngleDevice
+import org.baylorschool.util.angledevice.TargetAngleDirection
 import kotlin.math.PI
 
 @TeleOp(name = "Simple Michael Lift Test", group = "test")
@@ -28,8 +29,8 @@ class SimpleMichaelLiftTest: LinearOpMode() {
 
         telemetry.addData("Status", "Running")
         telemetry.update()
-        liftProximalA.moveToAngle(PI / 2, 1)
-        liftDistal.moveToAngle(PI / 2, 1)
+        liftProximalA.moveToAngle(PI / 2, TargetAngleDirection.COUNTERCLOCKWISE)
+        liftDistal.moveToAngle(PI / 2, TargetAngleDirection.COUNTERCLOCKWISE)
 
         while (!isStopRequested && opModeIsActive()) { }
 

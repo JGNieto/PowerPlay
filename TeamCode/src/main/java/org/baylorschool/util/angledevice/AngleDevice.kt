@@ -1,12 +1,15 @@
 package org.baylorschool.util.angledevice
 
-interface AngleDevice {
+enum class TargetAngleDirection {
+    CLOCKWISE, COUNTERCLOCKWISE, CLOSEST, ABSOLUTE
+}
 
+interface AngleDevice {
     /**
      * @param angle Radians
-     * @param direction Clockwise, -1. Counterclockwise: +1, Determine automatically: 0
+     * @param direction
      */
-    fun moveToAngle(angle: Double, direction: Int = 0)
+    fun moveToAngle(angle: Double, direction: TargetAngleDirection = TargetAngleDirection.CLOSEST)
 
     /**
      * This function is to be used when the angle of the device is known, so that relative calculations

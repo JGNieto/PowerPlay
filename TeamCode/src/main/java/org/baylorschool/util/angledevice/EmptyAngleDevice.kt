@@ -1,7 +1,7 @@
 package org.baylorschool.util.angledevice
 
 class EmptyAngleDevice: AngleDevice {
-    override fun moveToAngle(angle: Double, direction: Int) {
+    override fun moveToAngle(angle: Double, direction: TargetAngleDirection) {
     }
 
     override fun reset(angle: Double) {

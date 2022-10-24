@@ -27,7 +27,7 @@ class BasicMotorAngleDevice(val motor: DcMotorEx, ticksPerTurn: Double, val conf
     private val ticksPerRadian = ticksPerTurn / (2 * PI)
 
     private var targetAngle = 0.0
-    private var direction = 0
+    private var direction = TargetAngleDirection.ABSOLUTE
     private var encoderValueAtZero = 0.0
     private var needToStop = false
     private var motorStatus = MotorStatus.STOP
@@ -44,14 +44,16 @@ class BasicMotorAngleDevice(val motor: DcMotorEx, ticksPerTurn: Double, val conf
         STOP, MOVING, MAINTAINING
     }
 
-    override fun moveToAngle(angle: Double, direction: Int) {
+    override fun moveToAngle(angle: Double, direction: TargetAngleDirection) {
         this.motorStatus = MotorStatus.MOVING
         this.targetAngle = angle
         this.direction = direction
         this.newPosition = true
     }
 
-    private fun computeTargetAngle(angle: Double, direction: Int): Double {
+    private fun computeTargetAngle(angle: Double, direction: TargetAngleDirection): Double {
+        if (direction == TargetAngleDirection.ABSOLUTE) return angle
+
         val position = getPosition()
         // TODO: val baseValue = (position % (2 * PI)).toInt()
         val baseValue = 0
@@ -59,10 +61,10 @@ class BasicMotorAngleDevice(val motor: DcMotorEx, ticksPerTurn: Double, val conf
         val lowerValue = baseValue + angle - 2 * PI
 
         return when (direction) {
-            1 -> {
+            TargetAngleDirection.COUNTERCLOCKWISE -> {
                 higherValue
             }
-            -1 -> {
+            TargetAngleDirection.CLOCKWISE -> {
                 lowerValue
             }
             else -> {

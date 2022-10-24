@@ -1,14 +1,13 @@
 package org.baylorschool.opmodes.test
 
-import com.acmerobotics.dashboard.FtcDashboard
 import com.acmerobotics.dashboard.config.Config
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import org.baylorschool.opmodes.test.MichaelLiftTestConfig.x
 import org.baylorschool.opmodes.test.MichaelLiftTestConfig.y
+import org.baylorschool.util.LiftPresets
 import org.baylorschool.util.MichaelLift
 import org.baylorschool.util.angledevice.BasicMotorAngleDevice
-import org.baylorschool.util.angledevice.MotorAngleDevice
 import kotlin.math.PI
 
 @Config
@@ -19,7 +18,7 @@ object MichaelLiftTestConfig {
 
 @TeleOp(name = "Michael Lift Test", group = "test")
 class MichaelLiftTest: LinearOpMode() {
-    val maxSpeed = 4.0
+    val maxSpeed = 8.0
 
     override fun runOpMode() {
         val michaelLift = MichaelLift(this)
@@ -28,6 +27,8 @@ class MichaelLiftTest: LinearOpMode() {
         michaelLift.motorA2.reset(0.0)
         michaelLift.motorB.reset(PI)
 
+        (michaelLift.motorA1 as BasicMotorAngleDevice).debug = true
+        //(michaelLift.motorA2 as BasicMotorAngleDevice).debug = true
         //(michaelLift.motorB as BasicMotorAngleDevice).debug = true
 
         michaelLift.init()
@@ -43,12 +44,40 @@ class MichaelLiftTest: LinearOpMode() {
 
         while (opModeIsActive()) {
             val currentTime = System.currentTimeMillis()
-            val timeDiff = (currentTime - previousTime) / 1000.0
 
-            if (gamepad1.right_stick_x != 0f || gamepad1.right_stick_y != 0f) {
-                xPos += - gamepad1.right_stick_x * timeDiff * maxSpeed
-                yPos += - gamepad1.right_stick_y * timeDiff * maxSpeed
-                michaelLift.goToPosition(xPos, yPos)
+            if (gamepad1.y) {
+                michaelLift.moveToMode(MichaelLift.LiftMode.HIGH)
+                xPos = michaelLift.x
+                yPos = michaelLift.y
+            } else if (gamepad1.a) {
+                michaelLift.moveToMode(MichaelLift.LiftMode.GROUND)
+                xPos = michaelLift.x
+                yPos = michaelLift.y
+            } else if (gamepad1.x) {
+                michaelLift.moveToMode(MichaelLift.LiftMode.HIGH, LiftPresets.heavenMid)
+                xPos = michaelLift.x
+                yPos = michaelLift.y
+            } else if (gamepad1.b) {
+                michaelLift.moveToMode(MichaelLift.LiftMode.HIGH, LiftPresets.heavenLow)
+                xPos = michaelLift.x
+                yPos = michaelLift.y
+            } else {
+                val timeDiff = (currentTime - previousTime) / 1000.0
+
+                if (gamepad1.right_stick_x != 0f || gamepad1.right_stick_y != 0f) {
+                    val xPosTemp = xPos
+                    val yPosTemp = yPos
+
+                    xPos += -gamepad1.right_stick_x * timeDiff * maxSpeed
+                    yPos += -gamepad1.right_stick_y * timeDiff * maxSpeed
+
+                    val validNewPosition = michaelLift.goToPosition(xPos, yPos)
+
+                    if (!validNewPosition) {
+                        xPos = xPosTemp
+                        yPos = yPosTemp
+                    }
+                }
             }
 
             michaelLift.iteration()

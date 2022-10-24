@@ -42,7 +42,7 @@ class MotorAngleDevice(val motor: DcMotorEx, ticksPerTurn: Double): AngleDevice 
     private val ticksPerRadian = ticksPerTurn / (2 * PI)
 
     private var targetAngle = 0.0
-    private var direction = 0
+    private var direction = TargetAngleDirection.ABSOLUTE
     private var encoderValueAtZero = 0.0
     private var needToStop = false
     private var motorStatus = MotorStatus.STOP
@@ -58,7 +58,7 @@ class MotorAngleDevice(val motor: DcMotorEx, ticksPerTurn: Double): AngleDevice 
         STOP, MOVING
     }
 
-    override fun moveToAngle(angle: Double, direction: Int) {
+    override fun moveToAngle(angle: Double, direction: TargetAngleDirection) {
         this.motorStatus = MotorStatus.MOVING
         this.targetAngle = angle
         this.direction = direction
