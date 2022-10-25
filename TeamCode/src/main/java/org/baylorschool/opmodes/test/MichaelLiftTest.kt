@@ -27,7 +27,7 @@ class MichaelLiftTest: LinearOpMode() {
         michaelLift.motorA2.reset(0.0)
         michaelLift.motorB.reset(PI)
 
-        (michaelLift.motorA1 as BasicMotorAngleDevice).debug = true
+        //(michaelLift.motorA1 as BasicMotorAngleDevice).debug = true
         //(michaelLift.motorA2 as BasicMotorAngleDevice).debug = true
         //(michaelLift.motorB as BasicMotorAngleDevice).debug = true
 
@@ -45,19 +45,19 @@ class MichaelLiftTest: LinearOpMode() {
         while (opModeIsActive()) {
             val currentTime = System.currentTimeMillis()
 
-            if (gamepad1.y) {
-                michaelLift.moveToMode(MichaelLift.LiftMode.HIGH)
+            if (gamepad1.a) { // HELL
+                michaelLift.moveToMode(MichaelLift.LiftMode.GROUND, LiftPresets.hell)
                 xPos = michaelLift.x
                 yPos = michaelLift.y
-            } else if (gamepad1.a) {
-                michaelLift.moveToMode(MichaelLift.LiftMode.GROUND)
+            } else if (gamepad1.b) { // HEAVEN HIGH
+                michaelLift.moveToMode(MichaelLift.LiftMode.HIGH, LiftPresets.heavenHigh)
                 xPos = michaelLift.x
                 yPos = michaelLift.y
-            } else if (gamepad1.x) {
+            } else if (gamepad1.y) { // HEAVEN MID
                 michaelLift.moveToMode(MichaelLift.LiftMode.HIGH, LiftPresets.heavenMid)
                 xPos = michaelLift.x
                 yPos = michaelLift.y
-            } else if (gamepad1.b) {
+            } else if (gamepad1.x) { // HEAVEN LOW
                 michaelLift.moveToMode(MichaelLift.LiftMode.HIGH, LiftPresets.heavenLow)
                 xPos = michaelLift.x
                 yPos = michaelLift.y

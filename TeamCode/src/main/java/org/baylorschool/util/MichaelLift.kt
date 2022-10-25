@@ -84,6 +84,8 @@ class MichaelLift(opMode: OpMode) {
         telemetry.addData("Angle proximal", angleProximal)
         telemetry.addData("Angle distal", angleDistal)
         telemetry.addData("Angle distal relative", angleDistalRelative)
+        telemetry.addData("Actual Proximal", motorA1.getPosition())
+        telemetry.addData("Actual distal", motorB.getPosition())
         telemetry.update()
         needToUpdate = false
     }
@@ -206,8 +208,8 @@ class MichaelLift(opMode: OpMode) {
 
     // Mode high
     private fun angleHighProximal(): Double {
-        val numerator = y * kb() - x * k()
-        val denominator = x * kb() + y * k()
+        val numerator = y * ka() - x * k()
+        val denominator = x * ka() + y * k()
 
         val arctan =  atan(numerator / denominator)
         val arctan1 = arctan + PI
@@ -227,9 +229,8 @@ class MichaelLift(opMode: OpMode) {
     }
 
     private fun angleHighDistal(): Double {
-        val numerator = y * ka() - x * k()
-        val denominator = x * ka() + y * k()
-
+        val numerator = y * kb() + x * k()
+        val denominator = x * kb() - y * k()
 
         val arctan = atan(numerator / denominator)
         val arctan1 = arctan + PI
@@ -240,11 +241,11 @@ class MichaelLift(opMode: OpMode) {
         val dArctan2 = abs(arctan2 - previousDistalAngle)
 
         return if (dArctan < dArctan1 && dArctan < dArctan2) {
-            arctan
+            arctan - PI
         } else if (dArctan1 < dArctan && dArctan1 < dArctan2) {
-            arctan1
+            arctan1 - PI
         } else {
-            arctan2
+            arctan2 - PI
         }
     }
 
