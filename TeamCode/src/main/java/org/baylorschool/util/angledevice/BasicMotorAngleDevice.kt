@@ -38,6 +38,9 @@ class BasicMotorAngleDevice(val motor: DcMotorEx, ticksPerTurn: Double, val conf
     
     private val telemetry = FtcDashboard.getInstance().telemetry
 
+    private var lastEncoderUpdate = 0L
+    private var previousEncoderValue = 0
+
     private lateinit var thread: Thread
 
     private enum class MotorStatus {
@@ -78,6 +81,7 @@ class BasicMotorAngleDevice(val motor: DcMotorEx, ticksPerTurn: Double, val conf
     }
 
     private fun iteration() {
+        val currentTime = System.currentTimeMillis()
         when (motorStatus) {
             MotorStatus.STOP -> {
                 motor.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
@@ -102,6 +106,13 @@ class BasicMotorAngleDevice(val motor: DcMotorEx, ticksPerTurn: Double, val conf
                     this.newPosition = false
                 }
             }
+        }
+
+        if (motor.currentPosition != previousEncoderValue || motor.power == 0.0 || lastEncoderUpdate == 0L || (motor.mode != DcMotor.RunMode.RUN_TO_POSITION && motor.mode != DcMotor.RunMode.RUN_USING_ENCODER)) {
+            previousEncoderValue = motor.currentPosition
+            lastEncoderUpdate = currentTime
+        } else if (lastEncoderUpdate - currentTime > 500) {
+            throw Exception("SAFETY ISSUE DETECTED")
         }
 
         wasBusy = motor.isBusy
