@@ -82,15 +82,18 @@ class BasicMotorAngleDevice(val motor: DcMotorEx, ticksPerTurn: Double, val conf
 
     private fun iteration() {
         val currentTime = System.currentTimeMillis()
+
         when (motorStatus) {
             MotorStatus.STOP -> {
                 motor.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
                 motor.power = config.stopSpeed
+                lastEncoderUpdate = currentTime
+                previousEncoderValue = motor.currentPosition
             }
             else -> {
                 if (!motor.isBusy && wasBusy && !newPosition) {
                     motorStatus = MotorStatus.MAINTAINING
-                } else if (!wasBusy || newPosition) {
+                } else if (!motor.isBusy || newPosition) {
                     val targetAngleComputed = computeTargetAngle(targetAngle, direction)
                     val targetEncoder = targetAngleComputed * ticksPerRadian + encoderValueAtZero
 
@@ -104,15 +107,17 @@ class BasicMotorAngleDevice(val motor: DcMotorEx, ticksPerTurn: Double, val conf
                     }
 
                     this.newPosition = false
+                    lastEncoderUpdate = currentTime
+                    previousEncoderValue = motor.currentPosition
                 }
             }
         }
 
-        if (motor.currentPosition != previousEncoderValue || motor.power == 0.0 || lastEncoderUpdate == 0L || (motor.mode != DcMotor.RunMode.RUN_TO_POSITION && motor.mode != DcMotor.RunMode.RUN_USING_ENCODER)) {
+        if (motor.currentPosition != previousEncoderValue || lastEncoderUpdate == 0L) {
             previousEncoderValue = motor.currentPosition
             lastEncoderUpdate = currentTime
-        } else if (lastEncoderUpdate - currentTime > 500) {
-            throw Exception("SAFETY ISSUE DETECTED")
+        } else if (currentTime - lastEncoderUpdate > 5000 || (motor.currentPosition - motor.targetPosition > 4 && currentTime - lastEncoderUpdate > 500)) {
+            //throw Exception("Encoder disconnected.")
         }
 
         wasBusy = motor.isBusy
@@ -127,6 +132,7 @@ class BasicMotorAngleDevice(val motor: DcMotorEx, ticksPerTurn: Double, val conf
             telemetry.addData("Target position", motor.targetPosition)
             telemetry.addData("Current position", motor.currentPosition)
             telemetry.addData("Velocity", motor.getVelocity(AngleUnit.RADIANS))
+            telemetry.addData("Time since last encoder update (ms)", lastEncoderUpdate - currentTime)
             telemetry.update()
         }
     }
