@@ -1,7 +1,6 @@
 package org.baylorschool.util
 
 import com.acmerobotics.dashboard.FtcDashboard
-import com.acmerobotics.dashboard.telemetry.TelemetryPacket
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import org.baylorschool.Globals
 import org.baylorschool.util.angledevice.AngleDevice
@@ -35,6 +34,10 @@ class MichaelLift(opMode: OpMode) {
         HIGH, GROUND
     }
 
+    enum class SyncMode {
+        NONE, DISTAL_FIRST, PROXIMAL_FIRST
+    }
+
     val motorA1: AngleDevice // Proximal 1
     val motorA2: AngleDevice // Proximal 2
     val motorB: AngleDevice  // Distal
@@ -53,6 +56,15 @@ class MichaelLift(opMode: OpMode) {
 
     private var needToUpdate = false
 
+    private var syncInitA = 0.0
+    private var syncInitA1 = 0.0
+    private var syncInitA2 = 0.0
+    private var syncInitB = 0.0
+    private var syncMode = SyncMode.NONE
+
+    private var angleProximal = 0.0
+    private var angleDistal = 0.0
+
     private var previousDistalAngle = 0.0
     private var previousProximalAngle = 0.0
 
@@ -60,32 +72,46 @@ class MichaelLift(opMode: OpMode) {
 
     fun iteration() {
         val telemetry = FtcDashboard.getInstance().telemetry
-        if (!needToUpdate) return
+        if (!needToUpdate && syncMode == SyncMode.NONE) return
 
-        val angleProximal = when (liftMode) {
-            LiftMode.HIGH -> angleHighProximal()
-            LiftMode.GROUND -> angleGroundProximal()
+        var targetAngleProximal = clamp(angleProximal, 0.0, PI)
+        var targetAngleDistal = angleDistal - targetAngleProximal
+
+        if (syncMode != SyncMode.NONE) {
+            val dPosA1 = motorA1.getPosition() - syncInitA1
+            val dPosA2 = if (motorA2 !is EmptyAngleDevice) motorA2.getPosition() - syncInitA2 else dPosA1
+
+            val dPosA = (dPosA1 + dPosA2) / 2.0
+            val dPosB = motorB.getPosition()
+
+            val progressA = dPosA / (targetAngleProximal - syncInitA)
+            val progressB = dPosB / targetAngleDistal
+
+            when (syncMode) {
+                SyncMode.DISTAL_FIRST -> {
+                    telemetry.addData("Progress B", progressB)
+                    targetAngleProximal = scaleMovement(0.4, 0.8, syncInitA, targetAngleProximal, progressB)
+                }
+                SyncMode.PROXIMAL_FIRST -> {
+                    telemetry.addData("Progress A", progressA)
+                    targetAngleDistal = scaleMovement(0.4, 0.8, syncInitB, targetAngleDistal, progressA)
+                }
+                else -> {}
+            }
+
         }
 
-        val angleDistal = when (liftMode) {
-            LiftMode.HIGH -> angleHighDistal()
-            LiftMode.GROUND -> angleGroundDistal()
-        }
-
-        val angleDistalRelative = (angleDistal - angleProximal)// % (2 * PI)
-
-        motorA1.moveToAngle(clamp(angleProximal, 0.0, PI), TargetAngleDirection.ABSOLUTE)
-        motorA2.moveToAngle(clamp(angleProximal, 0.0, PI), TargetAngleDirection.ABSOLUTE)
-        motorB.moveToAngle(angleDistalRelative, TargetAngleDirection.ABSOLUTE)
-
-        previousProximalAngle = angleProximal
-        previousDistalAngle = angleDistal
+        motorA1.moveToAngle(targetAngleProximal, TargetAngleDirection.ABSOLUTE)
+        motorA2.moveToAngle(targetAngleProximal, TargetAngleDirection.ABSOLUTE)
+        motorB.moveToAngle(targetAngleDistal, TargetAngleDirection.ABSOLUTE)
 
         telemetry.addData("Angle proximal", angleProximal)
         telemetry.addData("Angle distal", angleDistal)
-        telemetry.addData("Angle distal relative", angleDistalRelative)
-        telemetry.addData("Actual Proximal", motorA1.getPosition())
+        telemetry.addData("Target angle distal", targetAngleDistal)
+        telemetry.addData("Target angle proximal", targetAngleProximal)
+        telemetry.addData("Actual proximal", motorA1.getPosition())
         telemetry.addData("Actual distal", motorB.getPosition())
+        telemetry.addData("Sync mode", syncMode)
         telemetry.update()
         needToUpdate = false
     }
@@ -98,18 +124,18 @@ class MichaelLift(opMode: OpMode) {
                 previousDistalAngle = 0.0
                 previousProximalAngle = 3.0 * PI / 4.0
                 if (pos != null) {
-                    goToPosition(pos)
+                    goToPosition(pos, SyncMode.PROXIMAL_FIRST)
                 } else {
-                    goToPosition(LiftPresets.heavenHigh)
+                    goToPosition(LiftPresets.heavenHigh, SyncMode.PROXIMAL_FIRST)
                 }
             }
             LiftMode.GROUND -> {
                 previousDistalAngle = 0.0
                 previousProximalAngle = 0.0
                 if (pos != null) {
-                    goToPosition(pos)
+                    goToPosition(pos, SyncMode.DISTAL_FIRST)
                 } else {
-                    goToPosition(LiftPresets.hell)
+                    goToPosition(LiftPresets.hell, SyncMode.DISTAL_FIRST)
                 }
             }
         }
@@ -133,10 +159,35 @@ class MichaelLift(opMode: OpMode) {
         motorB.cleanup()
     }
 
-    fun goToPosition(x: Double, y: Double): Boolean {
+    fun goToPosition(x: Double, y: Double, syncMove: SyncMode = SyncMode.NONE): Boolean {
         if ((a - b).pow(2) <= x.pow(2) + y.pow(2) && x.pow(2) + y.pow(2) <= (a + b).pow(2)) {
             this.x = x
             this.y = y
+            this.syncMode = syncMove
+
+            angleProximal = when (liftMode) {
+                LiftMode.HIGH -> angleHighProximal()
+                LiftMode.GROUND -> angleGroundProximal()
+            }
+
+            angleDistal = when (liftMode) {
+                LiftMode.HIGH -> angleHighDistal()
+                LiftMode.GROUND -> angleGroundDistal()
+            }
+
+            previousProximalAngle = angleProximal
+            previousDistalAngle = angleDistal
+
+            if (syncMove != SyncMode.NONE) {
+                this.syncInitA1 = this.motorA1.getPosition()
+                this.syncInitA2 = this.motorA2.getPosition()
+                this.syncInitB = this.motorB.getPosition()
+
+                if (this.motorA2 is EmptyAngleDevice)
+                    this.syncInitA = this.syncInitA1
+                else
+                    this.syncInitA = (this.syncInitA1 + this.syncInitA2) / 2.0
+            }
 
             this.needToUpdate = true
 
@@ -146,8 +197,8 @@ class MichaelLift(opMode: OpMode) {
         }
     }
 
-    fun goToPosition(pos: LiftPosition): Boolean {
-        return goToPosition(pos.x, pos.y)
+    fun goToPosition(pos: LiftPosition, syncMove: SyncMode = SyncMode.NONE): Boolean {
+        return goToPosition(pos.x, pos.y, syncMove)
     }
 
     // Michael's pristine manuscript translated into barely understandable code below
@@ -253,6 +304,32 @@ class MichaelLift(opMode: OpMode) {
         return if (value < low) low
         else if (value > high) high
         else value
+    }
+
+    /**
+     * Scales the instructions given to one motor to be in function of the other's actual movement,
+     * lagging behind initially and, once a threshold is reached, going to the final position.
+     * @param lag Minimum value of progress before this method returns values other than zero.
+     * @param threshold Maximum value of progress after which this method will return target.
+     * @param initial Initial position of the motor.
+     * @param target Target position of the motor.
+     * @param progress Progress of the other motor (between 0 and 1).
+     */
+    private fun scaleMovement(lag: Double, threshold: Double, initial: Double, target: Double, progress: Double): Double {
+        if (progress > threshold) return target
+        if (progress < lag) return initial
+
+        /*
+        Use function y = mx + a, where:
+         y is the progress between 0 and 1
+         x is progress
+         a = -lag
+         m = (1 - a) / threshold
+         */
+        val m = (1.0 + lag) / threshold
+        val y = m * progress - lag
+
+        return y * (target - initial) + initial
     }
 
 }

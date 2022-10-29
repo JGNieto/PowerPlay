@@ -29,7 +29,7 @@ class MichaelLiftTest: LinearOpMode() {
 
         //(michaelLift.motorA1 as BasicMotorAngleDevice).debug = true
         //(michaelLift.motorA2 as BasicMotorAngleDevice).debug = true
-        (michaelLift.motorB as BasicMotorAngleDevice).debug = true
+        //(michaelLift.motorB as BasicMotorAngleDevice).debug = true
 
         michaelLift.init()
 
