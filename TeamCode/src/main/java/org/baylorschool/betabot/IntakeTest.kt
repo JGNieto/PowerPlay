@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import com.qualcomm.robotcore.hardware.AnalogInput
 import com.qualcomm.robotcore.hardware.CRServo
 
-@TeleOp(name = "Intake Test", group = "test")
+@TeleOp(name = "Intake Test", group = "tebeta")
 class IntakeTest: LinearOpMode() {
 
     override fun runOpMode() {
