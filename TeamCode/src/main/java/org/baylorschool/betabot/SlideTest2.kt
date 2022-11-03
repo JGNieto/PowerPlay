@@ -1,5 +1,6 @@
 package org.baylorschool.betabot
 
+import com.outoftheboxrobotics.photoncore.PhotonCore
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import com.qualcomm.robotcore.hardware.DcMotor
@@ -16,6 +17,7 @@ class SlideTest2: LinearOpMode() {
         val slideMotor2 = hardwareMap.get(DcMotorEx::class.java, "Llift")
         var slidePower: Double
         var avgPosition: Double
+        PhotonCore.enable()
 
         slideMotor1.direction = DcMotorSimple.Direction.REVERSE
         slideMotor2.direction = DcMotorSimple.Direction.REVERSE

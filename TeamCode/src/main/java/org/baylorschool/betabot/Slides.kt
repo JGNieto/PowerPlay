@@ -1,6 +1,7 @@
 package org.baylorschool.betabot
 
 import com.arcrobotics.ftclib.command.SubsystemBase
+import com.outoftheboxrobotics.photoncore.PhotonCore
 import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorEx
 import com.qualcomm.robotcore.hardware.DcMotorSimple
@@ -22,6 +23,7 @@ class Slides(hardwareMap: HardwareMap) : SubsystemBase() {
         slidesMotor.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
         slidesMotor.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
         slidesMotor.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
+        PhotonCore.enable()
     }
 
     fun setslidesPower(power: Double) {

@@ -3,6 +3,7 @@ package org.baylorschool.betabot
 import com.acmerobotics.roadrunner.control.PIDCoefficients
 import com.acmerobotics.roadrunner.control.PIDFController
 import com.arcrobotics.ftclib.command.CommandBase
+import com.outoftheboxrobotics.photoncore.PhotonCore
 import org.baylorschool.betabot.Slides
 
 class SlidePosition(slides: Slides, targetPosition: Double, tolerance: Double) :
@@ -24,6 +25,7 @@ class SlidePosition(slides: Slides, targetPosition: Double, tolerance: Double) :
         this.targetPosition = targetPosition
         slidesController = PIDFController(coefficients, 0.0, 0.0, kStatic)
         slidesController!!.setOutputBounds(-0.0, 0.0)
+        PhotonCore.enable()
     }
 
     override fun initialize() {
