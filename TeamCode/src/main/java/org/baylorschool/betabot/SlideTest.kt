@@ -9,18 +9,18 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorEx
 import com.qualcomm.robotcore.hardware.DcMotorSimple
-import org.baylorschool.betabot.SlideTestConfig.powerDown
-import org.baylorschool.betabot.SlideTestConfig.powerUp
-import org.baylorschool.betabot.SlideTestConfig.powerGotoUp
-import org.baylorschool.betabot.SlideTestConfig.powerGotoDown
-import org.baylorschool.betabot.SlideTestConfig.powerStay
+import org.baylorschool.betabot.SlidePowerConfig.powerDown
+import org.baylorschool.betabot.SlidePowerConfig.powerUp
+import org.baylorschool.betabot.SlidePowerConfig.powerGotoUp
+import org.baylorschool.betabot.SlidePowerConfig.powerGotoDown
+import org.baylorschool.betabot.SlidePowerConfig.powerStay
 
 @Config
-object SlideTestConfig {
-    @JvmField var powerUp = 0.5
-    @JvmField var powerDown = -0.5
+object SlidePowerConfig {
+    @JvmField var powerUp = 0.8
+    @JvmField var powerDown = -0.6
     @JvmField var powerGotoUp = 1.0
-    @JvmField var powerGotoDown = -0.5
+    @JvmField var powerGotoDown = -0.6
     @JvmField var powerStay = 0.05
 }
 
@@ -44,7 +44,7 @@ class SlideTest: LinearOpMode() {
         val slideMotor1 = hardwareMap.get(DcMotorEx::class.java, "rLift")
         val slideMotor2 = hardwareMap.get(DcMotorEx::class.java, "lLift")
         val minEncoder = 0
-        val maxEncoder = 1070
+        val maxEncoder = 1060
         var targetPosition = 0
         var avgPosition: Int
         var movement = Movement.STAY
@@ -87,7 +87,7 @@ class SlideTest: LinearOpMode() {
                     slideMotor2.power = powerDown
                     movement = Movement.DOWN
                 }
-            } else if (gamepad1.right_trigger > .1) {
+            } else if (gamepad1.left_trigger > .1) {
                 movement = Movement.GOTO
                 targetPosition = GoalPosition.MED.slidePositions
             } else if (gamepad1.left_stick_button) {
@@ -115,7 +115,7 @@ class SlideTest: LinearOpMode() {
                         }
                     }
                     else -> {
-                        targetPosition = hardStop(avgPosition, minEncoder, maxEncoder)
+                        targetPosition = hardStops(avgPosition, minEncoder, maxEncoder)
                         movement = Movement.STAY
                     }
                 }
@@ -128,7 +128,7 @@ class SlideTest: LinearOpMode() {
         }
     }
 
-    private fun hardStop(value: Int, low: Int, high: Int): Int {
+    private fun hardStops(value: Int, low: Int, high: Int): Int {
         return if (value < low) low
         else if (value > high) high
         else value
