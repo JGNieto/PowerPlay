@@ -1,5 +1,17 @@
 package org.baylorschool.drive;
 
+import static org.baylorschool.drive.DriveConstants.MAX_ACCEL;
+import static org.baylorschool.drive.DriveConstants.MAX_ANG_ACCEL;
+import static org.baylorschool.drive.DriveConstants.MAX_ANG_VEL;
+import static org.baylorschool.drive.DriveConstants.MAX_VEL;
+import static org.baylorschool.drive.DriveConstants.MOTOR_VELO_PID;
+import static org.baylorschool.drive.DriveConstants.RUN_USING_ENCODER;
+import static org.baylorschool.drive.DriveConstants.TRACK_WIDTH;
+import static org.baylorschool.drive.DriveConstants.encoderTicksToInches;
+import static org.baylorschool.drive.DriveConstants.kA;
+import static org.baylorschool.drive.DriveConstants.kStatic;
+import static org.baylorschool.drive.DriveConstants.kV;
+
 import androidx.annotation.NonNull;
 
 import com.acmerobotics.dashboard.config.Config;
@@ -31,23 +43,10 @@ import org.baylorschool.trajectorysequence.TrajectorySequence;
 import org.baylorschool.trajectorysequence.TrajectorySequenceBuilder;
 import org.baylorschool.trajectorysequence.TrajectorySequenceRunner;
 import org.baylorschool.util.LynxModuleUtil;
-import org.baylorschool.vision.AprilTagBinaryPipeline;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import static org.baylorschool.drive.DriveConstants.MAX_ACCEL;
-import static org.baylorschool.drive.DriveConstants.MAX_ANG_ACCEL;
-import static org.baylorschool.drive.DriveConstants.MAX_ANG_VEL;
-import static org.baylorschool.drive.DriveConstants.MAX_VEL;
-import static org.baylorschool.drive.DriveConstants.MOTOR_VELO_PID;
-import static org.baylorschool.drive.DriveConstants.RUN_USING_ENCODER;
-import static org.baylorschool.drive.DriveConstants.TRACK_WIDTH;
-import static org.baylorschool.drive.DriveConstants.encoderTicksToInches;
-import static org.baylorschool.drive.DriveConstants.kA;
-import static org.baylorschool.drive.DriveConstants.kStatic;
-import static org.baylorschool.drive.DriveConstants.kV;
 
 /*
  * Simple mecanum drive hardware implementation for REV hardware.

@@ -1,5 +1,12 @@
 package org.baylorschool.drive.opmode;
 
+import static org.baylorschool.drive.DriveConstants.MAX_ACCEL;
+import static org.baylorschool.drive.DriveConstants.MAX_VEL;
+import static org.baylorschool.drive.DriveConstants.RUN_USING_ENCODER;
+import static org.baylorschool.drive.DriveConstants.kA;
+import static org.baylorschool.drive.DriveConstants.kStatic;
+import static org.baylorschool.drive.DriveConstants.kV;
+
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
@@ -16,13 +23,6 @@ import com.qualcomm.robotcore.util.RobotLog;
 import org.baylorschool.drive.Mecanum;
 
 import java.util.Objects;
-
-import static org.baylorschool.drive.DriveConstants.MAX_ACCEL;
-import static org.baylorschool.drive.DriveConstants.MAX_VEL;
-import static org.baylorschool.drive.DriveConstants.RUN_USING_ENCODER;
-import static org.baylorschool.drive.DriveConstants.kA;
-import static org.baylorschool.drive.DriveConstants.kStatic;
-import static org.baylorschool.drive.DriveConstants.kV;
 
 /*
  * This routine is designed to tune the open-loop feedforward coefficients. Although it may seem unnecessary,

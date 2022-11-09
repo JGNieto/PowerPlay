@@ -3,11 +3,11 @@ package org.baylorschool.opmodes.test
 import com.acmerobotics.dashboard.config.Config
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
+import org.baylorschool.Globals
 import org.baylorschool.opmodes.test.MichaelLiftTestConfig.x
 import org.baylorschool.opmodes.test.MichaelLiftTestConfig.y
 import org.baylorschool.util.LiftPresets
 import org.baylorschool.util.MichaelLift
-import org.baylorschool.util.angledevice.BasicMotorAngleDevice
 import kotlin.math.PI
 
 @Config
@@ -23,9 +23,9 @@ class MichaelLiftTest: LinearOpMode() {
     override fun runOpMode() {
         val michaelLift = MichaelLift(this)
 
-        michaelLift.motorA1.reset(0.0)
-        michaelLift.motorA2.reset(0.0)
-        michaelLift.motorB.reset(PI)
+        michaelLift.motorA1.reset(Globals.liftProximalStartAngle)
+        michaelLift.motorA2.reset(Globals.liftProximalStartAngle)
+        michaelLift.motorB.reset(Globals.liftDistalStartAngle)
 
         //(michaelLift.motorA1 as BasicMotorAngleDevice).debug = true
         //(michaelLift.motorA2 as BasicMotorAngleDevice).debug = true
@@ -40,7 +40,7 @@ class MichaelLiftTest: LinearOpMode() {
 
         var previousTime = System.currentTimeMillis()
 
-        michaelLift.goToPosition(xPos, yPos)
+        michaelLift.goToPosition(xPos, yPos, MichaelLift.SyncMode.PROXIMAL_FIRST)
 
         while (opModeIsActive()) {
             val currentTime = System.currentTimeMillis()
