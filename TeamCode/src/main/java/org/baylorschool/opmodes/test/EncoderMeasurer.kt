@@ -38,6 +38,8 @@ class EncoderMeasurer: LinearOpMode() {
             telemetry.addData("Proximal A Position", liftProximalA.currentPosition)
             telemetry.addData("Distal Zero", liftDistalZero)
             telemetry.addData("Distal Position", liftDistal.currentPosition)
+            telemetry.addData("Proximal A", liftProximalA.getPIDFCoefficients(DcMotor.RunMode.RUN_TO_POSITION).toString())
+            telemetry.addData("Distal", liftDistal.getPIDFCoefficients(DcMotor.RunMode.RUN_TO_POSITION).toString())
             telemetry.update()
         }
     }

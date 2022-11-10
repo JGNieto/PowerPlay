@@ -1,19 +1,29 @@
 package org.baylorschool.opmodes.test
 
 import com.acmerobotics.dashboard.config.Config
+import com.outoftheboxrobotics.photoncore.PhotonCore
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
+import com.qualcomm.robotcore.hardware.PIDCoefficients
 import org.baylorschool.Globals
+import org.baylorschool.opmodes.test.MichaelLiftTestConfig.d
+import org.baylorschool.opmodes.test.MichaelLiftTestConfig.i
+import org.baylorschool.opmodes.test.MichaelLiftTestConfig.p
 import org.baylorschool.opmodes.test.MichaelLiftTestConfig.x
 import org.baylorschool.opmodes.test.MichaelLiftTestConfig.y
 import org.baylorschool.util.LiftPresets
 import org.baylorschool.util.MichaelLift
-import kotlin.math.PI
+import org.baylorschool.util.angledevice.BasicMotorAngleDevice
 
 @Config
 object MichaelLiftTestConfig {
     @JvmField var x = 20.0
     @JvmField var y = 7.0
+
+    @JvmField var p = 10.0
+    @JvmField var i = 0.5
+    @JvmField var d = 0.0
+    @JvmField var f = 0.0
 }
 
 @TeleOp(name = "Michael Lift Test", group = "test")
@@ -21,13 +31,18 @@ class MichaelLiftTest: LinearOpMode() {
     val maxSpeed = 8.0
 
     override fun runOpMode() {
+        PhotonCore.enable();
+
         val michaelLift = MichaelLift(this)
 
         michaelLift.motorA1.reset(Globals.liftProximalStartAngle)
         michaelLift.motorA2.reset(Globals.liftProximalStartAngle)
         michaelLift.motorB.reset(Globals.liftDistalStartAngle)
 
-        //(michaelLift.motorA1 as BasicMotorAngleDevice).debug = true
+        val proximalCoefficients = PIDCoefficients(p, i, d)
+        (michaelLift.motorA1 as BasicMotorAngleDevice).setPIDCoefficients(proximalCoefficients)
+
+        (michaelLift.motorA1 as BasicMotorAngleDevice).debug = true
         //(michaelLift.motorA2 as BasicMotorAngleDevice).debug = true
         //(michaelLift.motorB as BasicMotorAngleDevice).debug = true
 

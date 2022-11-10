@@ -77,6 +77,9 @@ class MichaelLift(opMode: OpMode) {
         var targetAngleProximal = clamp(angleProximal, 0.0, PI)
         var targetAngleDistal = angleDistal// - targetAngleProximal
 
+        val _targetAngleProximal = targetAngleProximal;
+        val _targetAngleDistal = targetAngleDistal
+
         if (syncMode != SyncMode.NONE) {
             val dPosA1 = motorA1.getPosition() - syncInitA1
             val dPosA2 = if (motorA2 !is EmptyAngleDevice) motorA2.getPosition() - syncInitA2 else dPosA1
@@ -98,6 +101,8 @@ class MichaelLift(opMode: OpMode) {
                 }
                 else -> {}
             }
+
+            if (targetAngleDistal == _targetAngleDistal && targetAngleProximal == _targetAngleProximal) syncMode = SyncMode.NONE
 
         }
 
