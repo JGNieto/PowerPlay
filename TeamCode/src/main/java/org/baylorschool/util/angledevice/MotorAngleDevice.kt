@@ -22,14 +22,14 @@ import kotlin.math.PI
 
 @Config
 object MotorAngleDeviceConfig {
-    @JvmField var armKs = 0.2
+    @JvmField var armKs = 0.0
     @JvmField var armKcos = 0.2
-    @JvmField var armKv = 0.4
+    @JvmField var armKv = 0.6
     @JvmField var armKa = 0.0
 
     @JvmField var kp = 0.6
     @JvmField var ki = 0.6
-    @JvmField var kd = 0.1
+    @JvmField var kd = 0.0
     @JvmField var tolerance = 0.2
 }
 

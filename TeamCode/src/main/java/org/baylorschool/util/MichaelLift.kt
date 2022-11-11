@@ -3,10 +3,7 @@ package org.baylorschool.util
 import com.acmerobotics.dashboard.FtcDashboard
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import org.baylorschool.Globals
-import org.baylorschool.util.angledevice.AngleDevice
-import org.baylorschool.util.angledevice.BasicMotorAngleDevice
-import org.baylorschool.util.angledevice.EmptyAngleDevice
-import org.baylorschool.util.angledevice.TargetAngleDirection
+import org.baylorschool.util.angledevice.*
 import kotlin.math.*
 
 // Bar lengths
@@ -43,7 +40,8 @@ class MichaelLift(opMode: OpMode) {
     val motorB: AngleDevice  // Distal
 
     init {
-        motorA1 = BasicMotorAngleDevice(opMode, Globals.liftProximalA, Globals.liftProximalATicksPerRotation, Globals.liftProximalConfig, Globals.liftProximalADirection)
+        //motorA1 = BasicMotorAngleDevice(opMode, Globals.liftProximalA, Globals.liftProximalATicksPerRotation, Globals.liftProximalConfig, Globals.liftProximalADirection)
+        motorA1 = MotorAngleDevice(opMode, Globals.liftProximalA, Globals.liftProximalATicksPerRotation, Globals.liftProximalADirection)
         motorA2 = EmptyAngleDevice()
         motorB = BasicMotorAngleDevice(opMode, Globals.liftDistal, Globals.liftDistalTicksPerRotation, Globals.liftDistalConfig, Globals.liftDistalDirection)
     }
