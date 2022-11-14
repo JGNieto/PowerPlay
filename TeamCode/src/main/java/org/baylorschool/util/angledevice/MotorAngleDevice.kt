@@ -27,7 +27,7 @@ object MotorAngleDeviceConfig {
     @JvmField var armKv = 0.6
     @JvmField var armKa = 0.0
 
-    @JvmField var kp = 0.6
+    @JvmField var kp = 1.2
     @JvmField var ki = 0.6
     @JvmField var kd = 0.0
     @JvmField var tolerance = 0.2
