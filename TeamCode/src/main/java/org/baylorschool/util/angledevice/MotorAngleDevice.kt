@@ -13,6 +13,7 @@ import org.baylorschool.util.angledevice.MotorAngleDeviceConfig.armKa
 import org.baylorschool.util.angledevice.MotorAngleDeviceConfig.armKcos
 import org.baylorschool.util.angledevice.MotorAngleDeviceConfig.armKs
 import org.baylorschool.util.angledevice.MotorAngleDeviceConfig.armKv
+import org.baylorschool.util.angledevice.MotorAngleDeviceConfig.finalCoefficient
 import org.baylorschool.util.angledevice.MotorAngleDeviceConfig.kd
 import org.baylorschool.util.angledevice.MotorAngleDeviceConfig.ki
 import org.baylorschool.util.angledevice.MotorAngleDeviceConfig.kp
@@ -31,6 +32,8 @@ object MotorAngleDeviceConfig {
     @JvmField var ki = 0.6
     @JvmField var kd = 0.0
     @JvmField var tolerance = 0.2
+
+    @JvmField var finalCoefficient = 1.0
 }
 
 class MotorAngleDevice(val motor: DcMotorEx, ticksPerTurn: Double): AngleDevice {
@@ -91,7 +94,7 @@ class MotorAngleDevice(val motor: DcMotorEx, ticksPerTurn: Double): AngleDevice 
             packet.put("Calculation Feedforward", calculationFeedforward)
 
             previousPosition = position
-            motor.power = clip(calculationFeedforward)
+            motor.power = clip(calculationFeedforward * finalCoefficient)
         }
         packet.put("Encoder value", motor.currentPosition)
         packet.put("Power", motor.power)

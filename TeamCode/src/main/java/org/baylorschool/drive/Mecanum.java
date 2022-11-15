@@ -39,6 +39,7 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
+import org.baylorschool.Globals;
 import org.baylorschool.trajectorysequence.TrajectorySequence;
 import org.baylorschool.trajectorysequence.TrajectorySequenceBuilder;
 import org.baylorschool.trajectorysequence.TrajectorySequenceRunner;
@@ -117,10 +118,10 @@ public class Mecanum extends MecanumDrive {
         // For example, if +Y in this diagram faces downwards, you would use AxisDirection.NEG_Y.
         // BNO055IMUUtil.remapZAxis(imu, AxisDirection.NEG_Y);
 
-        leftFront = hardwareMap.get(DcMotorEx.class, "leftFront");
-        leftRear = hardwareMap.get(DcMotorEx.class, "leftRear");
-        rightRear = hardwareMap.get(DcMotorEx.class, "rightRear");
-        rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");
+        leftFront = hardwareMap.get(DcMotorEx.class, Globals.leftFront);
+        leftRear = hardwareMap.get(DcMotorEx.class, Globals.leftRear);
+        rightRear = hardwareMap.get(DcMotorEx.class, Globals.rightRear);
+        rightFront = hardwareMap.get(DcMotorEx.class, Globals.rightFront);
 
         motors = Arrays.asList(leftFront, leftRear, rightRear, rightFront);
 
@@ -140,9 +141,11 @@ public class Mecanum extends MecanumDrive {
             setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, MOTOR_VELO_PID);
         }
 
-        // TODO: reverse any motors using DcMotor.setDirection()
-        leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
-        rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
+        leftFront.setDirection(Globals.INSTANCE.getLeftFrontDirection());
+        leftRear.setDirection(Globals.INSTANCE.getLeftRearDirection());
+
+        rightFront.setDirection(Globals.INSTANCE.getRightFrontDirection());
+        rightRear.setDirection(Globals.INSTANCE.getRightRearDirection());
 
         // TODO: if desired, use setLocalizer() to change the localization method
         // for instance, setLocalizer(new ThreeTrackingWheelLocalizer(...));
