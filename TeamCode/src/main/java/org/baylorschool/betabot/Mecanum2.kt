@@ -9,7 +9,7 @@ import kotlin.math.cos
 import kotlin.math.sin
 
 @TeleOp
-class Mecanum : LinearOpMode() {
+class Mecanum2 : LinearOpMode() {
     @Throws(InterruptedException::class)
     override fun runOpMode() {
 
