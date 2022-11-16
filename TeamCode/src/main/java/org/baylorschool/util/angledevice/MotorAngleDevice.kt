@@ -49,6 +49,7 @@ class MotorAngleDevice(val motor: DcMotorEx, ticksPerTurn: Double): AngleDevice 
     private var encoderValueAtZero = 0.0
     private var needToStop = false
     private var motorStatus = MotorStatus.STOP
+    var debug = false
 
     private var previousPosition: Double? = null
 
@@ -103,7 +104,8 @@ class MotorAngleDevice(val motor: DcMotorEx, ticksPerTurn: Double): AngleDevice 
         packet.put("Zero value", encoderValueAtZero)
         packet.put("Target angle", targetAngle)
         packet.put("Velocity", motor.getVelocity(AngleUnit.RADIANS))
-        FtcDashboard.getInstance().sendTelemetryPacket(packet)
+        if (debug)
+            FtcDashboard.getInstance().sendTelemetryPacket(packet)
     }
 
     override fun reset(angle: Double) {

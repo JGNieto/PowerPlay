@@ -43,8 +43,8 @@ class MichaelLiftTest: LinearOpMode() {
         // (michaelLift.motorA1 as BasicMotorAngleDevice).setPIDCoefficients(proximalCoefficients)
 
         // (michaelLift.motorA1 as BasicMotorAngleDevice).debug = true
-        // //(michaelLift.motorA2 as BasicMotorAngleDevice).debug = true
-        // //(michaelLift.motorB as BasicMotorAngleDevice).debug = true
+        // (michaelLift.motorA2 as BasicMotorAngleDevice).debug = true
+        (michaelLift.motorB as BasicMotorAngleDevice).debug = true
 
         michaelLift.init()
 
@@ -83,8 +83,8 @@ class MichaelLiftTest: LinearOpMode() {
                     val xPosTemp = xPos
                     val yPosTemp = yPos
 
-                    xPos += -gamepad1.right_stick_x * timeDiff * maxSpeed
-                    yPos += -gamepad1.right_stick_y * timeDiff * maxSpeed
+                    xPos += gamepad1.right_stick_x * timeDiff * maxSpeed
+                    yPos += gamepad1.right_stick_y * timeDiff * maxSpeed
 
                     val validNewPosition = michaelLift.goToPosition(xPos, yPos)
 

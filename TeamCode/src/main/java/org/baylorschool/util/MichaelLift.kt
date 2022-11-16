@@ -40,8 +40,8 @@ class MichaelLift(opMode: OpMode) {
     val motorB: AngleDevice  // Distal
 
     init {
-        //motorA1 = BasicMotorAngleDevice(opMode, Globals.liftProximalA, Globals.liftProximalATicksPerRotation, Globals.liftProximalConfig, Globals.liftProximalADirection)
-        motorA1 = MotorAngleDevice(opMode, Globals.liftProximalA, Globals.liftProximalATicksPerRotation, Globals.liftProximalADirection)
+        motorA1 = BasicMotorAngleDevice(opMode, Globals.liftProximalA, Globals.liftProximalATicksPerRotation, Globals.liftProximalConfig, Globals.liftProximalADirection)
+        //motorA1 = MotorAngleDevice(opMode, Globals.liftProximalA, Globals.liftProximalATicksPerRotation, Globals.liftProximalADirection)
         motorA2 = EmptyAngleDevice()
         motorB = BasicMotorAngleDevice(opMode, Globals.liftDistal, Globals.liftDistalTicksPerRotation, Globals.liftDistalConfig, Globals.liftDistalDirection)
     }
@@ -75,7 +75,7 @@ class MichaelLift(opMode: OpMode) {
         var targetAngleProximal = clamp(angleProximal, 0.0, PI)
         var targetAngleDistal = angleDistal// - targetAngleProximal
 
-        val _targetAngleProximal = targetAngleProximal;
+        val _targetAngleProximal = targetAngleProximal
         val _targetAngleDistal = targetAngleDistal
 
         if (syncMode != SyncMode.NONE) {
