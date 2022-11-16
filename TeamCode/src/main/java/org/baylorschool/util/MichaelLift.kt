@@ -3,15 +3,12 @@ package org.baylorschool.util
 import com.acmerobotics.dashboard.FtcDashboard
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import org.baylorschool.Globals
-import org.baylorschool.util.angledevice.AngleDevice
-import org.baylorschool.util.angledevice.BasicMotorAngleDevice
-import org.baylorschool.util.angledevice.EmptyAngleDevice
-import org.baylorschool.util.angledevice.TargetAngleDirection
+import org.baylorschool.util.angledevice.*
 import kotlin.math.*
 
 // Bar lengths
-const val a = 15.25 // in
-const val b = 8.0 // in
+const val a = 15.118 // in
+const val b = 7.559 // in
 
 object LiftPresets {
     val hell = LiftPosition(17.0, -5.0)
@@ -44,6 +41,7 @@ class MichaelLift(opMode: OpMode) {
 
     init {
         motorA1 = BasicMotorAngleDevice(opMode, Globals.liftProximalA, Globals.liftProximalATicksPerRotation, Globals.liftProximalConfig, Globals.liftProximalADirection)
+        //motorA1 = MotorAngleDevice(opMode, Globals.liftProximalA, Globals.liftProximalATicksPerRotation, Globals.liftProximalADirection)
         motorA2 = EmptyAngleDevice()
         motorB = BasicMotorAngleDevice(opMode, Globals.liftDistal, Globals.liftDistalTicksPerRotation, Globals.liftDistalConfig, Globals.liftDistalDirection)
     }
@@ -75,7 +73,10 @@ class MichaelLift(opMode: OpMode) {
         if (!needToUpdate && syncMode == SyncMode.NONE) return
 
         var targetAngleProximal = clamp(angleProximal, 0.0, PI)
-        var targetAngleDistal = angleDistal - targetAngleProximal
+        var targetAngleDistal = angleDistal// - targetAngleProximal
+
+        val _targetAngleProximal = targetAngleProximal
+        val _targetAngleDistal = targetAngleDistal
 
         if (syncMode != SyncMode.NONE) {
             val dPosA1 = motorA1.getPosition() - syncInitA1
@@ -98,6 +99,8 @@ class MichaelLift(opMode: OpMode) {
                 }
                 else -> {}
             }
+
+            if (targetAngleDistal == _targetAngleDistal && targetAngleProximal == _targetAngleProximal) syncMode = SyncMode.NONE
 
         }
 

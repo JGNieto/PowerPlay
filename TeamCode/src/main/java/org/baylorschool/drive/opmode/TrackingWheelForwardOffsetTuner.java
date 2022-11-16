@@ -11,8 +11,8 @@ import com.qualcomm.robotcore.util.MovingStatistics;
 import com.qualcomm.robotcore.util.RobotLog;
 
 import org.baylorschool.drive.Mecanum;
-import org.firstinspires.ftc.robotcore.internal.system.Misc;
 import org.baylorschool.drive.StandardTrackingWheelLocalizer;
+import org.firstinspires.ftc.robotcore.internal.system.Misc;
 
 /**
  * This routine determines the effective forward offset for the lateral tracking wheel.

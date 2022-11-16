@@ -10,10 +10,10 @@ import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorEx
 import com.qualcomm.robotcore.hardware.DcMotorSimple
 import org.baylorschool.betabot.SlidePowerConfig.powerDown
-import org.baylorschool.betabot.SlidePowerConfig.powerUp
-import org.baylorschool.betabot.SlidePowerConfig.powerGotoUp
 import org.baylorschool.betabot.SlidePowerConfig.powerGotoDown
+import org.baylorschool.betabot.SlidePowerConfig.powerGotoUp
 import org.baylorschool.betabot.SlidePowerConfig.powerStay
+import org.baylorschool.betabot.SlidePowerConfig.powerUp
 
 @Config
 object SlidePowerConfig {

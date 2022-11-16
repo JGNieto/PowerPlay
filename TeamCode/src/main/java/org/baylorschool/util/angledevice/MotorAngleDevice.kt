@@ -13,6 +13,7 @@ import org.baylorschool.util.angledevice.MotorAngleDeviceConfig.armKa
 import org.baylorschool.util.angledevice.MotorAngleDeviceConfig.armKcos
 import org.baylorschool.util.angledevice.MotorAngleDeviceConfig.armKs
 import org.baylorschool.util.angledevice.MotorAngleDeviceConfig.armKv
+import org.baylorschool.util.angledevice.MotorAngleDeviceConfig.finalCoefficient
 import org.baylorschool.util.angledevice.MotorAngleDeviceConfig.kd
 import org.baylorschool.util.angledevice.MotorAngleDeviceConfig.ki
 import org.baylorschool.util.angledevice.MotorAngleDeviceConfig.kp
@@ -22,15 +23,17 @@ import kotlin.math.PI
 
 @Config
 object MotorAngleDeviceConfig {
-    @JvmField var armKs = 0.2
+    @JvmField var armKs = 0.0
     @JvmField var armKcos = 0.2
-    @JvmField var armKv = 0.4
+    @JvmField var armKv = 0.6
     @JvmField var armKa = 0.0
 
-    @JvmField var kp = 0.6
+    @JvmField var kp = 1.2
     @JvmField var ki = 0.6
-    @JvmField var kd = 0.1
+    @JvmField var kd = 0.0
     @JvmField var tolerance = 0.2
+
+    @JvmField var finalCoefficient = 1.0
 }
 
 class MotorAngleDevice(val motor: DcMotorEx, ticksPerTurn: Double): AngleDevice {
@@ -46,6 +49,7 @@ class MotorAngleDevice(val motor: DcMotorEx, ticksPerTurn: Double): AngleDevice 
     private var encoderValueAtZero = 0.0
     private var needToStop = false
     private var motorStatus = MotorStatus.STOP
+    var debug = false
 
     private var previousPosition: Double? = null
 
@@ -91,7 +95,7 @@ class MotorAngleDevice(val motor: DcMotorEx, ticksPerTurn: Double): AngleDevice 
             packet.put("Calculation Feedforward", calculationFeedforward)
 
             previousPosition = position
-            motor.power = clip(calculationFeedforward)
+            motor.power = clip(calculationFeedforward * finalCoefficient)
         }
         packet.put("Encoder value", motor.currentPosition)
         packet.put("Power", motor.power)
@@ -100,7 +104,8 @@ class MotorAngleDevice(val motor: DcMotorEx, ticksPerTurn: Double): AngleDevice 
         packet.put("Zero value", encoderValueAtZero)
         packet.put("Target angle", targetAngle)
         packet.put("Velocity", motor.getVelocity(AngleUnit.RADIANS))
-        FtcDashboard.getInstance().sendTelemetryPacket(packet)
+        if (debug)
+            FtcDashboard.getInstance().sendTelemetryPacket(packet)
     }
 
     override fun reset(angle: Double) {

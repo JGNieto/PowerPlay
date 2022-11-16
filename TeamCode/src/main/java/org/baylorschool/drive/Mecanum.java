@@ -1,5 +1,17 @@
 package org.baylorschool.drive;
 
+import static org.baylorschool.drive.DriveConstants.MAX_ACCEL;
+import static org.baylorschool.drive.DriveConstants.MAX_ANG_ACCEL;
+import static org.baylorschool.drive.DriveConstants.MAX_ANG_VEL;
+import static org.baylorschool.drive.DriveConstants.MAX_VEL;
+import static org.baylorschool.drive.DriveConstants.MOTOR_VELO_PID;
+import static org.baylorschool.drive.DriveConstants.RUN_USING_ENCODER;
+import static org.baylorschool.drive.DriveConstants.TRACK_WIDTH;
+import static org.baylorschool.drive.DriveConstants.encoderTicksToInches;
+import static org.baylorschool.drive.DriveConstants.kA;
+import static org.baylorschool.drive.DriveConstants.kStatic;
+import static org.baylorschool.drive.DriveConstants.kV;
+
 import androidx.annotation.NonNull;
 
 import com.acmerobotics.dashboard.config.Config;
@@ -21,33 +33,20 @@ import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
+import org.baylorschool.Globals;
 import org.baylorschool.trajectorysequence.TrajectorySequence;
 import org.baylorschool.trajectorysequence.TrajectorySequenceBuilder;
 import org.baylorschool.trajectorysequence.TrajectorySequenceRunner;
 import org.baylorschool.util.LynxModuleUtil;
-import org.baylorschool.vision.AprilTagBinaryPipeline;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import static org.baylorschool.drive.DriveConstants.MAX_ACCEL;
-import static org.baylorschool.drive.DriveConstants.MAX_ANG_ACCEL;
-import static org.baylorschool.drive.DriveConstants.MAX_ANG_VEL;
-import static org.baylorschool.drive.DriveConstants.MAX_VEL;
-import static org.baylorschool.drive.DriveConstants.MOTOR_VELO_PID;
-import static org.baylorschool.drive.DriveConstants.RUN_USING_ENCODER;
-import static org.baylorschool.drive.DriveConstants.TRACK_WIDTH;
-import static org.baylorschool.drive.DriveConstants.encoderTicksToInches;
-import static org.baylorschool.drive.DriveConstants.kA;
-import static org.baylorschool.drive.DriveConstants.kStatic;
-import static org.baylorschool.drive.DriveConstants.kV;
 
 /*
  * Simple mecanum drive hardware implementation for REV hardware.
@@ -118,10 +117,10 @@ public class Mecanum extends MecanumDrive {
         // For example, if +Y in this diagram faces downwards, you would use AxisDirection.NEG_Y.
         // BNO055IMUUtil.remapZAxis(imu, AxisDirection.NEG_Y);
 
-        leftFront = hardwareMap.get(DcMotorEx.class, "leftFront");
-        leftRear = hardwareMap.get(DcMotorEx.class, "leftRear");
-        rightRear = hardwareMap.get(DcMotorEx.class, "rightRear");
-        rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");
+        leftFront = hardwareMap.get(DcMotorEx.class, Globals.leftFront);
+        leftRear = hardwareMap.get(DcMotorEx.class, Globals.leftRear);
+        rightRear = hardwareMap.get(DcMotorEx.class, Globals.rightRear);
+        rightFront = hardwareMap.get(DcMotorEx.class, Globals.rightFront);
 
         motors = Arrays.asList(leftFront, leftRear, rightRear, rightFront);
 
@@ -141,9 +140,11 @@ public class Mecanum extends MecanumDrive {
             setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, MOTOR_VELO_PID);
         }
 
-        // TODO: reverse any motors using DcMotor.setDirection()
-        leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
-        rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
+        leftFront.setDirection(Globals.INSTANCE.getLeftFrontDirection());
+        leftRear.setDirection(Globals.INSTANCE.getLeftRearDirection());
+
+        rightFront.setDirection(Globals.INSTANCE.getRightFrontDirection());
+        rightRear.setDirection(Globals.INSTANCE.getRightRearDirection());
 
         // TODO: if desired, use setLocalizer() to change the localization method
         // for instance, setLocalizer(new ThreeTrackingWheelLocalizer(...));

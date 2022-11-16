@@ -1,11 +1,8 @@
 package org.baylorschool.util.angledevice
 
 import com.acmerobotics.dashboard.FtcDashboard
-import com.acmerobotics.dashboard.telemetry.TelemetryPacket
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
-import com.qualcomm.robotcore.hardware.DcMotor
-import com.qualcomm.robotcore.hardware.DcMotorEx
-import com.qualcomm.robotcore.hardware.DcMotorSimple
+import com.qualcomm.robotcore.hardware.*
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit
 import kotlin.math.PI
 import kotlin.math.abs
@@ -62,7 +59,7 @@ class BasicMotorAngleDevice(val motor: DcMotorEx, ticksPerTurn: Double, val conf
         val baseValue = 0
         val higherValue = baseValue + angle
         val lowerValue = baseValue + angle - 2 * PI
-
+        
         return when (direction) {
             TargetAngleDirection.COUNTERCLOCKWISE -> {
                 higherValue
@@ -135,6 +132,13 @@ class BasicMotorAngleDevice(val motor: DcMotorEx, ticksPerTurn: Double, val conf
             telemetry.addData("Time since last encoder update (ms)", lastEncoderUpdate - currentTime)
             telemetry.update()
         }
+    }
+
+    fun setPIDFCoefficients(coefficients: PIDFCoefficients) {
+        motor.setPIDFCoefficients(DcMotor.RunMode.RUN_TO_POSITION, coefficients)
+    }
+    fun setPIDCoefficients(coefficients: PIDCoefficients) {
+        motor.setPIDCoefficients(DcMotor.RunMode.RUN_TO_POSITION, coefficients)
     }
 
     override fun reset(angle: Double) {

@@ -1,5 +1,9 @@
 package org.baylorschool.drive.opmode;
 
+import static org.baylorschool.drive.DriveConstants.MAX_RPM;
+import static org.baylorschool.drive.DriveConstants.RUN_USING_ENCODER;
+import static org.baylorschool.drive.DriveConstants.rpmToVelocity;
+
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
@@ -10,16 +14,12 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.RobotLog;
 
 import org.baylorschool.drive.Mecanum;
-import org.firstinspires.ftc.robotcore.internal.system.Misc;
 import org.baylorschool.util.LoggingUtil;
 import org.baylorschool.util.RegressionUtil;
+import org.firstinspires.ftc.robotcore.internal.system.Misc;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static org.baylorschool.drive.DriveConstants.MAX_RPM;
-import static org.baylorschool.drive.DriveConstants.RUN_USING_ENCODER;
-import static org.baylorschool.drive.DriveConstants.rpmToVelocity;
 
 /*
  * Op mode for computing kV, kStatic, and kA from various drive routines. For the curious, here's an
