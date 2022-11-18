@@ -10,7 +10,7 @@ class HorizontalSlideTest: LinearOpMode() {
     override fun runOpMode() {
         val linkageServo = hardwareMap.get(Servo::class.java, "linkageServo")
 
-        linkageServo.scaleRange(0.0, 1.0)
+        linkageServo.scaleRange(0.0, 0.2)
 
         telemetry.addData("Status", "Ready to start")
         telemetry.update()
@@ -19,14 +19,6 @@ class HorizontalSlideTest: LinearOpMode() {
 
         while (opModeIsActive() && !isStopRequested) {
 
-            if (gamepad1.dpad_right)
-                linkageServo.position += 0.0001
-            else if (gamepad1.dpad_left)
-                linkageServo.position -= 0.0001
-
-
-            telemetry.addData("Servo Position", linkageServo.position)
-            telemetry.update()
         }
 
     }

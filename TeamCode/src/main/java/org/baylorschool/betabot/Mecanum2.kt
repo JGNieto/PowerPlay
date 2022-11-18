@@ -1,12 +1,15 @@
 package org.baylorschool.betabot
 
 import com.outoftheboxrobotics.photoncore.PhotonCore
+import com.qualcomm.hardware.bosch.BNO055IMU
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import com.qualcomm.robotcore.hardware.DcMotorSimple
+import kotlin.math.cos
+import kotlin.math.sin
 
 @TeleOp
-class Mecanum : LinearOpMode() {
+class Mecanum2 : LinearOpMode() {
     @Throws(InterruptedException::class)
     override fun runOpMode() {
 
