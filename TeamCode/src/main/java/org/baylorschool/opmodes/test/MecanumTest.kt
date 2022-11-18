@@ -9,7 +9,7 @@ import org.baylorschool.drive.Mecanum
 
 @TeleOp(name = "Mecanum Test", group = "test")
 class MecanumTest: LinearOpMode() {
-    private val POWER_MULTIPLIER = 0.4
+    private val POWER_MULTIPLIER = 0.1
 
     override fun runOpMode() {
         PhotonCore.enable()
@@ -20,10 +20,15 @@ class MecanumTest: LinearOpMode() {
 
         while (opModeIsActive()) {
             mecanum.setDrivePower(Pose2d(
-                gamepad1.left_stick_x.toDouble() * POWER_MULTIPLIER,
                 -gamepad1.left_stick_y.toDouble() * POWER_MULTIPLIER,
-                gamepad1.right_stick_x.toDouble() * POWER_MULTIPLIER,
+                -gamepad1.left_stick_x.toDouble() * POWER_MULTIPLIER,
+                -gamepad1.right_stick_x.toDouble() * POWER_MULTIPLIER,
             ))
+
+            telemetry.addData("X", gamepad1.left_stick_x)
+            telemetry.addData("Y", gamepad1.left_stick_y)
+            telemetry.addData("Rot", gamepad1.right_stick_x)
+            telemetry.update()
         }
     }
 }

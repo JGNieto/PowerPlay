@@ -95,7 +95,7 @@ class MotorAngleDevice(val motor: DcMotorEx, ticksPerTurn: Double): AngleDevice 
             packet.put("Calculation Feedforward", calculationFeedforward)
 
             previousPosition = position
-            motor.power = clip(calculationFeedforward * finalCoefficient)
+            motor.power = clamp(calculationFeedforward * finalCoefficient)
         }
         packet.put("Encoder value", motor.currentPosition)
         packet.put("Power", motor.power)
@@ -140,7 +140,7 @@ class MotorAngleDevice(val motor: DcMotorEx, ticksPerTurn: Double): AngleDevice 
         needToStop = true
     }
 
-    private fun clip(x: Double): Double {
+    private fun clamp(x: Double): Double {
         if (x > 1.0) return 1.0
         if (x < -1.0) return -1.0
         return x

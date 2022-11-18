@@ -2,13 +2,14 @@ package org.baylorschool.util
 
 import com.acmerobotics.dashboard.FtcDashboard
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
+import com.qualcomm.robotcore.hardware.Servo
 import org.baylorschool.Globals
 import org.baylorschool.util.angledevice.*
 import kotlin.math.*
 
 // Bar lengths
 const val a = 15.118 // in
-const val b = 7.559 // in
+const val b = 11.51 // in
 
 object LiftPresets {
     val hell = LiftPosition(17.0, -5.0)
@@ -38,12 +39,14 @@ class MichaelLift(opMode: OpMode) {
     val motorA1: AngleDevice // Proximal 1
     val motorA2: AngleDevice // Proximal 2
     val motorB: AngleDevice  // Distal
+    val claw: AngleDevice // Claw
 
     init {
         motorA1 = BasicMotorAngleDevice(opMode, Globals.liftProximalA, Globals.liftProximalATicksPerRotation, Globals.liftProximalConfig, Globals.liftProximalADirection)
         //motorA1 = MotorAngleDevice(opMode, Globals.liftProximalA, Globals.liftProximalATicksPerRotation, Globals.liftProximalADirection)
         motorA2 = EmptyAngleDevice()
         motorB = BasicMotorAngleDevice(opMode, Globals.liftDistal, Globals.liftDistalTicksPerRotation, Globals.liftDistalConfig, Globals.liftDistalDirection)
+        claw = AngleServo(opMode.hardwareMap.get(Servo::class.java, Globals.clawPitch))
     }
 
     var x = 0.0
@@ -51,6 +54,8 @@ class MichaelLift(opMode: OpMode) {
 
     var y = 0.0
         private set
+
+    var movingClaw = true
 
     private var needToUpdate = false
 
@@ -70,6 +75,7 @@ class MichaelLift(opMode: OpMode) {
 
     fun iteration() {
         val telemetry = FtcDashboard.getInstance().telemetry
+        if (movingClaw) updateServo()
         if (!needToUpdate && syncMode == SyncMode.NONE) return
 
         var targetAngleProximal = clamp(angleProximal, 0.0, PI)
@@ -101,7 +107,6 @@ class MichaelLift(opMode: OpMode) {
             }
 
             if (targetAngleDistal == _targetAngleDistal && targetAngleProximal == _targetAngleProximal) syncMode = SyncMode.NONE
-
         }
 
         motorA1.moveToAngle(targetAngleProximal, TargetAngleDirection.ABSOLUTE)
@@ -117,6 +122,11 @@ class MichaelLift(opMode: OpMode) {
         telemetry.addData("Sync mode", syncMode)
         telemetry.update()
         needToUpdate = false
+    }
+
+    private fun updateServo() {
+        val angle = motorB.getPosition()
+        claw.moveToAngle(- angle)
     }
 
     fun moveToMode(mode: LiftMode, pos: LiftPosition? = null) {

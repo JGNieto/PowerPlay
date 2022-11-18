@@ -6,17 +6,25 @@ import org.baylorschool.Globals
 
 class Claw(opMode: OpMode) {
 
-    private val servo = opMode.hardwareMap.get(Servo::class.java, Globals.claw)
+    private val grabServo = opMode.hardwareMap.get(Servo::class.java, Globals.clawGrab)
 
     fun open() {
-        servo.position = 1.0
+        grabServo.position = Globals.clawGrabOpen
     }
 
     fun close() {
-        servo.position = -1.0
+        grabServo.position = Globals.clawGrabClosed
     }
 
-    fun goTo(position: Double) {
-        servo.position = position
+    /**
+     * Go to relative openness position.
+     * @param position 0.0 is open and 1.0 is closed
+     */
+    fun grabPosition(position: Double) {
+        grabServo.position = map(0.0, 1.0, Globals.clawGrabOpen, Globals.clawGrabClosed, position)
+    }
+
+    private fun map(inputMin: Double, inputMax: Double, outputMin: Double, outputMax: Double, value: Double): Double {
+        return (value-inputMin)/(inputMax-inputMin) * (outputMax-outputMin) + outputMin
     }
 }
