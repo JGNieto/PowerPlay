@@ -17,16 +17,20 @@ class HorizontalSlideTest: LinearOpMode() {
 
         waitForStart()
 
+        var previousTime = System.currentTimeMillis()
         while (opModeIsActive() && !isStopRequested) {
+            val currentTime = System.currentTimeMillis()
             if (gamepad1.dpad_right)
-                linkageServo.position += 0.0001
+                linkageServo.position += 0.001
             else if (gamepad1.dpad_left)
-                linkageServo.position -= 0.0001
+                linkageServo.position -= 0.001
 
 
             telemetry.addData("Servo Position", linkageServo.position)
             telemetry.update()
-        }
 
+            previousTime = currentTime
+        }
+        linkageServo.position = 0.0
     }
 }

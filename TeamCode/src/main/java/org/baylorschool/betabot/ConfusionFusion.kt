@@ -15,7 +15,7 @@ import org.baylorschool.betabot.SlidePowerConfig.powerUp
 import kotlin.math.abs
 import kotlin.math.max
 
-@TeleOp (name = "Slide Test",group = "Beta Bot")
+@TeleOp (name = "ConfusionFusion",group = "Beta Bot")
 class ConfusionFusion: LinearOpMode() {
     // Slide Movement
     enum class Movement {
@@ -34,6 +34,7 @@ class ConfusionFusion: LinearOpMode() {
 
     @Throws(InterruptedException::class)
     override fun runOpMode() {
+
         val linkageServo = hardwareMap.get(Servo::class.java, "linkageServo")
         val slideMotor1 = hardwareMap.get(DcMotorEx::class.java, "rLift")
         val slideMotor2 = hardwareMap.get(DcMotorEx::class.java, "lLift")
@@ -70,8 +71,7 @@ class ConfusionFusion: LinearOpMode() {
 
         var previousTime = System.currentTimeMillis()
 
-        @Throws(InterruptedException::class)
-        fun runOpMode() {
+        while (opModeIsActive()) {
             val currentTime = System.currentTimeMillis()
 
             slidePosition = slideMotor1.currentPosition
@@ -155,7 +155,6 @@ class ConfusionFusion: LinearOpMode() {
                 linkageServo.position += 0.005
             else if (gamepad1.dpad_left)
                 linkageServo.position -= 0.005
-
 
             previousTime = currentTime
 
