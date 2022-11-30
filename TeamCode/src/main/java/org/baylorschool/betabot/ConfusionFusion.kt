@@ -1,6 +1,5 @@
 package org.baylorschool.betabot
 
-import com.acmerobotics.dashboard.config.Config
 import com.outoftheboxrobotics.photoncore.PhotonCore
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
@@ -9,13 +8,16 @@ import com.qualcomm.robotcore.hardware.DcMotorEx
 import com.qualcomm.robotcore.hardware.DcMotorSimple
 import com.qualcomm.robotcore.hardware.Servo
 import org.baylorschool.betabot.SlidePowerConfig.powerDown
-import org.baylorschool.betabot.SlidePowerConfig.powerUp
-import org.baylorschool.betabot.SlidePowerConfig.powerGotoUp
 import org.baylorschool.betabot.SlidePowerConfig.powerGotoDown
+import org.baylorschool.betabot.SlidePowerConfig.powerGotoUp
 import org.baylorschool.betabot.SlidePowerConfig.powerStay
+import org.baylorschool.betabot.SlidePowerConfig.powerUp
+import kotlin.math.abs
+import kotlin.math.max
 
 @TeleOp (name = "Slide Test",group = "Beta Bot")
 class ConfusionFusion: LinearOpMode() {
+    // Slide Movement
     enum class Movement {
         UP,
         DOWN,
@@ -23,11 +25,13 @@ class ConfusionFusion: LinearOpMode() {
         STAY,
     }
 
+    //Slide Encoder Values
     enum class GoalPosition(var slidePositions: Int) {
         HIGH(1000),
         MED(560),
         LOW(0);
     }
+
     @Throws(InterruptedException::class)
     override fun runOpMode() {
         val linkageServo = hardwareMap.get(Servo::class.java, "linkageServo")
@@ -40,13 +44,12 @@ class ConfusionFusion: LinearOpMode() {
         val minEncoder = 0
         val maxEncoder = 1060
         var targetPosition = 0
-        var avgPosition: Int
+        var slidePosition: Int
         var movement = Movement.STAY
         PhotonCore.enable()
 
-
         var slowmodeToggle = false
-        var slowmode = 1.0
+        var slowmode = 0.4
 
         linkageServo.scaleRange(0.0, 0.2)
         slideMotor1.direction = DcMotorSimple.Direction.FORWARD
@@ -67,16 +70,17 @@ class ConfusionFusion: LinearOpMode() {
 
         var previousTime = System.currentTimeMillis()
 
-        while (opModeIsActive()){
+        @Throws(InterruptedException::class)
+        fun runOpMode() {
             val currentTime = System.currentTimeMillis()
 
-            avgPosition = ((slideMotor1.currentPosition.toDouble() + slideMotor2.currentPosition.toDouble()) / 2).toInt()
+            slidePosition = slideMotor1.currentPosition
 
             val y = -gamepad1.left_stick_y.toDouble()
             val x = gamepad1.left_stick_x * 1.1
             val rx = -gamepad1.right_stick_x.toDouble()
 
-            val denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1.0)
+            val denominator = max(abs(y) + abs(x) + abs(rx), 1.0)
             val frontLeftPower = (((y + x + rx) / denominator) * slowmode)
             val backLeftPower = (((y - x + rx) / denominator) * slowmode)
             val frontRightPower =(((y - x - rx) / denominator) * slowmode)
@@ -87,17 +91,17 @@ class ConfusionFusion: LinearOpMode() {
             else if (gamepad1.a)
                 slowmodeToggle = true
 
-            if (slowmodeToggle)
-                slowmode = 0.4
+            slowmode = if (slowmodeToggle)
+                0.4
             else
-                slowmode = 1.0
+                1.0
 
             flMotor.power = frontLeftPower
             blMotor.power = backLeftPower
             frMotor.power = frontRightPower
             brMotor.power = backRightPower
 
-            if (gamepad1.dpad_up && avgPosition <= maxEncoder) {
+            if (gamepad1.dpad_up && slidePosition <= maxEncoder) {
                 if (movement != Movement.UP) {
                     slideMotor1.mode = DcMotor.RunMode.RUN_USING_ENCODER
                     slideMotor2.mode = DcMotor.RunMode.RUN_USING_ENCODER
@@ -105,7 +109,7 @@ class ConfusionFusion: LinearOpMode() {
                     slideMotor2.power = powerUp
                     movement = Movement.UP
                 }
-            } else if (gamepad1.dpad_down && avgPosition >= minEncoder) {
+            } else if (gamepad1.dpad_down && slidePosition >= minEncoder) {
                 if (movement != Movement.DOWN) {
                     slideMotor1.mode = DcMotor.RunMode.RUN_USING_ENCODER
                     slideMotor2.mode = DcMotor.RunMode.RUN_USING_ENCODER
@@ -135,13 +139,13 @@ class ConfusionFusion: LinearOpMode() {
                                 movement = Movement.STAY
                             }
                         } else {
-                            val power: Double = if (targetPosition > avgPosition) powerGotoUp else powerGotoDown
+                            val power: Double = if (targetPosition > slidePosition) powerGotoUp else powerGotoDown
                             moveMotorGoto(slideMotor1, power, targetPosition)
                             moveMotorGoto(slideMotor2, power, targetPosition)
                         }
                     }
                     else -> {
-                        targetPosition = hardStops(avgPosition, minEncoder, maxEncoder)
+                        targetPosition = hardStops(slidePosition, minEncoder, maxEncoder)
                         movement = Movement.STAY
                     }
                 }
@@ -156,7 +160,7 @@ class ConfusionFusion: LinearOpMode() {
             previousTime = currentTime
 
             telemetry.addData("Servo Position", linkageServo.position)
-            telemetry.addData("Slide Motors Position", avgPosition)
+            telemetry.addData("Slide Motors Position", slidePosition)
             telemetry.update()
         }
     }

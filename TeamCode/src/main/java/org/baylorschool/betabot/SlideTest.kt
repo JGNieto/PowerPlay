@@ -16,16 +16,18 @@ import org.baylorschool.betabot.SlidePowerConfig.powerStay
 import org.baylorschool.betabot.SlidePowerConfig.powerUp
 
 @Config
+// Motor Power for slide tasks
 object SlidePowerConfig {
     @JvmField var powerUp = 0.8
     @JvmField var powerDown = -0.6
     @JvmField var powerGotoUp = 1.0
     @JvmField var powerGotoDown = -0.6
-    @JvmField var powerStay = 0.05
+    @JvmField var powerStay = 0.1
 }
 
 @TeleOp (name = "Slide Test",group = "Beta Bot")
 class SlideTest: LinearOpMode() {
+    // Slide Movement
     enum class Movement {
         UP,
         DOWN,
@@ -33,6 +35,7 @@ class SlideTest: LinearOpMode() {
         STAY,
     }
 
+    //Slide Encoder Values
     enum class GoalPosition(var slidePositions: Int) {
         HIGH(1000),
         MED(560),
@@ -46,7 +49,7 @@ class SlideTest: LinearOpMode() {
         val minEncoder = 0
         val maxEncoder = 1060
         var targetPosition = 0
-        var avgPosition: Int
+        var slidePosition: Int
         var movement = Movement.STAY
         PhotonCore.enable()
 
@@ -69,9 +72,9 @@ class SlideTest: LinearOpMode() {
         while (opModeIsActive()){
             val currentTime = System.currentTimeMillis()
 
-            avgPosition = ((slideMotor1.currentPosition.toDouble() + slideMotor2.currentPosition.toDouble()) / 2).toInt()
+            slidePosition = slideMotor1.currentPosition
 
-            if (gamepad1.dpad_up && avgPosition <= maxEncoder) {
+            if (gamepad1.dpad_up && slidePosition <= maxEncoder) {
                 if (movement != Movement.UP) {
                     slideMotor1.mode = DcMotor.RunMode.RUN_USING_ENCODER
                     slideMotor2.mode = DcMotor.RunMode.RUN_USING_ENCODER
@@ -79,7 +82,7 @@ class SlideTest: LinearOpMode() {
                     slideMotor2.power = powerUp
                     movement = Movement.UP
                 }
-            } else if (gamepad1.dpad_down && avgPosition >= minEncoder) {
+            } else if (gamepad1.dpad_down && slidePosition >= minEncoder) {
                 if (movement != Movement.DOWN) {
                     slideMotor1.mode = DcMotor.RunMode.RUN_USING_ENCODER
                     slideMotor2.mode = DcMotor.RunMode.RUN_USING_ENCODER
@@ -109,13 +112,13 @@ class SlideTest: LinearOpMode() {
                                 movement = Movement.STAY
                             }
                         } else {
-                            val power: Double = if (targetPosition > avgPosition) powerGotoUp else powerGotoDown
+                            val power: Double = if (targetPosition > slidePosition) powerGotoUp else powerGotoDown
                             moveMotorGoto(slideMotor1, power, targetPosition)
                             moveMotorGoto(slideMotor2, power, targetPosition)
                         }
                     }
                     else -> {
-                        targetPosition = hardStops(avgPosition, minEncoder, maxEncoder)
+                        targetPosition = hardStops(slidePosition, minEncoder, maxEncoder)
                         movement = Movement.STAY
                     }
                 }
@@ -123,7 +126,7 @@ class SlideTest: LinearOpMode() {
 
             previousTime = currentTime
 
-            telemetry.addData("Slide Motors Position", avgPosition)
+            telemetry.addData("Slide Motors Position", slidePosition)
             telemetry.update()
         }
     }

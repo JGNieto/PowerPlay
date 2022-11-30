@@ -18,7 +18,14 @@ class HorizontalSlideTest: LinearOpMode() {
         waitForStart()
 
         while (opModeIsActive() && !isStopRequested) {
+            if (gamepad1.dpad_right)
+                linkageServo.position += 0.0001
+            else if (gamepad1.dpad_left)
+                linkageServo.position -= 0.0001
 
+
+            telemetry.addData("Servo Position", linkageServo.position)
+            telemetry.update()
         }
 
     }
