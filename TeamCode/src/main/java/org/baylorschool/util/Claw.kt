@@ -21,7 +21,7 @@ class Claw(opMode: OpMode) {
      * @param position 0.0 is open and 1.0 is closed
      */
     fun grabPosition(position: Double) {
-        grabServo.position = map(0.0, 1.0, Globals.clawGrabOpen, Globals.clawGrabClosed, position)
+        grabServo.position = map(1.0, 0.0, Globals.clawGrabOpen, Globals.clawGrabClosed, position)
     }
 
     private fun map(inputMin: Double, inputMax: Double, outputMin: Double, outputMax: Double, value: Double): Double {

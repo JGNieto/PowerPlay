@@ -57,6 +57,8 @@ class MichaelLift(opMode: OpMode) {
 
     var movingClaw = true
 
+    var debug = false
+
     private var needToUpdate = false
 
     private var syncInitA = 0.0
@@ -101,7 +103,7 @@ class MichaelLift(opMode: OpMode) {
                 }
                 SyncMode.PROXIMAL_FIRST -> {
                     telemetry.addData("Progress A", progressA)
-                    targetAngleDistal = scaleMovement(0.4, 0.8, syncInitB, targetAngleDistal, progressA)
+                    targetAngleDistal = scaleMovement(0.9, 0.8, syncInitB, targetAngleDistal, progressA)
                 }
                 else -> {}
             }
@@ -120,7 +122,7 @@ class MichaelLift(opMode: OpMode) {
         telemetry.addData("Actual proximal", motorA1.getPosition())
         telemetry.addData("Actual distal", motorB.getPosition())
         telemetry.addData("Sync mode", syncMode)
-        telemetry.update()
+        if (debug) telemetry.update()
         needToUpdate = false
     }
 

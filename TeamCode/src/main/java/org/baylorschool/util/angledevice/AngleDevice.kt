@@ -11,6 +11,8 @@ interface AngleDevice {
      */
     fun moveToAngle(angle: Double, direction: TargetAngleDirection = TargetAngleDirection.CLOSEST)
 
+    var debug: Boolean
+
     /**
      * This function is to be used when the angle of the device is known, so that relative calculations
      * can be based on this information. Some devices may be unable to use this information and ignore it.

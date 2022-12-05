@@ -49,7 +49,7 @@ class MotorAngleDevice(val motor: DcMotorEx, ticksPerTurn: Double): AngleDevice 
     private var encoderValueAtZero = 0.0
     private var needToStop = false
     private var motorStatus = MotorStatus.STOP
-    var debug = false
+    override var debug = false
 
     private var previousPosition: Double? = null
 

@@ -28,7 +28,8 @@ class BasicMotorAngleDevice(val motor: DcMotorEx, ticksPerTurn: Double, val conf
     private var encoderValueAtZero = 0.0
     private var needToStop = false
     private var motorStatus = MotorStatus.STOP
-    var debug = false
+
+    override var debug = false
 
     private var wasBusy = false
     private var newPosition = false
@@ -120,7 +121,6 @@ class BasicMotorAngleDevice(val motor: DcMotorEx, ticksPerTurn: Double, val conf
         wasBusy = motor.isBusy
 
         if (debug) {
-            telemetry.addData("Encoder value", motor.currentPosition)
             telemetry.addData("Power", motor.power)
             telemetry.addData("Position", getPosition())
             telemetry.addData("Status", motorStatus)

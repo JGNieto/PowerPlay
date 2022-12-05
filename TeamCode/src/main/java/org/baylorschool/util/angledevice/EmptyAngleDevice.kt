@@ -4,6 +4,8 @@ class EmptyAngleDevice: AngleDevice {
     override fun moveToAngle(angle: Double, direction: TargetAngleDirection) {
     }
 
+    override var debug: Boolean = false
+
     override fun reset(angle: Double) {
     }
 

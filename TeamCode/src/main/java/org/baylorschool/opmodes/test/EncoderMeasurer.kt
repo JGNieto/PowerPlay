@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorEx
+import com.qualcomm.robotcore.hardware.DcMotorSimple
 import org.baylorschool.Globals
 
 @TeleOp(name = "Encoder Measurer", group = "test")
@@ -15,6 +16,9 @@ class EncoderMeasurer: LinearOpMode() {
 
         liftProximalA.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.FLOAT
         liftDistal.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.FLOAT
+
+        liftProximalA.direction = DcMotorSimple.Direction.FORWARD
+        liftDistal.direction = DcMotorSimple.Direction.FORWARD
 
         liftProximalA.power = 0.0
         liftDistal.power = 0.0

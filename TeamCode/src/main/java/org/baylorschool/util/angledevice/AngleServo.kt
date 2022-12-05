@@ -9,6 +9,8 @@ class AngleServo(private val servo: Servo): AngleDevice {
         servo.position = clamp(map(Globals.clawPitchMin, Globals.clawPitchMax, -1.0, 1.0, angle), -1.0, 1.0)
     }
 
+    override var debug: Boolean = false
+
     private fun map(inputMin: Double, inputMax: Double, outputMin: Double, outputMax: Double, value: Double): Double {
         return (value-inputMin)/(inputMax-inputMin) * (outputMax-outputMin) + outputMin
     }
