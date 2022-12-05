@@ -4,16 +4,17 @@ package org.baylorschool.betabot
 
 import com.acmerobotics.dashboard.config.Config
 import com.outoftheboxrobotics.photoncore.PhotonCore
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorEx
 import com.qualcomm.robotcore.hardware.DcMotorSimple
+import com.qualcomm.robotcore.hardware.Gamepad
+import com.qualcomm.robotcore.hardware.HardwareMap
 import org.baylorschool.betabot.SlidePowerConfig.powerDown
 import org.baylorschool.betabot.SlidePowerConfig.powerGotoDown
 import org.baylorschool.betabot.SlidePowerConfig.powerGotoUp
 import org.baylorschool.betabot.SlidePowerConfig.powerStay
 import org.baylorschool.betabot.SlidePowerConfig.powerUp
+import org.firstinspires.ftc.robotcore.external.Telemetry
 
 @Config
 // Motor Power for slide tasks
@@ -25,9 +26,16 @@ object SlidePowerConfig {
     @JvmField var powerStay = 0.1
 }
 
-@TeleOp (name = "Slide Test",group = "Beta Bot")
-class SlideTest: LinearOpMode() {
-    // Slide Movement
+
+class Slides(hardwareMap: HardwareMap) {
+    private val slideMotor1: DcMotorEx
+    private val slideMotor2: DcMotorEx
+    private val minEncoder = 0
+    private val maxEncoder = 1060
+    private var targetPosition = 0
+    private var slidePosition: Int = 0
+    private var movement = Movement.STAY
+
     enum class Movement {
         UP,
         DOWN,
@@ -35,43 +43,31 @@ class SlideTest: LinearOpMode() {
         STAY,
     }
 
-    //Slide Encoder Values
     enum class GoalPosition(var slidePositions: Int) {
         HIGH(1000),
         MED(560),
         LOW(0);
     }
-    @Throws(InterruptedException::class)
-    override fun runOpMode() {
 
-        val slideMotor1 = hardwareMap.get(DcMotorEx::class.java, "rLift")
-        val slideMotor2 = hardwareMap.get(DcMotorEx::class.java, "lLift")
-        val minEncoder = 0
-        val maxEncoder = 1060
-        var targetPosition = 0
-        var slidePosition: Int
-        var movement = Movement.STAY
-        PhotonCore.enable()
 
-        slideMotor1.direction = DcMotorSimple.Direction.FORWARD
-        slideMotor2.direction = DcMotorSimple.Direction.FORWARD
+   init {
+       slideMotor1 = hardwareMap.get(DcMotorEx::class.java, "rLift")
+       slideMotor2 = hardwareMap.get(DcMotorEx::class.java, "lLift")
+       slideMotor1.direction = DcMotorSimple.Direction.FORWARD
+       slideMotor2.direction = DcMotorSimple.Direction.FORWARD
+       slideMotor1.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
+       slideMotor2.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
+       slideMotor1.targetPosition = targetPosition
+       slideMotor2.targetPosition = targetPosition
+       PhotonCore.enable()
+   }
 
-        slideMotor1.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
-        slideMotor2.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
-
-        telemetry.addData("Status", "Ready to start")
+    fun telemetry(telemetry: Telemetry){
+        telemetry.addData("Slide Motors Position", slidePosition)
         telemetry.update()
+    }
 
-        waitForStart()
-
-        slideMotor1.targetPosition = targetPosition
-        slideMotor2.targetPosition = targetPosition
-
-        var previousTime = System.currentTimeMillis()
-
-        while (opModeIsActive()){
-            val currentTime = System.currentTimeMillis()
-
+   fun slideLoop(gamepad1: Gamepad) {
             slidePosition = slideMotor1.currentPosition
 
             if (gamepad1.dpad_up && slidePosition <= maxEncoder) {
@@ -123,11 +119,6 @@ class SlideTest: LinearOpMode() {
                     }
                 }
             }
-
-            previousTime = currentTime
-
-            telemetry.addData("Slide Motors Position", slidePosition)
-            telemetry.update()
         }
     }
 
@@ -150,4 +141,3 @@ class SlideTest: LinearOpMode() {
         motor.power = power
         motor.mode = DcMotor.RunMode.RUN_TO_POSITION
     }
-}
