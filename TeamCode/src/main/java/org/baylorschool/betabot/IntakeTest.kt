@@ -1,11 +1,12 @@
 package org.baylorschool.betabot
 
+import android.annotation.SuppressLint
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import com.qualcomm.robotcore.hardware.AnalogInput
 import com.qualcomm.robotcore.hardware.CRServo
 
-@TeleOp(name = "Intake Test", group = "Beta Bot")
+@TeleOp(name = "Intake Test", group = "Test")
 class IntakeTest: LinearOpMode() {
 
     override fun runOpMode() {

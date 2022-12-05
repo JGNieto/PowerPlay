@@ -10,7 +10,7 @@ import kotlin.math.cos
 import kotlin.math.max
 import kotlin.math.sin
 
-@TeleOp
+@TeleOp (name = "Field Centric Mec",group = "Test")
 class FieldCentricMec : LinearOpMode() {
     @Throws(InterruptedException::class)
     override fun runOpMode() {
@@ -33,7 +33,7 @@ class FieldCentricMec : LinearOpMode() {
 
         waitForStart()
 
-        fun mecanum() {
+        while (opModeIsActive()) {
             val y = -gamepad1.left_stick_y.toDouble() // Remember, this is reversed!
             val x = gamepad1.left_stick_x * 1.1 // Counteract imperfect strafing
             val rx = gamepad1.right_stick_x.toDouble()

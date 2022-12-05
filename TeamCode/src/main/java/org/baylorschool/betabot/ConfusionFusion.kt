@@ -15,7 +15,7 @@ import org.baylorschool.betabot.SlidePowerConfig.powerUp
 import kotlin.math.abs
 import kotlin.math.max
 
-@TeleOp (name = "ConfusionFusion",group = "Beta Bot")
+@TeleOp (name = "Confusion",group = "Test")
 class ConfusionFusion: LinearOpMode() {
     // Slide Movement
     enum class Movement {
