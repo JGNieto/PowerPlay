@@ -1,5 +1,6 @@
 package org.baylorschool.opmodes.test
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import com.qualcomm.robotcore.hardware.DcMotor
@@ -7,6 +8,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx
 import com.qualcomm.robotcore.hardware.DcMotorSimple
 import org.baylorschool.Globals
 
+@Disabled
 @TeleOp(name = "Encoder Measurer", group = "test")
 class EncoderMeasurer: LinearOpMode() {
 

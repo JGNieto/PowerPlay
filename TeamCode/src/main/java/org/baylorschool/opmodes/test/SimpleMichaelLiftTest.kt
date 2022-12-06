@@ -1,5 +1,6 @@
 package org.baylorschool.opmodes.test
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import org.baylorschool.Globals
@@ -7,6 +8,7 @@ import org.baylorschool.util.angledevice.BasicMotorAngleDevice
 import org.baylorschool.util.angledevice.TargetAngleDirection
 import kotlin.math.PI
 
+@Disabled
 @TeleOp(name = "Simple Michael Lift Test", group = "test")
 class SimpleMichaelLiftTest: LinearOpMode() {
 

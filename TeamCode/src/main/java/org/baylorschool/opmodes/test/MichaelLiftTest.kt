@@ -49,7 +49,7 @@ class MichaelLiftTest: LinearOpMode() {
         val proximalCoefficients = PIDCoefficients(p, i, d)
         // (michaelLift.motorA1 as BasicMotorAngleDevice).setPIDCoefficients(proximalCoefficients)
 
-         michaelLift.motorA1.debug = true
+        michaelLift.motorA1.debug = true
         // michaelLift.motorA2.debug = true
         // michaelLift.motorB.debug = true
         // michaelLift.debug = true

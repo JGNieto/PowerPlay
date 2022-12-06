@@ -15,8 +15,8 @@ object Globals {
 
     // Claw
     const val clawGrab = "clawGrab"
-    const val clawGrabOpen = 1.0
-    const val clawGrabClosed = -1.0
+    const val clawGrabOpen = 0.85
+    const val clawGrabClosed = - clawGrabOpen
 
     const val clawPitch = "clawPitch"
     const val clawPitchMax = PI / 4.0 // True angle of claw when position is -1.0
@@ -34,14 +34,14 @@ object Globals {
     const val liftProximalA = "lfProxA"
     const val liftProximalATicksPerRotation = 1349.4
     val liftProximalADirection = DcMotorSimple.Direction.REVERSE
-    val liftProximalConfig = BasicMotorAngleConfig(0.0, 0.3, 0.8)
+    val liftProximalConfig = BasicMotorAngleConfig(0.0, 0.3, 0.8, 0.45)
 
     const val liftProximalB = "lfProxB"
 
     const val liftDistal = "lfDist"
     const val liftDistalTicksPerRotation = 537.7
     val liftDistalDirection = DcMotorSimple.Direction.REVERSE
-    val liftDistalConfig = BasicMotorAngleConfig(0.0, 0.3, 0.3)
+    val liftDistalConfig = BasicMotorAngleConfig(0.0, 0.3, 0.3, 0.15)
 
     // const val liftProximalStartAngle = - 317 * 2 * PI / 3373.5
     // const val liftDistalStartAngle = - 321 * 2 * PI / 537.7

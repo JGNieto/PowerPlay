@@ -1,11 +1,13 @@
 package org.baylorschool.opmodes.test
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorEx
 import org.baylorschool.Globals
 
+@Disabled
 @TeleOp(name = "Single Motor Test", group = "test")
 class SingleMotorTest: LinearOpMode() {
     override fun runOpMode() {

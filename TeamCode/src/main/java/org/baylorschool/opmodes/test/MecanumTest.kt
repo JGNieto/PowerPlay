@@ -2,11 +2,12 @@ package org.baylorschool.opmodes.test
 
 import com.acmerobotics.roadrunner.geometry.Pose2d
 import com.outoftheboxrobotics.photoncore.PhotonCore
+import com.qualcomm.robotcore.eventloop.opmode.Disabled
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import org.baylorschool.drive.Mecanum
 
-
+@Disabled
 @TeleOp(name = "Mecanum Test", group = "test")
 class MecanumTest: LinearOpMode() {
     private val POWER_MULTIPLIER = 0.1

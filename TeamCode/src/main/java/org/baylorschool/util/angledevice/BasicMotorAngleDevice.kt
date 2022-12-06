@@ -7,7 +7,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit
 import kotlin.math.PI
 import kotlin.math.abs
 
-data class BasicMotorAngleConfig(val stopSpeed: Double, val maintainingSpeed: Double, val movingSpeed: Double)
+data class BasicMotorAngleConfig(val stopSpeed: Double, val maintainingSpeed: Double, val movingSpeed: Double, val teleOpSpeed: Double)
 
 class BasicMotorAngleDevice(val motor: DcMotorEx, ticksPerTurn: Double, val config: BasicMotorAngleConfig):
     AngleDevice {
@@ -27,7 +27,7 @@ class BasicMotorAngleDevice(val motor: DcMotorEx, ticksPerTurn: Double, val conf
     private var direction = TargetAngleDirection.ABSOLUTE
     private var encoderValueAtZero = 0.0
     private var needToStop = false
-    private var motorStatus = MotorStatus.STOP
+    var motorStatus = MotorStatus.STOP
 
     override var debug = false
 
@@ -39,10 +39,12 @@ class BasicMotorAngleDevice(val motor: DcMotorEx, ticksPerTurn: Double, val conf
     private var lastEncoderUpdate = 0L
     private var previousEncoderValue = 0
 
+    var teleOpPower = config.teleOpSpeed
+
     private lateinit var thread: Thread
 
-    private enum class MotorStatus {
-        STOP, MOVING, MAINTAINING
+    enum class MotorStatus {
+        STOP, MOVING, MAINTAINING, TELEOP_POWER
     }
 
     override fun moveToAngle(angle: Double, direction: TargetAngleDirection) {
@@ -85,6 +87,12 @@ class BasicMotorAngleDevice(val motor: DcMotorEx, ticksPerTurn: Double, val conf
             MotorStatus.STOP -> {
                 motor.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
                 motor.power = config.stopSpeed
+                lastEncoderUpdate = currentTime
+                previousEncoderValue = motor.currentPosition
+            }
+            MotorStatus.TELEOP_POWER -> {
+                motor.mode = DcMotor.RunMode.RUN_USING_ENCODER
+                motor.power = teleOpPower
                 lastEncoderUpdate = currentTime
                 previousEncoderValue = motor.currentPosition
             }
@@ -165,6 +173,11 @@ class BasicMotorAngleDevice(val motor: DcMotorEx, ticksPerTurn: Double, val conf
         motorStatus = MotorStatus.STOP
         motor.mode = DcMotor.RunMode.RUN_USING_ENCODER
         motor.power = 0.0
+    }
+
+    fun moveTeleOp(power: Double) {
+        teleOpPower = power
+        motorStatus = MotorStatus.TELEOP_POWER
     }
 
     override fun cleanup() {
