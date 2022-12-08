@@ -3,10 +3,10 @@ package org.baylorschool.util.angledevice
 import com.qualcomm.robotcore.hardware.Servo
 import org.baylorschool.Globals
 
-class AngleServo(private val servo: Servo): AngleDevice {
+class AngleServo(private val servo: Servo, private val minAngle: Double, private val maxAngle: Double): AngleDevice {
 
     override fun moveToAngle(angle: Double, direction: TargetAngleDirection) {
-        servo.position = clamp(map(Globals.clawPitchMin, Globals.clawPitchMax, -1.0, 1.0, angle), -1.0, 1.0)
+        servo.position = clamp(map(minAngle, maxAngle, -1.0, 1.0, angle), -1.0, 1.0)
     }
 
     override var debug: Boolean = false

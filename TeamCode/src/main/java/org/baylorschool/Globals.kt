@@ -2,6 +2,7 @@ package org.baylorschool
 
 import com.acmerobotics.dashboard.config.Config
 import com.qualcomm.robotcore.hardware.DcMotorSimple
+import com.qualcomm.robotcore.hardware.Servo
 import org.baylorschool.util.angledevice.BasicMotorAngleConfig
 import kotlin.math.PI
 
@@ -21,6 +22,7 @@ object Globals {
     const val clawPitch = "clawPitch"
     const val clawPitchMax = PI / 4.0 // True angle of claw when position is -1.0
     const val clawPitchMin = 5.0 * PI / 4.0 // True angle of claw when position is 1.0
+    val clawPitchDirection = Servo.Direction.REVERSE
 
     const val clawYaw = "clawYaw"
 
