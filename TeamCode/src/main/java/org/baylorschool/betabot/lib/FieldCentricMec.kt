@@ -1,4 +1,4 @@
-package org.baylorschool.betabot
+package org.baylorschool.betabot.lib
 
 import com.outoftheboxrobotics.photoncore.PhotonCore
 import com.qualcomm.hardware.bosch.BNO055IMU
@@ -53,10 +53,10 @@ class FieldCentricMec : LinearOpMode() {
             else if (gamepad1.a)
                 slowmodeToggle = true
 
-            if (slowmodeToggle)
-                slowmode = 0.4
+            slowmode = if (slowmodeToggle)
+                0.4
             else
-                slowmode = 1.0
+                1.0
 
             flMotor.power = frontLeftPower
             blMotor.power = backLeftPower

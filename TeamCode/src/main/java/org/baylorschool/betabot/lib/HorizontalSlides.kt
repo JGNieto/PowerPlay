@@ -1,4 +1,4 @@
-package org.baylorschool.betabot
+package org.baylorschool.betabot.lib
 
 import com.qualcomm.robotcore.hardware.Gamepad
 import com.qualcomm.robotcore.hardware.HardwareMap
