@@ -46,7 +46,7 @@ class MichaelLift(opMode: OpMode) {
         //motorA1 = MotorAngleDevice(opMode, Globals.liftProximalA, Globals.liftProximalATicksPerRotation, Globals.liftProximalADirection)
         motorA2 = EmptyAngleDevice()
         motorB = BasicMotorAngleDevice(opMode, Globals.liftDistal, Globals.liftDistalTicksPerRotation, Globals.liftDistalConfig, Globals.liftDistalDirection)
-        claw = AngleServo(opMode.hardwareMap.get(Servo::class.java, Globals.clawPitch))
+        claw = AngleServo(opMode.hardwareMap.get(Servo::class.java, Globals.clawPitch), Globals.clawPitchMin, Globals.clawPitchMax)
     }
 
     var x = 0.0
