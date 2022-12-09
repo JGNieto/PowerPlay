@@ -1,6 +1,6 @@
 @file:Suppress("KotlinConstantConditions")
 
-package org.baylorschool.betabot
+package org.baylorschool.betabot.lib
 
 import com.acmerobotics.dashboard.config.Config
 import com.outoftheboxrobotics.photoncore.PhotonCore
@@ -9,11 +9,11 @@ import com.qualcomm.robotcore.hardware.DcMotorEx
 import com.qualcomm.robotcore.hardware.DcMotorSimple
 import com.qualcomm.robotcore.hardware.Gamepad
 import com.qualcomm.robotcore.hardware.HardwareMap
-import org.baylorschool.betabot.SlidePowerConfig.powerDown
-import org.baylorschool.betabot.SlidePowerConfig.powerGotoDown
-import org.baylorschool.betabot.SlidePowerConfig.powerGotoUp
-import org.baylorschool.betabot.SlidePowerConfig.powerStay
-import org.baylorschool.betabot.SlidePowerConfig.powerUp
+import org.baylorschool.betabot.lib.SlidePowerConfig.powerDown
+import org.baylorschool.betabot.lib.SlidePowerConfig.powerGotoDown
+import org.baylorschool.betabot.lib.SlidePowerConfig.powerGotoUp
+import org.baylorschool.betabot.lib.SlidePowerConfig.powerStay
+import org.baylorschool.betabot.lib.SlidePowerConfig.powerUp
 import org.firstinspires.ftc.robotcore.external.Telemetry
 
 @Config
@@ -35,12 +35,10 @@ class Slides(hardwareMap: HardwareMap) {
     private var targetPosition = 0
     private var slidePosition: Int = 0
     private var movement = Movement.STAY
+    val pos get() = slideMotor1.currentPosition
 
     enum class Movement {
-        UP,
-        DOWN,
-        GOTO,
-        STAY,
+        UP, DOWN, GOTO, STAY,
     }
 
     enum class GoalPosition(var slidePositions: Int) {
@@ -48,7 +46,6 @@ class Slides(hardwareMap: HardwareMap) {
         MED(560),
         LOW(0);
     }
-
 
    init {
        slideMotor1 = hardwareMap.get(DcMotorEx::class.java, "rLift")
@@ -67,7 +64,7 @@ class Slides(hardwareMap: HardwareMap) {
         telemetry.update()
     }
 
-   fun slideLoop(gamepad1: Gamepad) {
+    fun slideLoop(gamepad1: Gamepad) {
             slidePosition = slideMotor1.currentPosition
 
             if (gamepad1.dpad_up && slidePosition <= maxEncoder) {
