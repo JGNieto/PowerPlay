@@ -17,22 +17,18 @@ class V4BIntake(hardwareMap: HardwareMap) {
 
     private val v4bServo: Servo
     private val intakingServo: CRServo
-    private val voltage: AnalogInput
     private var hasFreight = false
     private var v4bState: V4BState = V4BState.V4B_START
     private var intakeState: IntakeState = IntakeState.HOLD
     private var v4bTimer = ElapsedTime()
     private var intakeTimer = ElapsedTime()
-    private var slideTimer = ElapsedTime()
     private val slides = Slides(hardwareMap)
     private val depositDelay = 3
 
     init {
         v4bTimer.reset()
         intakeTimer.reset()
-        slideTimer.reset()
         intakingServo = hardwareMap.get(CRServo::class.java, "intakeServo")
-        voltage = hardwareMap.get(AnalogInput::class.java, "voltage")
         v4bServo = hardwareMap.get(Servo::class.java, "v4bServo")
         v4bServo.scaleRange(0.0, 1.0)
     }
@@ -40,22 +36,21 @@ class V4BIntake(hardwareMap: HardwareMap) {
     fun telemetry(telemetry: Telemetry) {
         telemetry.addData("Servo Position", v4bServo.position)
         telemetry.addData("Intake Power", intakingServo.power)
-        telemetry.addData("Intake Voltage", voltage.voltage)
         telemetry.update()
     }
 
     fun intakeLoop(gamepad1: Gamepad) {
         intakingServo.power = intakeState.intakePower
         when(v4bState) {
-            V4BState.V4B_START -> when {
-                gamepad1.a -> {
-                    Slides.GoalPosition.LOW.slidePositions
+            V4BState.V4B_START -> {
+                Slides.GoalPosition.LOW.slidePositions
+                intakeState = IntakeState.HOLD
+                if (gamepad1.a && slides.pos <= 15)  {
                     v4bServo.position = 0.8
                     V4BState.V4B_INTAKE
                     intakeState = IntakeState.INTAKE
                 }
-                gamepad1.y -> {
-                    intakeState = IntakeState.HOLD
+                if (gamepad1.y) {
                     V4BState.V4B_DEPOSIT
                 }
             }
@@ -92,12 +87,5 @@ class V4BIntake(hardwareMap: HardwareMap) {
         if (gamepad1.a && v4bState != V4BState.V4B_START) {
             v4bState = V4BState.V4B_START
         }
-
-        /*
-        if (voltage.voltage > 10) {
-            hasFreight = true
-            gamepad1.rumble(1000)
-        }
-         */
     }
 }
