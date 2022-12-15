@@ -72,15 +72,8 @@ class JacksonDLTestBetter: LinearOpMode() {
                 clawPitch.position = -1.0
             }
 
-            /*
-            telemetry.addData("Left stick Y", gamepad2.left_stick_y)
-            telemetry.addData("Proximal power", motorA1.power)
-            telemetry.addData("Right stick Y", gamepad2.right_stick_y)
-            telemetry.addData("Distal power", motorB.teleOpPower)
-             */
-
             mecanum.telemetry(telemetry)
-
+            telemetry.addData("Distal position", motorB.getPosition())
             telemetry.update()
         }
 

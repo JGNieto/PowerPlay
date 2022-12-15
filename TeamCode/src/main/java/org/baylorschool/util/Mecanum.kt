@@ -42,7 +42,6 @@ class Mecanum(hardwareMap: HardwareMap) {
         telemetry.addData("Front Right Power", frMotor.power)
         telemetry.addData("Back Left Power", blMotor.power)
         telemetry.addData("Back Right Power", brMotor.power)
-        telemetry.update()
     }
 
     fun mecanumLoop(gamepad: Gamepad){
