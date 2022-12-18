@@ -41,10 +41,10 @@ class Mecanum(hardwareMap: HardwareMap) {
         telemetry.addData("Front Right Power", frMotor.power)
         telemetry.addData("Back Left Power", blMotor.power)
         telemetry.addData("Back Right Power", brMotor.power)
-        telemetry.update()
     }
 
     fun mecanumLoop(gamepad1: Gamepad){
+        /*
         val i: Orientation = i.angularOrientation
         val xOffset = i.secondAngle
         val yOffset = i.thirdAngle
@@ -55,8 +55,10 @@ class Mecanum(hardwareMap: HardwareMap) {
         if (abs(adjX) > tipTolerance)
             x = adjX
 
-        val gp1y = -gamepad1.left_stick_y.toDouble() - Range.clip(y* 2.0, -tipAuthority, tipAuthority)
-        val gp1x = (gamepad1.left_stick_x * 1.1) +  Range.clip(x* 2.0, -tipAuthority, tipAuthority)
+         */
+
+        val gp1y = gamepad1.left_stick_y.toDouble()// - Range.clip(y* 2.0, -tipAuthority, tipAuthority)
+        val gp1x = -(gamepad1.left_stick_x * 1.1) // +  Range.clip(x* 2.0, -tipAuthority, tipAuthority)
         val rx = -gamepad1.right_stick_x.toDouble()
 
         val denominator = max(abs(gp1y) + abs(gp1x) + abs(rx), 1.0)

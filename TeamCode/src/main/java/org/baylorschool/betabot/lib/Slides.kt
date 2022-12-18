@@ -19,13 +19,12 @@ import org.firstinspires.ftc.robotcore.external.Telemetry
 @Config
 // Motor Power for slide tasks
 object SlidePowerConfig {
-    @JvmField var powerUp = 0.8
-    @JvmField var powerDown = -0.6
-    @JvmField var powerGotoUp = 1.0
-    @JvmField var powerGotoDown = -0.6
-    @JvmField var powerStay = 0.1
+    @JvmField var powerUp = 0.5
+    @JvmField var powerDown = -0.3
+    @JvmField var powerGotoUp = 0.9
+    @JvmField var powerGotoDown = -0.2
+    @JvmField var powerStay = 0.09
 }
-
 
 class Slides(hardwareMap: HardwareMap) {
     private val slideMotor1: DcMotorEx
@@ -61,13 +60,12 @@ class Slides(hardwareMap: HardwareMap) {
 
     fun telemetry(telemetry: Telemetry){
         telemetry.addData("Slide Motors Position", slidePosition)
-        telemetry.update()
     }
 
-    fun slideLoop(gamepad1: Gamepad) {
+    fun slideLoop(gamepad2: Gamepad) {
             slidePosition = slideMotor1.currentPosition
 
-            if (gamepad1.dpad_up && slidePosition <= maxEncoder) {
+            if (gamepad2.dpad_up && slidePosition <= maxEncoder) {
                 if (movement != Movement.UP) {
                     slideMotor1.mode = DcMotor.RunMode.RUN_USING_ENCODER
                     slideMotor2.mode = DcMotor.RunMode.RUN_USING_ENCODER
@@ -75,7 +73,7 @@ class Slides(hardwareMap: HardwareMap) {
                     slideMotor2.power = powerUp
                     movement = Movement.UP
                 }
-            } else if (gamepad1.dpad_down && slidePosition >= minEncoder) {
+            } else if (gamepad2.dpad_down && slidePosition >= minEncoder) {
                 if (movement != Movement.DOWN) {
                     slideMotor1.mode = DcMotor.RunMode.RUN_USING_ENCODER
                     slideMotor2.mode = DcMotor.RunMode.RUN_USING_ENCODER
@@ -83,13 +81,13 @@ class Slides(hardwareMap: HardwareMap) {
                     slideMotor2.power = powerDown
                     movement = Movement.DOWN
                 }
-            } else if (gamepad1.left_trigger > .1) {
+            } else if (gamepad2.left_trigger > .1) {
                 movement = Movement.GOTO
                 targetPosition = GoalPosition.MED.slidePositions
-            } else if (gamepad1.left_stick_button) {
+            } else if (gamepad2.left_stick_button) {
                 movement = Movement.GOTO
                 targetPosition = GoalPosition.HIGH.slidePositions
-            } else if (gamepad1.left_bumper) {
+            } else if (gamepad2.left_bumper) {
                 movement = Movement.GOTO
                 targetPosition = GoalPosition.LOW.slidePositions
             } else {

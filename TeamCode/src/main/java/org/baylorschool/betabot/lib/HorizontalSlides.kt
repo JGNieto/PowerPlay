@@ -10,18 +10,17 @@ class HorizontalSlides(hardwareMap: HardwareMap) {
 
     init {
         linkageServo = hardwareMap.get(Servo::class.java, "linkageServo")
-        linkageServo.scaleRange(0.0, 0.2)
+        linkageServo.scaleRange(0.0, 0.45)
     }
 
     fun telemetry(telemetry: Telemetry) {
         telemetry.addData("Servo Position", linkageServo.position)
-        telemetry.update()
     }
 
     fun horizSlideLoop(gamepad1: Gamepad) {
-        if (gamepad1.dpad_right)
-            linkageServo.position += 0.001
-        else if (gamepad1.dpad_left)
-            linkageServo.position -= 0.001
+        if (gamepad1.dpad_left)
+            linkageServo.position += 0.0025
+        else if (gamepad1.dpad_right)
+            linkageServo.position -= 0.0025
     }
 }
