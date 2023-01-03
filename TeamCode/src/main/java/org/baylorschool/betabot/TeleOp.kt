@@ -1,5 +1,7 @@
 package org.baylorschool.betabot
 
+import com.acmerobotics.dashboard.FtcDashboard
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import org.baylorschool.betabot.lib.*
@@ -8,6 +10,8 @@ import org.baylorschool.betabot.lib.*
 class TeleOp: LinearOpMode() {
     @Throws(InterruptedException::class)
     override fun runOpMode() {
+        val telemetryMultiple = MultipleTelemetry(telemetry, FtcDashboard.getInstance().telemetry)
+
         val mecanum = Mecanum(hardwareMap)
        // val lSlides = HorizontalSlides(hardwareMap)
         val slides = Slides(hardwareMap)
@@ -21,10 +25,10 @@ class TeleOp: LinearOpMode() {
               //  lSlides.horizSlideLoop(gamepad1)
                 v4bIntake.intakeLoop(gamepad2)
 
-                mecanum.telemetry(telemetry)
-                slides.telemetry(telemetry)
-                v4bIntake.telemetry(telemetry)
-                telemetry.update()
+                mecanum.telemetry(telemetryMultiple)
+                slides.telemetry(telemetryMultiple)
+                v4bIntake.telemetry(telemetryMultiple)
+                telemetryMultiple.update()
         }
     }
 }
