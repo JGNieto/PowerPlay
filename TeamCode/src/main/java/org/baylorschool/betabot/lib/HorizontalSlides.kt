@@ -18,9 +18,13 @@ class HorizontalSlides(hardwareMap: HardwareMap) {
     }
 
     fun horizSlideLoop(gamepad1: Gamepad) {
+        linkageServo.position = 0.0
+        /*
         if (gamepad1.dpad_left)
             linkageServo.position += 0.0025
         else if (gamepad1.dpad_right)
             linkageServo.position -= 0.0025
+
+         */
     }
 }
