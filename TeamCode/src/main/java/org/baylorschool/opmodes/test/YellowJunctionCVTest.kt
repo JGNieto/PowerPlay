@@ -5,15 +5,16 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import org.baylorschool.vision.AprilTagBinaryPipeline
 import org.baylorschool.vision.CameraUtil
+import org.baylorschool.vision.YellowJunctionPipeline
 
-@TeleOp(name = "April Tag Test", group = "test")
-class AprilTagTest: LinearOpMode() {
+@TeleOp(name = "Junction CV Test", group = "test")
+class YellowJunctionCVTest: LinearOpMode() {
 
     override fun runOpMode() {
         telemetry.addData("Status", "Getting ready. Please wait...")
         telemetry.update()
 
-        val pipeline = AprilTagBinaryPipeline()
+        val pipeline = YellowJunctionPipeline()
         val webcam = CameraUtil.openWebcam(this, pipeline, true)
 
         telemetry.addData("Status", "Ready to start")
@@ -23,21 +24,6 @@ class AprilTagTest: LinearOpMode() {
         var iterations = 0L
 
         while (opModeIsActive()) {
-            iterations++
-
-            var visibleTagsStr = ""
-            var isFirst = true
-
-            for (tag in pipeline.visibleAprilTags) {
-                if (isFirst) {
-                    visibleTagsStr += "${tag.id}"
-                    isFirst = false
-                } else {
-                    visibleTagsStr += ", ${tag.id}"
-                }
-            }
-
-            telemetry.addData("Visible tags", visibleTagsStr)
             telemetry.addData("Status", "Started!")
             telemetry.addData("Iterations", iterations)
             telemetry.update()
