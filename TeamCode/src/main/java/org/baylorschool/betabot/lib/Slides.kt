@@ -14,10 +14,10 @@ import org.firstinspires.ftc.robotcore.external.Telemetry
 
 @Config
 object SlidePIDConfig {
-    @JvmField var p: Double = 0.001
+    @JvmField var p: Double = 0.115
     @JvmField var kg: Double = 0.11
 
-    @JvmField var targetPos: Double = 150.0
+    @JvmField var targetPos: Double = 0.0
 }
 
 class Slides(hardwareMap: HardwareMap) {
@@ -58,6 +58,12 @@ class Slides(hardwareMap: HardwareMap) {
         updatePID()
         slideMotor1.power = slidePower
         slideMotor2.power = slidePower
+
+        if (gamepad.dpad_up) {
+            targetPos += 1.0
+        } else if (gamepad.dpad_down) {
+            targetPos -= 1.0
+        }
     }
 }
 
