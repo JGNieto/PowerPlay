@@ -14,7 +14,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry
 
 @Config
 object SlidePIDConfig {
-    @JvmField var p: Double = 0.115
+    @JvmField var p: Double = 0.015
     @JvmField var kg: Double = 0.11
 
     @JvmField var targetPos: Double = 0.0
@@ -32,15 +32,13 @@ class Slides(hardwareMap: HardwareMap) {
     init {
         slideMotor1 = hardwareMap.get(DcMotorEx::class.java, "rLift")
         slideMotor2 = hardwareMap.get(DcMotorEx::class.java, "lLift")
-        slidePosition = slideMotor1.currentPosition.toDouble()
+        slidePosition = slideMotor1.currentPosition.toDouble() - offset
         offset = slidePosition.toInt()
         slideMotor1.direction = DcMotorSimple.Direction.FORWARD
         slideMotor2.direction = DcMotorSimple.Direction.FORWARD
         slideMotor1.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
         slideMotor2.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
-        targetPos = slidePosition - offset
         PhotonCore.enable()
-
     }
 
     fun telemetry(telemetry: Telemetry) {
@@ -48,7 +46,7 @@ class Slides(hardwareMap: HardwareMap) {
         telemetry.addData("Target Position", targetPos)
     }
 
-    fun updatePID() {
+    private fun updatePID() {
         slidePosition = slideMotor1.currentPosition.toDouble()
         controller1.targetPosition = targetPos
         slidePower = controller1.update(slidePosition) + kg
@@ -60,9 +58,13 @@ class Slides(hardwareMap: HardwareMap) {
         slideMotor2.power = slidePower
 
         if (gamepad.dpad_up) {
-            targetPos += 1.0
+            targetPos += 10.0
         } else if (gamepad.dpad_down) {
-            targetPos -= 1.0
+            targetPos -= 10.0
+        } else if (gamepad.left_stick_button) {
+            targetPos = 1050.0
+        } else if (gamepad.dpad_left) {
+            targetPos = 0.0
         }
     }
 }
