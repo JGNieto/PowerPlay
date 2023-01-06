@@ -34,7 +34,7 @@ object Globals {
 
     // Lift
     const val liftProximalA = "lfProxA"
-    const val liftProximalATicksPerRotation = 1349.4
+    const val liftProximalATicksPerRotation = 1349.4 * 2
     val liftProximalADirection = DcMotorSimple.Direction.REVERSE
     val liftProximalConfig = BasicMotorAngleConfig(0.0, 0.3, 0.8, 0.45)
 

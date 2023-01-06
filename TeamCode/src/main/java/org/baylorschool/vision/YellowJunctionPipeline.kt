@@ -6,17 +6,17 @@ import org.openftc.easyopencv.OpenCvPipeline
 import java.util.*
 
 class YellowJunctionPipeline: OpenCvPipeline() {
-    val hierarchyOutput = Mat()
-    val hsvMat = Mat()
-    val thresholdMat = Mat()
+    private val hierarchyOutput = Mat()
+    private val hsvMat = Mat()
+    private val thresholdMat = Mat()
 
     override fun processFrame(input: Mat): Mat {
         val contours: List<MatOfPoint> = LinkedList()
 
         Imgproc.cvtColor(input, hsvMat, Imgproc.COLOR_BGR2HSV)
-        Core.inRange(hsvMat, Scalar(20.0, 100.0, 100.0), Scalar(30.0, 255.0, 255.0), thresholdMat)
+        Core.inRange(hsvMat, Scalar(35.0, 100.0, 100.0), Scalar(65.0, 255.0, 255.0), thresholdMat)
 
-        Imgproc.findContours(input, contours, hierarchyOutput, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE)
+        Imgproc.findContours(thresholdMat, contours, hierarchyOutput, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE)
 
         val boundRects = arrayOfNulls<Rect>(contours.size)
         contours.forEachIndexed{i, contour -> boundRects[i] = Imgproc.boundingRect(contour) }
@@ -27,6 +27,6 @@ class YellowJunctionPipeline: OpenCvPipeline() {
             Imgproc.rectangle(input, rect, Scalar(0.0, 255.0, 0.0), 4)
         }
 
-        return input
+        return thresholdMat
     }
 }
