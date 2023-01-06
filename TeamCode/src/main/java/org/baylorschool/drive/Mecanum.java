@@ -33,6 +33,7 @@ import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
@@ -117,10 +118,10 @@ public class Mecanum extends MecanumDrive {
         // For example, if +Y in this diagram faces downwards, you would use AxisDirection.NEG_Y.
         // BNO055IMUUtil.remapZAxis(imu, AxisDirection.NEG_Y);
 
-        leftFront = hardwareMap.get(DcMotorEx.class, Globals.leftFront);
-        leftRear = hardwareMap.get(DcMotorEx.class, Globals.leftRear);
-        rightRear = hardwareMap.get(DcMotorEx.class, Globals.rightRear);
-        rightFront = hardwareMap.get(DcMotorEx.class, Globals.rightFront);
+        leftFront = hardwareMap.get(DcMotorEx.class, "flMotor");
+        leftRear = hardwareMap.get(DcMotorEx.class, "blMotor");
+        rightRear = hardwareMap.get(DcMotorEx.class, "brMotor");
+        rightFront = hardwareMap.get(DcMotorEx.class, "frMotor");
 
         motors = Arrays.asList(leftFront, leftRear, rightRear, rightFront);
 
@@ -140,11 +141,8 @@ public class Mecanum extends MecanumDrive {
             setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, MOTOR_VELO_PID);
         }
 
-        leftFront.setDirection(Globals.INSTANCE.getLeftFrontDirection());
-        leftRear.setDirection(Globals.INSTANCE.getLeftRearDirection());
-
-        rightFront.setDirection(Globals.INSTANCE.getRightFrontDirection());
-        rightRear.setDirection(Globals.INSTANCE.getRightRearDirection());
+        leftRear.setDirection(DcMotorSimple.Direction.REVERSE);
+        leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
 
         // TODO: if desired, use setLocalizer() to change the localization method
         // for instance, setLocalizer(new ThreeTrackingWheelLocalizer(...));
@@ -308,7 +306,7 @@ public class Mecanum extends MecanumDrive {
         // expected). This bug does NOT affect orientation.
         //
         // See https://github.com/FIRST-Tech-Challenge/FtcRobotController/issues/251 for details.
-        return (double) -imu.getAngularVelocity().xRotationRate;
+        return (double) -imu.getAngularVelocity().zRotationRate;
     }
 
     public static TrajectoryVelocityConstraint getVelocityConstraint(double maxVel, double maxAngularVel, double trackWidth) {

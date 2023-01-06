@@ -14,24 +14,20 @@ import org.firstinspires.ftc.robotcore.external.Telemetry
 
 @Config
 object SlidePIDConfig {
-    @JvmField var p: Double = 0.001
+    @JvmField var p: Double = 0.115
     @JvmField var kg: Double = 0.11
 
-    @JvmField var targetPos: Double = 150.0
+    @JvmField var targetPos: Double = 0.0
 }
 
 class Slides(hardwareMap: HardwareMap) {
     private val slideMotor1: DcMotorEx
     private val slideMotor2: DcMotorEx
-    // private val slideFF: ElevatorFeedforward
     private var slidePosition: Double = 0.0
     private val pControl = PIDCoefficients(p)
     private val controller1 = PIDFController(pControl)
     private var slidePower = 0.0
     private var offset = 0
-    /* private val minEncoder: Int = 0
-    private val maxEncoder: Int = 1100
-     */
 
     init {
         slideMotor1 = hardwareMap.get(DcMotorEx::class.java, "rLift")
@@ -52,13 +48,22 @@ class Slides(hardwareMap: HardwareMap) {
         telemetry.addData("Target Position", targetPos)
     }
 
-    fun slideLoop(gamepad: Gamepad) {
+    fun updatePID() {
         slidePosition = slideMotor1.currentPosition.toDouble()
         controller1.targetPosition = targetPos
-        slidePower = controller1.update(slidePosition) * kg
+        slidePower = controller1.update(slidePosition) + kg
+    }
 
+    fun slideLoop(gamepad: Gamepad) {
+        updatePID()
         slideMotor1.power = slidePower
         slideMotor2.power = slidePower
+
+        if (gamepad.dpad_up) {
+            targetPos += 1.0
+        } else if (gamepad.dpad_down) {
+            targetPos -= 1.0
+        }
     }
 }
 
