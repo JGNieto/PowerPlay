@@ -46,8 +46,16 @@ class Mecanum(hardwareMap: HardwareMap) {
 
     fun mecanumLoop(gamepad: Gamepad){
         val gpy = -gamepad.left_stick_y.toDouble()
-        val gpx = (gamepad.left_stick_x * 1.1).coerceIn(-1.0, 1.0)
+        val gpx = (-gamepad.left_stick_x * 1.1).coerceIn(-1.0, 1.0)
         val rx = -gamepad.right_stick_x.toDouble()
+
+        if (gamepad.a) {
+            slowmodeToggle = true
+        }
+
+        if (gamepad.y) {
+            slowmodeToggle = false
+        }
 
         slowmode = if (slowmodeToggle)
             0.4

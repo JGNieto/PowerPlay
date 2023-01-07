@@ -38,17 +38,23 @@ class JacksonDLTestBetter: LinearOpMode() {
 
         clawPitch.direction = Globals.clawPitchDirection
 
+        var clawPosition = 1.0
+
         var wasMoving = false
-        var heavenClaw = false
+
+        var previousTime = System.currentTimeMillis()
 
         // RIGHT = DISTAL
         // LEFT = PROXIMAL
         while (opModeIsActive()) {
-            motorA1.power = - gamepad2.left_stick_y * Globals.liftProximalConfig.teleOpSpeed
+            val currentTime = System.currentTimeMillis()
+            val dt = (currentTime - previousTime) / 1000.0
+
+            motorA1.power = gamepad2.left_stick_y * Globals.liftProximalConfig.teleOpSpeed
 
             if (gamepad2.right_stick_y != 0f) {
                 wasMoving = true
-                motorB.moveTeleOp(- gamepad2.right_stick_y * Globals.liftDistalConfig.teleOpSpeed)
+                motorB.moveTeleOp(gamepad2.right_stick_y * Globals.liftDistalConfig.teleOpSpeed)
             } else if (wasMoving) {
                 motorB.moveToAngle(motorB.getPosition())
                 motorB.motorStatus = BasicMotorAngleDevice.MotorStatus.MAINTAINING
@@ -59,22 +65,32 @@ class JacksonDLTestBetter: LinearOpMode() {
 
             mecanum.mecanumLoop(gamepad1)
 
-            if (gamepad2.right_bumper) {
-                heavenClaw = true
+            if (gamepad2.x) {
+                clawPosition = 1.0
             }
-            if (gamepad2.left_bumper) {
-                heavenClaw = false
+            if (gamepad2.b) {
+                clawPosition = 0.0
             }
 
-            if (heavenClaw && clawPitch.position != 1.0) {
-                clawPitch.position = 1.0
-            } else if (!heavenClaw && clawPitch.position != -1.0) {
-                clawPitch.position = -1.0
+            if (gamepad2.right_bumper) {
+                clawPosition += 0.4 * dt
             }
+
+            if (gamepad2.left_bumper) {
+                clawPosition -= 0.4 * dt
+            }
+
+            clawPosition = clawPosition.coerceIn(0.0, 1.0)
+
+            clawPitch.position = clawPosition
 
             mecanum.telemetry(telemetry)
+            telemetry.addData("Claw position", clawPosition)
+            telemetry.addData("Proximal position", motorA1.currentPosition)
             telemetry.addData("Distal position", motorB.getPosition())
             telemetry.update()
+
+            previousTime = currentTime
         }
 
         motorB.cleanup()
