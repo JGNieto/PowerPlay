@@ -12,7 +12,7 @@ class Mecanum(hardwareMap: HardwareMap) {
     val frMotor: DcMotorEx
     val blMotor: DcMotorEx
     val brMotor: DcMotorEx
-    private var slowmodeToggle = false
+    private var slowmodeToggle = true
     private var slowmode = 1.0
 
     init {
