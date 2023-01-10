@@ -17,8 +17,8 @@ import kotlin.math.PI
 
 @TeleOp(name = "Jackson DL Test Better", group = "test")
 class JacksonDLTestBetter: LinearOpMode() {
-    private val PRESET_1_DISTAL = 110.0
-    private val PRESET_1_PROXIMAL = 80.0
+    private val PRESET_1_DISTAL = 1.044
+    private val PRESET_1_PROXIMAL = 1.86
 
     override fun runOpMode() {
         PhotonCore.enable()
@@ -38,7 +38,7 @@ class JacksonDLTestBetter: LinearOpMode() {
         motorA1.mode = DcMotor.RunMode.RUN_USING_ENCODER
 
         motorB.init()
-        motorB.reset(0.0)
+        motorB.reset(Globals.liftDistalStartAngle)
         motorB.debug = false
 
         clawPitch.direction = Globals.clawPitchDirection
@@ -56,18 +56,18 @@ class JacksonDLTestBetter: LinearOpMode() {
             val dt = (currentTime - previousTime) / 1000.0
 
             if (gamepad2.dpad_up) {
-                motorA1.targetPosition = (PRESET_1_PROXIMAL * Globals.liftProximalATicksPerRotation / (2 * PI)).toInt()
+                motorA1.targetPosition = ((PRESET_1_PROXIMAL - Globals.liftProximalStartAngle) * Globals.liftProximalATicksPerRotation / (2 * PI)).toInt()
                 motorA1.mode = DcMotor.RunMode.RUN_TO_POSITION
                 motorA1.power = Globals.liftProximalConfig.movingSpeed
             } else if (gamepad2.left_stick_y != 0f || motorA1.mode == DcMotor.RunMode.RUN_USING_ENCODER) {
                 if (motorA1.mode != DcMotor.RunMode.RUN_USING_ENCODER)
                     motorA1.mode = DcMotor.RunMode.RUN_USING_ENCODER
-                motorA1.power = gamepad2.left_stick_y * Globals.liftProximalConfig.teleOpSpeed
+                motorA1.power = - gamepad2.left_stick_y * Globals.liftProximalConfig.teleOpSpeed
             }
 
             if (gamepad2.right_stick_y != 0f) {
                 wasMoving = true
-                motorB.moveTeleOp(gamepad2.right_stick_y * Globals.liftDistalConfig.teleOpSpeed)
+                motorB.moveTeleOp(- gamepad2.right_stick_y * Globals.liftDistalConfig.teleOpSpeed)
             } else if (gamepad2.dpad_up) {
                 motorB.moveToAngle(PRESET_1_DISTAL)
             } else if (wasMoving) {
@@ -83,7 +83,7 @@ class JacksonDLTestBetter: LinearOpMode() {
             if (gamepad2.x) {
                 clawPosition = 1.0
             }
-            if (gamepad2.b) {
+            if (gamepad2.b || gamepad2.dpad_up) {
                 clawPosition = 0.0
             }
 
@@ -100,7 +100,7 @@ class JacksonDLTestBetter: LinearOpMode() {
             clawPitch.position = clawPosition
 
             // mecanum.telemetry(telemetry)
-            telemetry.addData("Claw position", clawPosition)
+            telemetry.addData("Claw pos", clawPosition)
             telemetry.addData("Proximal position", motorA1.currentPosition)
             telemetry.addData("Distal position", motorB.getPosition())
             telemetry.update()
