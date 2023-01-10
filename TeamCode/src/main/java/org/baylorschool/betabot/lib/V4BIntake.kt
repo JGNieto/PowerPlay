@@ -51,6 +51,7 @@ class V4BIntake(hardwareMap: HardwareMap) {
             intakeState = IntakeState.REST
         }
 
+        /*
         if (gamepad.x) {
             v4bServo1.position += 0.002
             v4bServo2.position += 0.002
@@ -58,6 +59,8 @@ class V4BIntake(hardwareMap: HardwareMap) {
             v4bServo1.position = 0.002
             v4bServo2.position -= 0.002
         }
+
+         */
 
         /* when(v4bState) {
              V4BState.V4B_START -> {
