@@ -13,12 +13,16 @@ import org.baylorschool.util.Mecanum
 import org.baylorschool.util.Claw
 import org.baylorschool.util.angledevice.BasicMotorAngleDevice
 import kotlin.math.PI
+import kotlin.math.abs
 
 
 @TeleOp(name = "Jackson DL Test Better", group = "test")
 class JacksonDLTestBetter: LinearOpMode() {
-    private val PRESET_1_DISTAL = 1.044
-    private val PRESET_1_PROXIMAL = 1.86
+    private val PRESET_UP_DISTAL = 1.044
+    private val PRESET_UP_PROXIMAL = 1.86
+
+    private val PRESET_DOWN_DISTAL = -1.042
+    private val PRESET_DOWN_PROXIMAL = -0.007
 
     override fun runOpMode() {
         PhotonCore.enable()
@@ -56,20 +60,26 @@ class JacksonDLTestBetter: LinearOpMode() {
             val dt = (currentTime - previousTime) / 1000.0
 
             if (gamepad2.dpad_up) {
-                motorA1.targetPosition = ((PRESET_1_PROXIMAL - Globals.liftProximalStartAngle) * Globals.liftProximalATicksPerRotation / (2 * PI)).toInt()
+                motorA1.targetPosition = ((PRESET_UP_PROXIMAL - Globals.liftProximalStartAngle) * Globals.liftProximalATicksPerRotation / (2 * PI)).toInt()
                 motorA1.mode = DcMotor.RunMode.RUN_TO_POSITION
-                motorA1.power = Globals.liftProximalConfig.movingSpeed
-            } else if (gamepad2.left_stick_y != 0f || motorA1.mode == DcMotor.RunMode.RUN_USING_ENCODER) {
+                motorA1.power = 0.8
+            } else if (gamepad2.dpad_down) {
+                motorA1.targetPosition = ((PRESET_DOWN_PROXIMAL - Globals.liftProximalStartAngle) * Globals.liftProximalATicksPerRotation / (2 * PI)).toInt()
+                motorA1.mode = DcMotor.RunMode.RUN_TO_POSITION
+                motorA1.power = 0.5
+            } else if (abs(gamepad2.left_stick_y) > 0.3f || motorA1.mode == DcMotor.RunMode.RUN_USING_ENCODER) {
                 if (motorA1.mode != DcMotor.RunMode.RUN_USING_ENCODER)
                     motorA1.mode = DcMotor.RunMode.RUN_USING_ENCODER
                 motorA1.power = - gamepad2.left_stick_y * Globals.liftProximalConfig.teleOpSpeed
             }
 
-            if (gamepad2.right_stick_y != 0f) {
+            if (abs(gamepad2.right_stick_y) > 0.3f || motorB.motorStatus == BasicMotorAngleDevice.MotorStatus.TELEOP_POWER) {
                 wasMoving = true
                 motorB.moveTeleOp(- gamepad2.right_stick_y * Globals.liftDistalConfig.teleOpSpeed)
             } else if (gamepad2.dpad_up) {
-                motorB.moveToAngle(PRESET_1_DISTAL)
+                motorB.moveToAngle(PRESET_UP_DISTAL)
+            } else if (gamepad2.dpad_down) {
+                motorB.moveToAngle(PRESET_DOWN_DISTAL)
             } else if (wasMoving) {
                 motorB.moveToAngle(motorB.getPosition())
                 motorB.motorStatus = BasicMotorAngleDevice.MotorStatus.MAINTAINING
@@ -83,6 +93,11 @@ class JacksonDLTestBetter: LinearOpMode() {
             if (gamepad2.x) {
                 clawPosition = 1.0
             }
+
+            if (gamepad2.dpad_down) {
+                clawPosition = 0.892
+            }
+
             if (gamepad2.b || gamepad2.dpad_up) {
                 clawPosition = 0.0
             }
