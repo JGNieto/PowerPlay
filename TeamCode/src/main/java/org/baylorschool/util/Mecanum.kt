@@ -1,11 +1,15 @@
 package org.baylorschool.util
 
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
+import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorEx
 import com.qualcomm.robotcore.hardware.Gamepad
 import com.qualcomm.robotcore.hardware.HardwareMap
 import org.baylorschool.Globals
 import org.firstinspires.ftc.robotcore.external.Telemetry
+
+data class EncoderPosition(val fl: Int, val fr: Int, val bl: Int, val br: Int)
 
 class Mecanum(hardwareMap: HardwareMap) {
     val flMotor: DcMotorEx
@@ -42,6 +46,24 @@ class Mecanum(hardwareMap: HardwareMap) {
         telemetry.addData("Front Right Power", frMotor.power)
         telemetry.addData("Back Left Power", blMotor.power)
         telemetry.addData("Back Right Power", brMotor.power)
+    }
+
+    fun positionTelemetry(telemetry: Telemetry) {
+        telemetry.addData("FL", flMotor.currentPosition)
+        telemetry.addData("FR", frMotor.currentPosition)
+        telemetry.addData("BL", blMotor.currentPosition)
+        telemetry.addData("BR", brMotor.currentPosition)
+    }
+
+    fun setPower(power: Double) {
+        frMotor.power = power
+        flMotor.power = power
+        blMotor.power = power
+        brMotor.power = power
+    }
+
+    fun isBusy(): Boolean {
+        return frMotor.isBusy || flMotor.isBusy || brMotor.isBusy || blMotor.isBusy
     }
 
     fun mecanumLoop(gamepad: Gamepad){
@@ -90,6 +112,43 @@ class Mecanum(hardwareMap: HardwareMap) {
         blMotor.power = blPowerRaw
         frMotor.power = frPowerRaw
         brMotor.power = brPowerRaw
+    }
+
+    fun resetEncoders() {
+        setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER)
+        setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER)
+    }
+
+    fun waitForNotBusy(opMode: LinearOpMode, doTelemetry: Boolean = false) {
+        while (isBusy() && opMode.opModeIsActive()) {
+            if (doTelemetry) positionTelemetry(opMode.telemetry)
+            opMode.telemetry.update()
+        }
+    }
+
+    fun setMode(mode: DcMotor.RunMode) {
+        frMotor.mode = mode
+        brMotor.mode = mode
+        flMotor.mode = mode
+        blMotor.mode = mode
+    }
+
+    fun moveToPosition(position: EncoderPosition) {
+        flMotor.targetPosition = position.fl
+        frMotor.targetPosition = position.fr
+        blMotor.targetPosition = position.bl
+        brMotor.targetPosition = position.br
+
+        setMode(DcMotor.RunMode.RUN_TO_POSITION)
+    }
+
+    fun moveToPositionIncremental(position: EncoderPosition) {
+        flMotor.targetPosition += position.fl
+        frMotor.targetPosition += position.fr
+        blMotor.targetPosition += position.bl
+        brMotor.targetPosition += position.br
+
+        setMode(DcMotor.RunMode.RUN_TO_POSITION)
     }
 
 }

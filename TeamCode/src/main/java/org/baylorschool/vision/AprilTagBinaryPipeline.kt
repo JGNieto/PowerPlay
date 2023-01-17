@@ -53,6 +53,7 @@ class AprilTagBinaryPipeline: OpenCvPipeline() {
 
         synchronized(visibleAprilTagsSync) {
             visibleAprilTags = detections
+            determineTargetTag()
         }
 
         for (tag in visibleAprilTags) {
@@ -60,6 +61,37 @@ class AprilTagBinaryPipeline: OpenCvPipeline() {
         }
 
         return greyscale
+    }
+
+    // The fallback tag, which may change if a new one is found
+    var fallbackTag = 1
+
+    fun determineTargetTag(): Int {
+        var goodTag = -1
+
+        // println("VISIBLE TAGS:")
+
+        for (tag in visibleAprilTags) {
+            println(tag.id)
+            if (tag.id == 0 || tag.id == 1 || tag.id == 2) { // Tag is good
+                if (goodTag != -1 && tag.id != goodTag) { // Another good tag was already found and it was different; use fallback
+                    // println("Multiple good tags. ${tag.id} and $goodTag. Using fallback: $fallbackTag")
+                    return fallbackTag
+                } else { // First good tag found; save it
+                    goodTag = tag.id
+                }
+            } // else: tag is bad; ignore
+        }
+
+        // println("END VISIBLE TAGS")
+
+        if (goodTag == -1) { // No good tag was found
+            // println("No good tags. Using fallback: $fallbackTag")
+            return fallbackTag
+        } else { // Good tag was found
+            fallbackTag = goodTag
+            return goodTag
+        }
     }
 
 }

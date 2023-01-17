@@ -36,6 +36,8 @@ class JacksonDLTestBetter: LinearOpMode() {
 
         waitForStart()
 
+        mecanum.resetEncoders()
+
         motorA1.direction = Globals.liftProximalADirection
         motorA1.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
         motorA1.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
@@ -118,6 +120,8 @@ class JacksonDLTestBetter: LinearOpMode() {
             telemetry.addData("Claw pos", clawPosition)
             telemetry.addData("Proximal position", motorA1.currentPosition)
             telemetry.addData("Distal position", motorB.getPosition())
+
+            mecanum.positionTelemetry(telemetry)
             telemetry.update()
 
             previousTime = currentTime
