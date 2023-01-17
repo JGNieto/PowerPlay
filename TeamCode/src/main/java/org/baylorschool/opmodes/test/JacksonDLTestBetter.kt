@@ -75,13 +75,13 @@ class JacksonDLTestBetter: LinearOpMode() {
                 motorA1.power = - gamepad2.left_stick_y * Globals.liftProximalConfig.teleOpSpeed
             }
 
-            if (abs(gamepad2.right_stick_y) > 0.3f || motorB.motorStatus == BasicMotorAngleDevice.MotorStatus.TELEOP_POWER) {
-                wasMoving = true
-                motorB.moveTeleOp(- gamepad2.right_stick_y * Globals.liftDistalConfig.teleOpSpeed)
-            } else if (gamepad2.dpad_up) {
+            if (gamepad2.dpad_up) {
                 motorB.moveToAngle(PRESET_UP_DISTAL)
             } else if (gamepad2.dpad_down) {
                 motorB.moveToAngle(PRESET_DOWN_DISTAL)
+            } else if (abs(gamepad2.right_stick_y) > 0.3f || (motorB.motorStatus == BasicMotorAngleDevice.MotorStatus.TELEOP_POWER && gamepad2.right_stick_y != 0f)) {
+                wasMoving = true
+                motorB.moveTeleOp(- gamepad2.right_stick_y * Globals.liftDistalConfig.teleOpSpeed)
             } else if (wasMoving) {
                 motorB.moveToAngle(motorB.getPosition())
                 motorB.motorStatus = BasicMotorAngleDevice.MotorStatus.MAINTAINING
@@ -116,10 +116,14 @@ class JacksonDLTestBetter: LinearOpMode() {
 
             clawPitch.position = clawPosition
 
-            // mecanum.telemetry(telemetry)
-            telemetry.addData("Claw pos", clawPosition)
-            telemetry.addData("Proximal position", motorA1.currentPosition)
-            telemetry.addData("Distal position", motorB.getPosition())
+//            mecanum.telemetry(telemetry)
+//            telemetry.addData("Claw pos", clawPosition)
+//            telemetry.addData("Proximal position", motorA1.currentPosition)
+//            telemetry.addData("Distal position", motorB.getPosition())
+
+            telemetry.addData("Distal status", motorB.motorStatus.toString())
+            telemetry.addData("Distal motor mode", motorB.motor.mode)
+            telemetry.addData("Distal motor busy", motorB.motor.isBusy)
 
             mecanum.positionTelemetry(telemetry)
             telemetry.update()
