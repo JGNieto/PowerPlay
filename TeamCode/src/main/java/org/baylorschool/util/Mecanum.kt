@@ -55,6 +55,27 @@ class Mecanum(hardwareMap: HardwareMap) {
         telemetry.addData("BR", brMotor.currentPosition)
     }
 
+    fun targetTelemetry(telemetry: Telemetry) {
+        telemetry.addData("FL Target", flMotor.targetPosition)
+        telemetry.addData("FR Target", frMotor.targetPosition)
+        telemetry.addData("BL Target", blMotor.targetPosition)
+        telemetry.addData("BR Target", brMotor.targetPosition)
+    }
+
+    fun busyTelemetry(telemetry: Telemetry) {
+        telemetry.addData("FL Busy", flMotor.isBusy)
+        telemetry.addData("FR Busy", frMotor.isBusy)
+        telemetry.addData("BL Busy", blMotor.isBusy)
+        telemetry.addData("BR Busy", brMotor.isBusy)
+    }
+
+    fun powerTelemetry(telemetry: Telemetry) {
+        telemetry.addData("FL Power", flMotor.power)
+        telemetry.addData("FR Power", frMotor.power)
+        telemetry.addData("BL Power", blMotor.power)
+        telemetry.addData("BR Power", brMotor.power)
+    }
+
     fun setPower(power: Double) {
         frMotor.power = power
         flMotor.power = power
@@ -121,7 +142,10 @@ class Mecanum(hardwareMap: HardwareMap) {
 
     fun waitForNotBusy(opMode: LinearOpMode, doTelemetry: Boolean = false) {
         while (isBusy() && opMode.opModeIsActive()) {
-            if (doTelemetry) positionTelemetry(opMode.telemetry)
+            if (doTelemetry) {
+                positionTelemetry(opMode.telemetry)
+                //targetTelemetry(opMode.telemetry)
+            }
             opMode.telemetry.update()
         }
     }
@@ -143,10 +167,10 @@ class Mecanum(hardwareMap: HardwareMap) {
     }
 
     fun moveToPositionIncremental(position: EncoderPosition) {
-        flMotor.targetPosition += position.fl
-        frMotor.targetPosition += position.fr
-        blMotor.targetPosition += position.bl
-        brMotor.targetPosition += position.br
+        flMotor.targetPosition = position.fl + flMotor.currentPosition
+        frMotor.targetPosition = position.fr + frMotor.currentPosition
+        blMotor.targetPosition = position.bl + blMotor.currentPosition
+        brMotor.targetPosition = position.br + brMotor.currentPosition
 
         setMode(DcMotor.RunMode.RUN_TO_POSITION)
     }

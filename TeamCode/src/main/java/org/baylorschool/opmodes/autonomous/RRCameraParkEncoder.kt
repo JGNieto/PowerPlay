@@ -14,7 +14,7 @@ class RRCameraParkEncoder: LinearOpMode() {
 
     val forward = EncoderPosition(-1400, -1400, -1400, -1400)
     val left = EncoderPosition(1051, -1250, -1250, 1051)
-    val right = EncoderPosition(-1019, 1320, 1320, -1057)
+    val right = EncoderPosition(-1332, 1500, 1500, -1332)
 
     override fun runOpMode() {
         telemetry.addData("Status", "Getting ready. Please wait...")
@@ -46,7 +46,6 @@ class RRCameraParkEncoder: LinearOpMode() {
             mecanum.setPower(POWER)
             mecanum.waitForNotBusy(this, true)
         }
-
 
         telemetry.addLine("Moving forward")
         telemetry.update()
