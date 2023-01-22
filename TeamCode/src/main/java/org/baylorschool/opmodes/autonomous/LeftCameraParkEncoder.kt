@@ -2,26 +2,27 @@ package org.baylorschool.opmodes.autonomous
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
+import org.baylorschool.Globals
 import org.baylorschool.util.EncoderPosition
 import org.baylorschool.util.Mecanum
 import org.baylorschool.vision.AprilTagBinaryPipeline
 import org.baylorschool.vision.CameraUtil
 
-@Autonomous(name = "RRCameraParkEncoder", group = "RedRight")
-class RRCameraParkEncoder: LinearOpMode() {
+@Autonomous(name = "LeftCameraParkEncoder", group = "Left")
+class LeftCameraParkEncoder: LinearOpMode() {
 
     val POWER = 0.5
 
     val forward = EncoderPosition(-1400, -1400, -1400, -1400)
-    val left = EncoderPosition(1051, -1250, -1250, 1051)
-    val right = EncoderPosition(-1332, 1500, 1500, -1332)
+    val right = EncoderPosition(-1051, 1250, 1250, -1051)
+    val left = EncoderPosition(1332, -1500, -1500, 1332)
 
     override fun runOpMode() {
         telemetry.addData("Status", "Getting ready. Please wait...")
         telemetry.update()
 
         val pipeline = AprilTagBinaryPipeline()
-        val webcam = CameraUtil.openWebcam(this, pipeline, true)
+        val webcam = CameraUtil.openWebcam(this, pipeline, true, Globals.webcamRear)
         val mecanum = Mecanum(hardwareMap)
 
         telemetry.addData("Status", "Ready to start")

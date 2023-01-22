@@ -24,6 +24,10 @@ object Globals {
     const val clawPitchMin = 5.0 * PI / 4.0 // True angle of claw when position is 1.0
     val clawPitchDirection = Servo.Direction.REVERSE
 
+    // Webcams
+    const val webcamFront = "Webcam Front"
+    const val webcamRear = "Webcam Rear"
+
     const val clawYaw = "clawYaw"
 
     val rightRearDirection = DcMotorSimple.Direction.FORWARD

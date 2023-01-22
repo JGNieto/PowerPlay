@@ -11,7 +11,7 @@ import org.openftc.easyopencv.OpenCvWebcam
 
 object CameraUtil {
 
-    fun openWebcam(opMode: OpMode, pipeline: OpenCvPipeline, stream: Boolean = false): OpenCvWebcam {
+    fun openWebcam(opMode: OpMode, pipeline: OpenCvPipeline, stream: Boolean = false, name: String = Globals.webcamRear): OpenCvWebcam {
         val webcam: OpenCvWebcam?
         if (stream) {
             val cameraMonitorViewId =
@@ -22,13 +22,13 @@ object CameraUtil {
                 )
             webcam = OpenCvCameraFactory.getInstance().createWebcam(
                 opMode.hardwareMap.get(
-                    WebcamName::class.java, "Webcam 1"
+                    WebcamName::class.java, name
                 ), cameraMonitorViewId
             )
         } else {
             webcam = OpenCvCameraFactory.getInstance().createWebcam(
                 opMode.hardwareMap.get(
-                    WebcamName::class.java, "Webcam 1"
+                    WebcamName::class.java, name
                 )
             )
         }
