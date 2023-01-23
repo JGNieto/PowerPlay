@@ -14,6 +14,11 @@ object Globals {
     const val leftFront = "leftFront"
     const val leftRear = "leftRear"
 
+    // Dead wheel encoder
+    const val leftEncoder = leftRear
+    const val rightEncoder = rightFront
+    const val frontEncoder = rightRear // In our case, this encoder is at the back, not the front.
+
     // Claw
     const val clawGrab = "clawGrab"
     const val clawGrabOpen = 0.85
