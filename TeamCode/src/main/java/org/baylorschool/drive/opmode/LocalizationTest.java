@@ -1,5 +1,7 @@
 package org.baylorschool.drive.opmode;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -16,8 +18,12 @@ import org.baylorschool.drive.Mecanum;
  */
 @TeleOp(group = "roadrunner-default")
 public class LocalizationTest extends LinearOpMode {
+
+    private FtcDashboard dashboard = FtcDashboard.getInstance();
+
     @Override
     public void runOpMode() throws InterruptedException {
+        telemetry = new MultipleTelemetry(telemetry, dashboard.getTelemetry());
         Mecanum drive = new Mecanum(hardwareMap);
 
         drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -39,6 +45,11 @@ public class LocalizationTest extends LinearOpMode {
             telemetry.addData("x", poseEstimate.getX());
             telemetry.addData("y", poseEstimate.getY());
             telemetry.addData("heading", poseEstimate.getHeading());
+
+            telemetry.addData("Left", drive.leftRear.getCurrentPosition());
+            telemetry.addData("Right", drive.rightFront.getCurrentPosition());
+            telemetry.addData("Center", drive.rightRear.getCurrentPosition());
+
             telemetry.update();
         }
     }

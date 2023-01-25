@@ -22,6 +22,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.RobotLog;
 
 import org.baylorschool.drive.Mecanum;
+import org.baylorschool.drive.StandardTrackingWheelLocalizer;
 
 import java.util.Objects;
 
@@ -74,7 +75,7 @@ public class ManualFeedforwardTuner extends LinearOpMode {
 
         drive = new Mecanum(hardwareMap);
 
-        mode = Mode.TUNING_MODE;
+        mode = Mode.DRIVER_MODE;
 
         NanoClock clock = NanoClock.system();
 
@@ -123,6 +124,16 @@ public class ManualFeedforwardTuner extends LinearOpMode {
                     telemetry.addData("targetVelocity", motionState.getV());
                     telemetry.addData("measuredVelocity", currentVelo);
                     telemetry.addData("error", motionState.getV() - currentVelo);
+
+                    telemetry.addData("Left", drive.leftRear.getCurrentPosition());
+                    telemetry.addData("Right", drive.rightFront.getCurrentPosition());
+                    telemetry.addData("Center", drive.rightRear.getCurrentPosition());
+
+                    telemetry.addData("VLeft", ((StandardTrackingWheelLocalizer) drive.getLocalizer()).getWheelVelocities().get(0));
+                    telemetry.addData("VRight", ((StandardTrackingWheelLocalizer) drive.getLocalizer()).getWheelVelocities().get(1));
+
+                    telemetry.addData("VLeft Raw", drive.leftRear.getVelocity());
+                    telemetry.addData("VRight Raw", drive.rightFront.getVelocity());
                     break;
                 case DRIVER_MODE:
                     if (gamepad1.b) {

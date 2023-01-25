@@ -63,6 +63,13 @@ public class Mecanum extends MecanumDrive {
     public static double VY_WEIGHT = 1;
     public static double OMEGA_WEIGHT = 1;
 
+    //public static double LEFT_FRONT_MULTIPLIER = 0.9375;
+    //public static double LEFT_REAR_MULTIPLIER = 0.9375;
+    public static double LEFT_FRONT_MULTIPLIER = 1.0;
+    public static double LEFT_REAR_MULTIPLIER = 1.0;
+    public static double RIGHT_FRONT_MULTIPLIER = 1.0;
+    public static double RIGHT_REAR_MULTIPLIER = 1.0;
+
     private TrajectorySequenceRunner trajectorySequenceRunner;
 
     private static final TrajectoryVelocityConstraint VEL_CONSTRAINT = getVelocityConstraint(MAX_VEL, MAX_ANG_VEL, TRACK_WIDTH);
@@ -289,10 +296,11 @@ public class Mecanum extends MecanumDrive {
 
     @Override
     public void setMotorPowers(double v, double v1, double v2, double v3) {
-        leftFront.setPower(v);
-        leftRear.setPower(v1);
-        rightRear.setPower(v2);
-        rightFront.setPower(v3);
+        leftFront.setPower(v * LEFT_FRONT_MULTIPLIER);
+        leftRear.setPower(v1 * LEFT_REAR_MULTIPLIER);
+
+        rightRear.setPower(v2 * RIGHT_REAR_MULTIPLIER);
+        rightFront.setPower(v3 * RIGHT_FRONT_MULTIPLIER);
     }
 
     @Override
