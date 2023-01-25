@@ -17,7 +17,7 @@ object Globals {
     // Dead wheel encoder
     const val leftEncoder = leftRear
     const val rightEncoder = rightFront
-    const val frontEncoder = rightRear // In our case, this encoder is at the back, not the front.
+    const val frontEncoder = rightRear // In our case, this encoder is at the back, not the front lmao.
 
     // Claw
     const val clawGrab = "clawGrab"
@@ -30,7 +30,7 @@ object Globals {
     val clawPitchDirection = Servo.Direction.REVERSE
 
     // Webcams
-    const val webcamFront = "Webcam Front"
+    const val webcamFront = "Webcam Front" // Currently disconnected.
     const val webcamRear = "Webcam Rear"
 
     const val clawYaw = "clawYaw"
