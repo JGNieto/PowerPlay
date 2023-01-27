@@ -1,6 +1,9 @@
 package org.baylorschool.betabot.lib
 
-import com.qualcomm.robotcore.hardware.*
+import com.qualcomm.robotcore.hardware.CRServo
+import com.qualcomm.robotcore.hardware.Gamepad
+import com.qualcomm.robotcore.hardware.HardwareMap
+import com.qualcomm.robotcore.hardware.Servo
 import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.robotcore.external.Telemetry
 

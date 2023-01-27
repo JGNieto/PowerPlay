@@ -16,7 +16,6 @@ import org.baylorschool.opmodes.test.MichaelLiftTestConfig.y
 import org.baylorschool.util.Claw
 import org.baylorschool.util.LiftPresets
 import org.baylorschool.util.MichaelLift
-import org.baylorschool.util.angledevice.BasicMotorAngleDevice
 
 @Config
 object MichaelLiftTestConfig {

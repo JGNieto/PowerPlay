@@ -4,7 +4,9 @@ import com.acmerobotics.dashboard.FtcDashboard
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
-import org.baylorschool.betabot.lib.*
+import org.baylorschool.betabot.lib.Mecanum
+import org.baylorschool.betabot.lib.Slides
+import org.baylorschool.betabot.lib.V4BIntake
 
 @TeleOp(name = "Teleop",group = "betatest")
 class TeleOp: LinearOpMode() {

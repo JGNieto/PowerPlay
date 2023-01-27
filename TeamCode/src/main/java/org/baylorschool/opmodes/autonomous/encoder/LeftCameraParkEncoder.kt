@@ -1,4 +1,4 @@
-package org.baylorschool.opmodes.autonomous
+package org.baylorschool.opmodes.autonomous.encoder
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
@@ -8,14 +8,14 @@ import org.baylorschool.util.Mecanum
 import org.baylorschool.vision.AprilTagBinaryPipeline
 import org.baylorschool.vision.CameraUtil
 
-@Autonomous(name = "RightCameraParkEncoder", group = "Right")
-class RightCameraParkEncoder: LinearOpMode() {
+@Autonomous(name = "LeftCameraParkEncoder", group = "BB Encoder Left")
+class LeftCameraParkEncoder: LinearOpMode() {
 
     val POWER = 0.5
 
     val forward = EncoderPosition(-1400, -1400, -1400, -1400)
-    val left = EncoderPosition(1051, -1250, -1250, 1051)
-    val right = EncoderPosition(-1332, 1500, 1500, -1332)
+    val right = EncoderPosition(-1051, 1250, 1250, -1051)
+    val left = EncoderPosition(1332, -1500, -1500, 1332)
 
     override fun runOpMode() {
         telemetry.addData("Status", "Getting ready. Please wait...")

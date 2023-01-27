@@ -1,7 +1,6 @@
 package org.baylorschool.util.angledevice
 
 import com.qualcomm.robotcore.hardware.Servo
-import org.baylorschool.Globals
 
 class AngleServo(private val servo: Servo, private val minAngle: Double, private val maxAngle: Double): AngleDevice {
 

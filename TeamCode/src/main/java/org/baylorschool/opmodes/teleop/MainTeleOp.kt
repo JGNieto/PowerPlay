@@ -1,9 +1,8 @@
-package org.baylorschool.opmodes.test
+package org.baylorschool.opmodes.teleop
 
 import com.acmerobotics.dashboard.FtcDashboard
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry
 import com.outoftheboxrobotics.photoncore.PhotonCore
-import com.qualcomm.robotcore.eventloop.opmode.Disabled
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import com.qualcomm.robotcore.hardware.DcMotor
@@ -16,14 +15,14 @@ import org.baylorschool.util.angledevice.BasicMotorAngleDevice
 import kotlin.math.PI
 import kotlin.math.abs
 
-@Disabled
-@TeleOp(name = "Jackson DL Test Better", group = "test")
-class JacksonDLTestBetter: LinearOpMode() {
+@TeleOp(name = "MainTeleOp", group = "AA Main")
+class MainTeleOp: LinearOpMode() {
     private val PRESET_UP_DISTAL = 1.044
     private val PRESET_UP_PROXIMAL = 1.86
 
     private val PRESET_DOWN_DISTAL = -1.042
     private val PRESET_DOWN_PROXIMAL = -0.007
+
     override fun runOpMode() {
         PhotonCore.enable()
 

@@ -11,7 +11,6 @@ import com.qualcomm.robotcore.hardware.Servo
 import org.baylorschool.Globals
 import org.baylorschool.drive.Mecanum
 import org.baylorschool.util.Claw
-import org.baylorschool.util.angledevice.AngleServo
 
 @Disabled
 @TeleOp(name = "Jackson DL Test", group = "test")
