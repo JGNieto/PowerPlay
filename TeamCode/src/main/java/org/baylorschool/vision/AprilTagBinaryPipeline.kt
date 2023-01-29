@@ -1,5 +1,7 @@
 package org.baylorschool.vision
 
+import org.firstinspires.ftc.robotcore.external.Telemetry
+import org.opencv.core.Core
 import org.opencv.core.Mat
 import org.opencv.core.Scalar
 import org.opencv.imgproc.Imgproc
@@ -9,7 +11,7 @@ import org.openftc.easyopencv.OpenCvPipeline
 
 // This class is an EasyOpenCV pipeline to determine which april tags are present (which is why it
 // is has "Binary" in the name - the tag is either there or not).
-class AprilTagBinaryPipeline: OpenCvPipeline() {
+class AprilTagBinaryPipeline(private val telemetry: Telemetry?, private val rotate: Boolean = false): OpenCvPipeline() {
 
     private lateinit var greyscale: Mat
     private var nativeAprilTagPtr: Long? = null
@@ -42,9 +44,13 @@ class AprilTagBinaryPipeline: OpenCvPipeline() {
 
         synchronized(decimationUpdateSync) {
             if (needToUpdateDecimation) {
-                AprilTagDetectorJNI.setApriltagDetectorDecimation(nativeAprilTagPtr!!, decimation!!)
+                AprilTagDetectorJNI.setApriltagDetectorDecimation(nativeAprilTagPtr!!, decimation)
                 needToUpdateDecimation = false
             }
+        }
+
+        if (rotate) {
+            Core.rotate(input, input, Core.ROTATE_180)
         }
 
         Imgproc.cvtColor(input, greyscale, Imgproc.COLOR_RGBA2GRAY)
@@ -72,7 +78,7 @@ class AprilTagBinaryPipeline: OpenCvPipeline() {
         // println("VISIBLE TAGS:")
 
         for (tag in visibleAprilTags) {
-            println(tag.id)
+            // println(tag.id)
             if (tag.id == 0 || tag.id == 1 || tag.id == 2) { // Tag is good
                 if (goodTag != -1 && tag.id != goodTag) { // Another good tag was already found and it was different; use fallback
                     // println("Multiple good tags. ${tag.id} and $goodTag. Using fallback: $fallbackTag")
@@ -89,6 +95,10 @@ class AprilTagBinaryPipeline: OpenCvPipeline() {
             // println("No good tags. Using fallback: $fallbackTag")
             return fallbackTag
         } else { // Good tag was found
+            if (telemetry != null) {
+                telemetry.addData("Tag found", goodTag)
+                telemetry.update()
+            }
             fallbackTag = goodTag
             return goodTag
         }

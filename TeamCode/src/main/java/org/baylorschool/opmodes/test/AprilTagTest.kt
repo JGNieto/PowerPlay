@@ -2,6 +2,7 @@ package org.baylorschool.opmodes.test
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
+import org.baylorschool.Globals
 import org.baylorschool.vision.AprilTagBinaryPipeline
 import org.baylorschool.vision.CameraUtil
 
@@ -12,7 +13,7 @@ class AprilTagTest: LinearOpMode() {
         telemetry.addData("Status", "Getting ready. Please wait...")
         telemetry.update()
 
-        val pipeline = AprilTagBinaryPipeline()
+        val pipeline = AprilTagBinaryPipeline(null, Globals.webcamRearRotate)
         val webcam = CameraUtil.openWebcam(this, pipeline, true)
 
         telemetry.addData("Status", "Ready to start")

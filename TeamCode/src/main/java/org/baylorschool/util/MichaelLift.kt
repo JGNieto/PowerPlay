@@ -20,6 +20,7 @@ object LiftPresets {
 
 data class LiftPosition(val x: Double, val y: Double)
 
+data class LiftPositionAngle(val proximal: Double, val distal: Double, val claw: Double)
 
 class MichaelLift(opMode: OpMode) {
     /*

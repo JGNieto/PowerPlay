@@ -2,6 +2,7 @@ package org.baylorschool.opmodes.test
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
+import org.baylorschool.Globals
 import org.baylorschool.vision.CameraUtil
 import org.baylorschool.vision.YellowJunctionPipeline
 
@@ -12,8 +13,8 @@ class YellowJunctionCVTest: LinearOpMode() {
         telemetry.addData("Status", "Getting ready. Please wait...")
         telemetry.update()
 
-        val pipeline = YellowJunctionPipeline()
-        val webcam = CameraUtil.openWebcam(this, pipeline, true)
+        val pipeline = YellowJunctionPipeline(Globals.webcamRearRotate, telemetry)
+        val webcam = CameraUtil.openWebcam(this, pipeline, true, Globals.webcamRear)
 
         telemetry.addData("Status", "Ready to start")
         telemetry.update()
@@ -22,9 +23,9 @@ class YellowJunctionCVTest: LinearOpMode() {
         var iterations = 0L
 
         while (opModeIsActive()) {
-            telemetry.addData("Status", "Started!")
-            telemetry.addData("Iterations", iterations)
-            telemetry.update()
+            //telemetry.addData("Status", "Started!")
+            //telemetry.addData("Iterations", iterations)
+            //telemetry.update()
         }
 
         telemetry.addData("Status", "Closing webcam...")
