@@ -16,7 +16,7 @@ import org.baylorschool.drive.Mecanum;
 @Config
 @Autonomous(group = "roadrunner-default")
 public class StraightTest extends LinearOpMode {
-    public static double DISTANCE = 60; // in
+    public static double DISTANCE = 90; // in
 
     @Override
     public void runOpMode() throws InterruptedException {

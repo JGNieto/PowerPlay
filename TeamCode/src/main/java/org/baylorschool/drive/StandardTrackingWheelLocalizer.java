@@ -29,15 +29,18 @@ import java.util.List;
  */
 @Config
 public class StandardTrackingWheelLocalizer extends ThreeTrackingWheelLocalizer {
-    public static double TICKS_PER_REV = 8192 * 2.0;
-    public static double WHEEL_RADIUS = 1.496; // in
+    public static double TICKS_PER_REV = 8192;
+    public static double WHEEL_RADIUS = 1.496 / 2.0; // in
     public static double GEAR_RATIO = 1; // output (wheel) speed / input (encoder) speed
 
-    public static double LATERAL_DISTANCE = 15.156; // in; distance between the left and right wheels
+    public static double LATERAL_DISTANCE = 15.3125; // in; distance between the left and right wheels
     public static double FORWARD_OFFSET = -6.656; // in; offset of the lateral wheel
 
-    public static double X_MULTIPLIER = 90.0 / 90.3825;
-    public static double Y_MULTIPLIER = 90.0 / 90.285;
+//    public static double X_MULTIPLIER = 90.0 / 90.7427;
+//    public static double Y_MULTIPLIER = 90.0 / 91.5866;
+    public static double LEFT_MULTIPLIER = 156874.0 / 157683.0;
+    public static double RIGHT_MULTIPLIER = 156874.0 / 157916.7778;
+    public static double CENTER_MULTIPLIER = 156874.0 / 158023.0;
 
     private Encoder leftEncoder, rightEncoder, frontEncoder;
 
@@ -65,9 +68,9 @@ public class StandardTrackingWheelLocalizer extends ThreeTrackingWheelLocalizer 
     @Override
     public List<Double> getWheelPositions() {
         return Arrays.asList(
-                encoderTicksToInches(leftEncoder.getCurrentPosition()) * X_MULTIPLIER,
-                encoderTicksToInches(rightEncoder.getCurrentPosition()) * X_MULTIPLIER,
-                encoderTicksToInches(frontEncoder.getCurrentPosition()) * Y_MULTIPLIER
+                encoderTicksToInches(leftEncoder.getCurrentPosition()) * LEFT_MULTIPLIER,
+                encoderTicksToInches(rightEncoder.getCurrentPosition()) * RIGHT_MULTIPLIER,
+                encoderTicksToInches(frontEncoder.getCurrentPosition()) * CENTER_MULTIPLIER
         );
     }
 
