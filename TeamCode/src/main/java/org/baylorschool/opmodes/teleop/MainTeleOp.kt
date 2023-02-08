@@ -2,16 +2,20 @@ package org.baylorschool.opmodes.teleop
 
 import com.acmerobotics.dashboard.FtcDashboard
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry
+import com.outoftheboxrobotics.photoncore.Neutrino.Rev2MSensor.Rev2mDistanceSensorEx
 import com.outoftheboxrobotics.photoncore.PhotonCore
+import com.qualcomm.hardware.rev.Rev2mDistanceSensor
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorEx
+import com.qualcomm.robotcore.hardware.DistanceSensor
 import com.qualcomm.robotcore.hardware.Servo
 import org.baylorschool.Globals
 import org.baylorschool.util.Claw
 import org.baylorschool.util.Mecanum
 import org.baylorschool.util.angledevice.BasicMotorAngleDevice
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit
 import kotlin.math.PI
 import kotlin.math.abs
 
@@ -32,6 +36,7 @@ class MainTeleOp: LinearOpMode() {
         val clawPitch = hardwareMap.get(Servo::class.java, Globals.clawPitch)
         val mecanum = Mecanum(hardwareMap)
         val telemetry = MultipleTelemetry(FtcDashboard.getInstance().telemetry, telemetry)
+        val distance = hardwareMap.get(Rev2mDistanceSensor::class.java, Globals.distanceSensor)
 
         waitForStart()
 
@@ -123,6 +128,7 @@ class MainTeleOp: LinearOpMode() {
             telemetry.addData("Distal status", motorB.motorStatus.toString())
             telemetry.addData("Distal motor mode", motorB.motor.mode)
             telemetry.addData("Distal motor busy", motorB.motor.isBusy)
+            telemetry.addData("Distance (in)", distance.getDistance(DistanceUnit.INCH))
 
             mecanum.positionTelemetry(telemetry)
             telemetry.update()

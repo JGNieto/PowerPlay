@@ -38,6 +38,9 @@ object Globals {
     const val webcamFrontRotate = false
     const val webcamRearRotate = true
 
+    // I2C
+    const val distanceSensor = "distanceSensor"
+
     // Lift presets
     val liftDropHigh = LiftPositionAngle(1.86, 1.044, 0.0)
     val liftGrabTeleOp = LiftPositionAngle(-0.007, -1.042, 0.892)
