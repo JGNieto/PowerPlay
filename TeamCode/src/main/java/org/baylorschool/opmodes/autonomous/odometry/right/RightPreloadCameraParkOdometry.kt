@@ -19,7 +19,7 @@ import kotlin.math.PI
 class RightPreloadCameraParkOdometry: LinearOpMode() {
 
     // POSITIONS ARE DESIGNED FOR RIGHT RED, BUT WORK FOR RIGHT BLUE AS WELL
-    private val startPosition = Pose2d(24.0 + 12.5, -24.0 * 2.0 - 9.5, Math.toRadians(270.0))
+    private val startPosition = Globals.rightStartPosition
 
     private val dropPosition = Pose2d(16.5786, -7.31907, 3.9475779608)
 

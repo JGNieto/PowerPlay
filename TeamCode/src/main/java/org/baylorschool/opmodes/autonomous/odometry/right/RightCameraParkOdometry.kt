@@ -13,7 +13,7 @@ import org.baylorschool.vision.CameraUtil
 class RightCameraParkOdometry: LinearOpMode() {
 
     // POSITIONS ARE DESIGNED FOR RIGHT RED, BUT WORK FOR RIGHT BLUE AS WELL
-    private val startPosition = Pose2d(24.0 + 12.5, -24.0 * 2.0 - 9.5, Math.toRadians(270.0))
+    private val startPosition = Globals.rightStartPosition.copy()
 
     override fun runOpMode() {
         PhotonCore.enable()
@@ -44,13 +44,19 @@ class RightCameraParkOdometry: LinearOpMode() {
 
         if (targetTag == 0) {
             val trajSideways = mecanum.trajectoryBuilder(startPosition)
-                .strafeRight(23.25)
+                .strafeRight(20.0)
+                .build()
+            endPosition = trajSideways.end()
+            mecanum.followTrajectory(trajSideways)
+        } else if (targetTag == 1) {
+            val trajSideways = mecanum.trajectoryBuilder(startPosition)
+                .strafeLeft(2.0)
                 .build()
             endPosition = trajSideways.end()
             mecanum.followTrajectory(trajSideways)
         } else if (targetTag == 2) {
             val trajSideways = mecanum.trajectoryBuilder(startPosition)
-                .strafeLeft(26.0)
+                .strafeLeft(27.0)
                 .build()
             endPosition = trajSideways.end()
             mecanum.followTrajectory(trajSideways)

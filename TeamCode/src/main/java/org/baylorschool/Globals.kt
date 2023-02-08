@@ -1,6 +1,7 @@
 package org.baylorschool
 
 import com.acmerobotics.dashboard.config.Config
+import com.acmerobotics.roadrunner.geometry.Pose2d
 import com.qualcomm.robotcore.hardware.DcMotorSimple
 import com.qualcomm.robotcore.hardware.Servo
 import org.baylorschool.util.LiftPositionAngle
@@ -39,8 +40,16 @@ object Globals {
 
     // Lift presets
     val liftDropHigh = LiftPositionAngle(1.86, 1.044, 0.0)
-
     val liftGrabTeleOp = LiftPositionAngle(-0.007, -1.042, 0.892)
+
+    // Positioning measurements
+    const val driveTrainWidth = 16.75 // Includes the widths of the mecanum wheels.
+    const val frontPlaneDistance = 9.08375 // Distance between front plane (including arm) and center of rotation. For initialization.
+
+    const val tileWidth = 24.0
+
+    val rightStartPosition = Pose2d(tileWidth + driveTrainWidth / 2.0, - 3 * tileWidth + frontPlaneDistance, Math.toRadians(270.0))
+    val leftStartPosition = Pose2d(- tileWidth - driveTrainWidth / 2.0, - 3 * tileWidth + frontPlaneDistance, Math.toRadians(270.0))
 
     const val clawYaw = "clawYaw"
 
