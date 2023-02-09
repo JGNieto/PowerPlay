@@ -1,7 +1,7 @@
 package org.baylorschool.opmodes.test
 
 import com.acmerobotics.roadrunner.geometry.Pose2d
-import com.outoftheboxrobotics.photoncore.PhotonCore
+//import com.outoftheboxrobotics.photoncore.PhotonCore
 import com.qualcomm.robotcore.eventloop.opmode.Disabled
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
@@ -13,7 +13,7 @@ class MecanumTest: LinearOpMode() {
     private val POWER_MULTIPLIER = 0.1
 
     override fun runOpMode() {
-        PhotonCore.enable()
+        //PhotonCore.enable()
 
         val mecanum = Mecanum(hardwareMap)
 

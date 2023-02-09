@@ -2,8 +2,8 @@ package org.baylorschool.opmodes.teleop
 
 import com.acmerobotics.dashboard.FtcDashboard
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry
-import com.outoftheboxrobotics.photoncore.Neutrino.Rev2MSensor.Rev2mDistanceSensorEx
-import com.outoftheboxrobotics.photoncore.PhotonCore
+//import com.outoftheboxrobotics.photoncore.Neutrino.Rev2MSensor.Rev2mDistanceSensorEx
+//import com.outoftheboxrobotics.photoncore.PhotonCore
 import com.qualcomm.hardware.rev.Rev2mDistanceSensor
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
@@ -28,7 +28,7 @@ class MainTeleOp: LinearOpMode() {
     private val PRESET_DOWN_PROXIMAL = -0.007
 
     override fun runOpMode() {
-        PhotonCore.enable()
+        //PhotonCore.enable()
 
         val motorA1 = hardwareMap.get(DcMotorEx::class.java, Globals.liftProximalA)
         val motorB = BasicMotorAngleDevice(this, Globals.liftDistal, Globals.liftDistalTicksPerRotation, Globals.liftDistalConfig, Globals.liftDistalDirection)

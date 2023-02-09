@@ -1,7 +1,7 @@
 package org.baylorschool.opmodes.test
 
 import com.acmerobotics.roadrunner.geometry.Pose2d
-import com.outoftheboxrobotics.photoncore.PhotonCore
+//import com.outoftheboxrobotics.photoncore.PhotonCore
 import com.qualcomm.robotcore.eventloop.opmode.Disabled
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
@@ -18,7 +18,7 @@ class JacksonDLTest: LinearOpMode() {
     private var powerMultiplier = 0.1
 
     override fun runOpMode() {
-        PhotonCore.enable()
+        //PhotonCore.enable()
 
         val motorA1 = hardwareMap.get(DcMotorEx::class.java, Globals.liftProximalA)
         val motorB = hardwareMap.get(DcMotorEx::class.java, Globals.liftDistal)

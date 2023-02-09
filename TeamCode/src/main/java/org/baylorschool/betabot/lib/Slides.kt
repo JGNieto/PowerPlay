@@ -8,7 +8,7 @@ import com.acmerobotics.roadrunner.control.PIDFController
 import com.acmerobotics.roadrunner.profile.MotionProfile
 import com.acmerobotics.roadrunner.profile.MotionProfileGenerator
 import com.acmerobotics.roadrunner.profile.MotionState
-import com.outoftheboxrobotics.photoncore.PhotonCore
+//import com.outoftheboxrobotics.photoncore.PhotonCore
 import com.qualcomm.robotcore.hardware.*
 import com.qualcomm.robotcore.util.ElapsedTime
 import org.baylorschool.betabot.lib.SlidePIDConfig.kg
@@ -52,7 +52,7 @@ class Slides(hardwareMap: HardwareMap) {
         slideMotor2.direction = DcMotorSimple.Direction.FORWARD
         slideMotor1.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
         slideMotor2.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
-        PhotonCore.enable()
+        //PhotonCore.enable()
         profileTimer.reset()
         controller.reset()
     }

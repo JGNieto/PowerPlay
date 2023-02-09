@@ -2,7 +2,7 @@ package org.baylorschool.opmodes.test
 
 import com.acmerobotics.dashboard.config.Config
 import com.acmerobotics.roadrunner.geometry.Pose2d
-import com.outoftheboxrobotics.photoncore.PhotonCore
+//import com.outoftheboxrobotics.photoncore.PhotonCore
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import com.qualcomm.robotcore.hardware.PIDCoefficients
@@ -33,7 +33,7 @@ class MichaelLiftTest: LinearOpMode() {
     val maxSpeed = 8.0
 
     override fun runOpMode() {
-        PhotonCore.enable();
+        //PhotonCore.enable();
 
         var powerMultiplier = 0.1
 

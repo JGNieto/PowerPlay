@@ -2,7 +2,7 @@ package org.baylorschool.opmodes.test
 
 import com.acmerobotics.dashboard.FtcDashboard
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry
-import com.outoftheboxrobotics.photoncore.PhotonCore
+//import com.outoftheboxrobotics.photoncore.PhotonCore
 import com.qualcomm.robotcore.eventloop.opmode.Disabled
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
@@ -25,7 +25,7 @@ class JacksonDLTestBetter: LinearOpMode() {
     private val PRESET_DOWN_DISTAL = -1.042
     private val PRESET_DOWN_PROXIMAL = -0.007
     override fun runOpMode() {
-        PhotonCore.enable()
+        //PhotonCore.enable()
 
         val motorA1 = hardwareMap.get(DcMotorEx::class.java, Globals.liftProximalA)
         val motorB = BasicMotorAngleDevice(this, Globals.liftDistal, Globals.liftDistalTicksPerRotation, Globals.liftDistalConfig, Globals.liftDistalDirection)

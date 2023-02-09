@@ -1,6 +1,6 @@
 package org.baylorschool.opmodes.autonomous.encoder
 
-import com.outoftheboxrobotics.photoncore.PhotonCore
+//import com.outoftheboxrobotics.photoncore.PhotonCore
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import org.baylorschool.Globals
@@ -19,7 +19,7 @@ class RightCameraParkEncoder: LinearOpMode() {
     val right = EncoderPosition(-1332, 1500, 1500, -1332)
 
     override fun runOpMode() {
-        PhotonCore.enable()
+        //PhotonCore.enable()
 
         telemetry.addData("Status", "Getting ready. Please wait...")
         telemetry.update()

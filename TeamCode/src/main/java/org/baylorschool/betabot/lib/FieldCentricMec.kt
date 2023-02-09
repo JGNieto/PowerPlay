@@ -1,6 +1,6 @@
 package org.baylorschool.betabot.lib
 
-import com.outoftheboxrobotics.photoncore.PhotonCore
+//import com.outoftheboxrobotics.photoncore.PhotonCore
 import com.qualcomm.hardware.bosch.BNO055IMU
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
@@ -26,7 +26,7 @@ class FieldCentricMec : LinearOpMode() {
         val parameters = BNO055IMU.Parameters()
         parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS
         imu.initialize(parameters)
-        PhotonCore.enable()
+        //PhotonCore.enable()
 
         var slowmodeToggle = false
         var slowmode = 1.0

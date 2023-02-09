@@ -16,7 +16,7 @@ import com.acmerobotics.roadrunner.profile.MotionProfile;
 import com.acmerobotics.roadrunner.profile.MotionProfileGenerator;
 import com.acmerobotics.roadrunner.profile.MotionState;
 import com.acmerobotics.roadrunner.util.NanoClock;
-import com.outoftheboxrobotics.photoncore.PhotonCore;
+//import com.outoftheboxrobotics.photoncore.PhotonCore;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.RobotLog;
@@ -69,7 +69,7 @@ public class ManualFeedforwardTuner extends LinearOpMode {
             RobotLog.setGlobalErrorMsg("Feedforward constants usually don't need to be tuned " +
                     "when using the built-in drive motor velocity PID.");
         }
-        PhotonCore.enable();
+        //PhotonCore.enable();
 
         telemetry = new MultipleTelemetry(telemetry, dashboard.getTelemetry());
 

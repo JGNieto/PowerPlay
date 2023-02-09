@@ -1,6 +1,6 @@
 package org.baylorschool.betabot.lib
 
-import com.outoftheboxrobotics.photoncore.PhotonCore
+//import com.outoftheboxrobotics.photoncore.PhotonCore
 import com.qualcomm.hardware.bosch.BNO055IMU
 import com.qualcomm.robotcore.hardware.DcMotorEx
 import com.qualcomm.robotcore.hardware.DcMotorSimple
@@ -31,7 +31,7 @@ class Mecanum(hardwareMap: HardwareMap) {
         brMotor = hardwareMap.get(DcMotorEx::class.java, "brMotor")
         frMotor.direction = DcMotorSimple.Direction.REVERSE
         brMotor.direction = DcMotorSimple.Direction.REVERSE
-        PhotonCore.enable()
+        //PhotonCore.enable()
     }
 
     fun telemetry(telemetry: Telemetry) {

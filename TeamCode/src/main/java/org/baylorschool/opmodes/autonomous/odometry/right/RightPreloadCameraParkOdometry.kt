@@ -1,7 +1,7 @@
 package org.baylorschool.opmodes.autonomous.odometry.right
 
 import com.acmerobotics.roadrunner.geometry.Pose2d
-import com.outoftheboxrobotics.photoncore.PhotonCore
+//import com.outoftheboxrobotics.photoncore.PhotonCore
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.hardware.DcMotor
@@ -24,7 +24,7 @@ class RightPreloadCameraParkOdometry: LinearOpMode() {
     private val dropPosition = Pose2d(16.5786, -7.31907, 3.9475779608)
 
     override fun runOpMode() {
-        PhotonCore.enable()
+        //PhotonCore.enable()
 
         telemetry.addData("Status", "Getting ready. Please wait...")
         telemetry.update()
