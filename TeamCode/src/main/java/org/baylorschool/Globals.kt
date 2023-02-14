@@ -41,7 +41,13 @@ object Globals {
     // I2C
     const val distanceSensor = "distanceSensor"
 
-    const val optimalReleaseDistance = 6.0
+    const val optimalReleaseDistance = 3.0
+    const val optimalReleaseDistanceTolerance = 2.0
+    const val seeingPoleThreshold = 15.0 // If distance is higher than this, assume we are not pointing at the pole.
+
+    const val junctionYPosition = 100 // Lower values mean too far to the left.
+    const val junctionYPositionTolerance = 200
+    const val junctionWidthMinimum = 500
 
     // Lift presets
     val liftDropHigh = LiftPositionAngle(1.86, 1.044, 0.0)

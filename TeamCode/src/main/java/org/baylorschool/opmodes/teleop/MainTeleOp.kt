@@ -105,7 +105,7 @@ class MainTeleOp: LinearOpMode() {
             }
 
             if (gamepad2.b || gamepad2.dpad_up) {
-                clawPosition = 0.0
+                clawPosition = 0.071
             }
 
             if (gamepad2.right_bumper) {
@@ -120,8 +120,8 @@ class MainTeleOp: LinearOpMode() {
 
             clawPitch.position = clawPosition
 
-//            mecanum.telemetry(telemetry)
-//            telemetry.addData("Claw pos", clawPosition)
+            mecanum.telemetry(telemetry)
+            telemetry.addData("Claw pos", clawPosition)
 //            telemetry.addData("Proximal position", motorA1.currentPosition)
 //            telemetry.addData("Distal position", motorB.getPosition())
 

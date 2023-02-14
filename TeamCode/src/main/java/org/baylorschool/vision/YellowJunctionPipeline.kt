@@ -11,6 +11,8 @@ class YellowJunctionPipeline(private val rotate: Boolean = false, private val te
     private val hsvMat = Mat()
     private val thresholdMat = Mat()
 
+    var junctionRect: Rect? = null
+
     override fun processFrame(input: Mat): Mat {
         val contours: List<MatOfPoint> = LinkedList()
 
@@ -39,6 +41,10 @@ class YellowJunctionPipeline(private val rotate: Boolean = false, private val te
                     largestRectArea = area
                 }
             }
+        }
+
+        if (largestRect != null) {
+            junctionRect = largestRect
         }
 
         if (telemetry != null) {
