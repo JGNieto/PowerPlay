@@ -1,6 +1,5 @@
 package org.baylorschool.opmodes.autonomous.odometry.left
 
-import com.acmerobotics.roadrunner.geometry.Pose2d
 //import com.outoftheboxrobotics.photoncore.PhotonCore
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode

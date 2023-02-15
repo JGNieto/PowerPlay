@@ -16,6 +16,8 @@ object AdjustJunctionWebcam {
         var direction = 0
 
         while (System.currentTimeMillis() - correctionStartTime < 3000 && opMode.opModeIsActive()) {
+            mecanum.updatePoseEstimate()
+
             val rect = junctionPipeline.junctionRect
             if (rect == null) break
 
@@ -25,14 +27,14 @@ object AdjustJunctionWebcam {
                 if (direction == -1) speed *= 0.7
                 direction = 1
 
-                mecanum.setWeightedDrivePower(Pose2d(0.0, -speed, 0.0))
+                mecanum.setWeightedDrivePower(Pose2d(0.0, speed, 0.0))
 
                 opMode.telemetry.addData("Direction", "Right")
             } else if (rect.y > Globals.junctionYPosition + Globals.junctionYPositionTolerance) {
                 if (direction == 1) speed *= 0.7
                 direction = -1
 
-                mecanum.setWeightedDrivePower(Pose2d(0.0, speed, 0.0))
+                mecanum.setWeightedDrivePower(Pose2d(0.0, -speed, 0.0))
 
                 opMode.telemetry.addData("Direction", "Left")
             } else {
@@ -51,7 +53,9 @@ object AdjustJunctionWebcam {
         while (System.currentTimeMillis() - correctionStartTime < 3000 && opMode.opModeIsActive()) {
             val dist = distance.getDistance(DistanceUnit.INCH)
 
-            if (dist > Globals.optimalReleaseDistance + Globals.optimalReleaseDistanceTolerance) {
+            if (dist > Globals.seeingPoleThreshold) {
+                direction = 0
+            } else if (dist > Globals.optimalReleaseDistance + Globals.optimalReleaseDistanceTolerance) {
                 if (direction == -1) speed *= 0.7
                 direction = 1
             } else if (dist < Globals.optimalReleaseDistance - Globals.optimalReleaseDistanceTolerance) {
@@ -62,6 +66,9 @@ object AdjustJunctionWebcam {
             }
 
             mecanum.setWeightedDrivePower(Pose2d(speed * direction * -1, 0.0, 0.0))
+            opMode.telemetry.addData("Distance", dist)
+            opMode.telemetry.addData("Speed", speed)
+            opMode.telemetry.update()
         }
 
         mecanum.setDrivePower(Pose2d(0.0, 0.0, 0.0))

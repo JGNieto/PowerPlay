@@ -31,6 +31,7 @@ import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryAcceleration
 import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryVelocityConstraint;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.lynx.LynxModule;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -273,6 +274,14 @@ public class Mecanum extends MecanumDrive {
         }
 
         setDrivePower(vel);
+    }
+
+    public void sleep(long milliseconds, LinearOpMode opMode) {
+        final long startTime = System.currentTimeMillis();
+
+        while (System.currentTimeMillis() - startTime < milliseconds && opMode.opModeIsActive()) {
+            updatePoseEstimate();
+        }
     }
 
     @NonNull

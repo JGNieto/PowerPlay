@@ -23,7 +23,7 @@ class BasicMotorAngleDevice(val motor: DcMotorEx, ticksPerTurn: Double, val conf
 
     private val ticksPerRadian = ticksPerTurn / (2 * PI)
 
-    private var targetAngle = 0.0
+    var targetAngle = 0.0
     private var direction = TargetAngleDirection.ABSOLUTE
     private var encoderValueAtZero = 0.0
     private var needToStop = false

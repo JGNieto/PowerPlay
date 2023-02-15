@@ -1,10 +1,9 @@
 package org.baylorschool.opmodes.autonomous.odometry.right
 
-import android.provider.Settings.Global
+//import com.outoftheboxrobotics.photoncore.PhotonCore
 import com.acmerobotics.roadrunner.geometry.Pose2d
 import com.acmerobotics.roadrunner.geometry.Vector2d
 import com.qualcomm.hardware.rev.Rev2mDistanceSensor
-//import com.outoftheboxrobotics.photoncore.PhotonCore
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.hardware.DcMotor
@@ -18,7 +17,6 @@ import org.baylorschool.util.angledevice.BasicMotorAngleDevice
 import org.baylorschool.vision.AprilTagBinaryPipeline
 import org.baylorschool.vision.CameraUtil
 import org.baylorschool.vision.YellowJunctionPipeline
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit
 import kotlin.math.PI
 
 @Autonomous(name = "RightPreloadCameraParkOdometry", group = "AA Odometry Right")
@@ -94,7 +92,7 @@ class RightPreloadCameraParkOdometry: LinearOpMode() {
         motorB.moveToAngle(Globals.liftDropHigh.distal)
         clawPitch.position = Globals.liftDropHigh.claw
 
-        sleep(1500)
+        mecanum.sleep(1500, this)
 
         val trajAdjust = mecanum.trajectoryBuilder(mecanum.poseEstimate)
             .lineToLinearHeading(dropPosition)
@@ -106,22 +104,54 @@ class RightPreloadCameraParkOdometry: LinearOpMode() {
 
         AdjustJunctionWebcam.adjustJunctionWebcam(this, distance, junctionPipeline, mecanum)
 
-        sleep(2000)
+        mecanum.sleep(2000, this)
 
         claw.open()
 
-        sleep(500)
+        mecanum.sleep(500, this)
+
+        mecanum.updatePoseEstimate()
+
+        val clearSpaceTraj = mecanum.trajectoryBuilder(mecanum.poseEstimate)
+            .forward(3.0)
+            .build()
+
+        mecanum.followTrajectory(clearSpaceTraj)
 
         motorA1.targetPosition =
             ((Globals.liftProximalStartAngle - Globals.liftProximalStartAngle) * Globals.liftProximalATicksPerRotation / (2 * PI)).toInt()
         motorA1.mode = DcMotor.RunMode.RUN_TO_POSITION
-        motorA1.power = 0.5
+        motorA1.power = 0.3
         motorB.moveToAngle(Globals.liftDistalStartAngle)
         clawPitch.position = 0.071
 
         println("ROBOT POSITION DROP: ${mecanum.poseEstimate.x}, ${mecanum.poseEstimate.y}, ${mecanum.poseEstimate.heading}º")
 
-        sleep(2000)
+        val retractStartTime = System.currentTimeMillis()
+
+        while ((motorA1.currentPosition - motorA1.targetPosition > 30 || motorB.getPosition() - motorB.targetAngle > Math.toRadians(5.0)) && System.currentTimeMillis() - retractStartTime < 2000) {
+            mecanum.updatePoseEstimate()
+        }
+
+        val parkingTraj =
+            if (targetTag == 1) {
+                mecanum.trajectorySequenceBuilder(mecanum.poseEstimate)
+                    .lineToConstantHeading(Vector2d(Globals.tileWidth * 1.5, - Globals.tileWidth * 0.5))
+                    .forward(9.0)
+                    .build()
+            } else if (targetTag == 0) {
+                mecanum.trajectorySequenceBuilder(mecanum.poseEstimate)
+                    .lineToConstantHeading(Vector2d(Globals.tileWidth * 0.5, - Globals.tileWidth * 0.5))
+                    .forward(9.0)
+                    .build()
+            } else {
+                mecanum.trajectorySequenceBuilder(mecanum.poseEstimate)
+                    .lineToConstantHeading(Vector2d(Globals.tileWidth * 2.5, - Globals.tileWidth * 0.5))
+                    .forward(9.0)
+                    .build()
+            }
+
+        mecanum.followTrajectorySequence(parkingTraj)
 
         motorB.cleanup()
         webcam.closeCameraDevice()
