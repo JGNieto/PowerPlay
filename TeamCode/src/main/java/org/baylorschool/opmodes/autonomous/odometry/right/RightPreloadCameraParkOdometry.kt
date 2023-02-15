@@ -11,6 +11,7 @@ import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorEx
 import com.qualcomm.robotcore.hardware.Servo
 import org.baylorschool.Globals
+import org.baylorschool.drive.AdjustJunctionWebcam
 import org.baylorschool.drive.Mecanum
 import org.baylorschool.util.Claw
 import org.baylorschool.util.angledevice.BasicMotorAngleDevice
@@ -89,78 +90,38 @@ class RightPreloadCameraParkOdometry: LinearOpMode() {
         motorA1.targetPosition =
             ((Globals.liftDropHigh.proximal - Globals.liftProximalStartAngle) * Globals.liftProximalATicksPerRotation / (2 * PI)).toInt()
         motorA1.mode = DcMotor.RunMode.RUN_TO_POSITION
-        motorA1.power = 0.5
-
+        motorA1.power = 0.7
         motorB.moveToAngle(Globals.liftDropHigh.distal)
         clawPitch.position = Globals.liftDropHigh.claw
 
         sleep(1500)
 
+        val trajAdjust = mecanum.trajectoryBuilder(mecanum.poseEstimate)
+            .lineToLinearHeading(dropPosition)
+            .build()
+
+        mecanum.followTrajectory(trajAdjust)
+
         println("ROBOT POSITION UP: ${mecanum.poseEstimate.x}, ${mecanum.poseEstimate.y}, ${mecanum.poseEstimate.heading}º")
 
-        var correctionStartTime = System.currentTimeMillis()
-
-        var speed = 0.2
-        var direction = 0
-
-        while (System.currentTimeMillis() - correctionStartTime < 3000 && opModeIsActive()) {
-            val rect = junctionPipeline.junctionRect
-            if (rect == null) break
-
-            if (distance.getDistance(DistanceUnit.INCH) < Globals.seeingPoleThreshold && System.currentTimeMillis() - correctionStartTime > 1500) break
-
-            if (rect.width < Globals.junctionWidthMinimum || rect.y < Globals.junctionYPosition - Globals.junctionYPositionTolerance) {
-                if (direction == -1) speed *= 0.7
-                direction = 1
-
-                mecanum.setWeightedDrivePower(Pose2d(0.0, -speed, 0.0))
-
-                telemetry.addData("Direction", "Right")
-            } else if (rect.y > Globals.junctionYPosition + Globals.junctionYPositionTolerance) {
-                if (direction == 1) speed *= 0.7
-                direction = -1
-
-                mecanum.setWeightedDrivePower(Pose2d(0.0, speed, 0.0))
-
-                telemetry.addData("Direction", "Left")
-            } else {
-                break
-            }
-
-            telemetry.addData("Rect Y", rect.y)
-            telemetry.addData("Speed", speed)
-            telemetry.update()
-        }
-
-        webcam.closeCameraDeviceAsync {  }
-
-        speed = 0.2
-        direction = 0
-        correctionStartTime = System.currentTimeMillis()
-
-        while (System.currentTimeMillis() - correctionStartTime < 3000 && opModeIsActive()) {
-            val dist = distance.getDistance(DistanceUnit.INCH)
-
-            if (dist > Globals.optimalReleaseDistance + Globals.optimalReleaseDistanceTolerance) {
-                if (direction == -1) speed *= 0.7
-                direction = 1
-            } else if (dist < Globals.optimalReleaseDistance - Globals.optimalReleaseDistanceTolerance) {
-                if (direction == 1) speed *= 0.7
-                direction = -1
-            } else {
-                break
-            }
-
-            mecanum.setWeightedDrivePower(Pose2d(speed * direction * -1, 0.0, 0.0))
-        }
-
-        mecanum.setDrivePower(Pose2d(0.0, 0.0, 0.0))
+        AdjustJunctionWebcam.adjustJunctionWebcam(this, distance, junctionPipeline, mecanum)
 
         sleep(2000)
 
         claw.open()
 
+        sleep(500)
+
+        motorA1.targetPosition =
+            ((Globals.liftProximalStartAngle - Globals.liftProximalStartAngle) * Globals.liftProximalATicksPerRotation / (2 * PI)).toInt()
+        motorA1.mode = DcMotor.RunMode.RUN_TO_POSITION
+        motorA1.power = 0.5
+        motorB.moveToAngle(Globals.liftDistalStartAngle)
+        clawPitch.position = 0.071
+
         println("ROBOT POSITION DROP: ${mecanum.poseEstimate.x}, ${mecanum.poseEstimate.y}, ${mecanum.poseEstimate.heading}º")
+
+        sleep(2000)
 
         motorB.cleanup()
         webcam.closeCameraDevice()
