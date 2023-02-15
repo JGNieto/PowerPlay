@@ -77,12 +77,14 @@ class RightPreloadCameraParkOdometry: LinearOpMode() {
 
         val trajToDeliver = mecanum.trajectorySequenceBuilder(startPosition)
             .back(2.0)
-            .lineToConstantHeading(Vector2d(Globals.tileWidth / 2.0, startPosition.y + 2.0))
-            .lineToConstantHeading(Vector2d(Globals.tileWidth / 2.0, -Globals.tileWidth / 2.0))
+            .lineToLinearHeading(Pose2d(Globals.tileWidth / 2.0, startPosition.y + 2.0, startPosition.heading))
+            .lineToLinearHeading(Pose2d(Globals.tileWidth / 2.0, -Globals.tileWidth / 2.0, startPosition.heading))
             .lineToLinearHeading(dropPosition)
             .build()
 
         mecanum.followTrajectorySequence(trajToDeliver)
+
+        println("ROBOT POSITION FIRST: ${mecanum.poseEstimate.x}, ${mecanum.poseEstimate.y}, ${mecanum.poseEstimate.heading}º")
 
         motorA1.targetPosition =
             ((Globals.liftDropHigh.proximal - Globals.liftProximalStartAngle) * Globals.liftProximalATicksPerRotation / (2 * PI)).toInt()
@@ -91,6 +93,10 @@ class RightPreloadCameraParkOdometry: LinearOpMode() {
 
         motorB.moveToAngle(Globals.liftDropHigh.distal)
         clawPitch.position = Globals.liftDropHigh.claw
+
+        sleep(1500)
+
+        println("ROBOT POSITION UP: ${mecanum.poseEstimate.x}, ${mecanum.poseEstimate.y}, ${mecanum.poseEstimate.heading}º")
 
         var correctionStartTime = System.currentTimeMillis()
 
@@ -153,6 +159,8 @@ class RightPreloadCameraParkOdometry: LinearOpMode() {
         sleep(2000)
 
         claw.open()
+
+        println("ROBOT POSITION DROP: ${mecanum.poseEstimate.x}, ${mecanum.poseEstimate.y}, ${mecanum.poseEstimate.heading}º")
 
         motorB.cleanup()
         webcam.closeCameraDevice()
