@@ -55,6 +55,12 @@ class YellowJunctionPipeline(private val rotate: Boolean = false, private val te
                 telemetry.addData("y", largestRect.y)
                 telemetry.addData("width", largestRect.width)
                 telemetry.addData("height", largestRect.height)
+
+                val x = largestRect.x + largestRect.width / 2.0
+                val y = largestRect.y + largestRect.height / 2.0
+
+                telemetry.addData("x avg", x)
+                telemetry.addData("y avg", y)
             }
             telemetry.update()
         }

@@ -122,8 +122,11 @@ class RightPreloadCameraParkOdometry: LinearOpMode() {
             ((Globals.liftProximalStartAngle - Globals.liftProximalStartAngle) * Globals.liftProximalATicksPerRotation / (2 * PI)).toInt()
         motorA1.mode = DcMotor.RunMode.RUN_TO_POSITION
         motorA1.power = 0.3
+        clawPitch.position = Globals.liftDropHigh.claw
+
+        sleep(500)
+
         motorB.moveToAngle(Globals.liftDistalStartAngle)
-        clawPitch.position = 0.071
 
         println("ROBOT POSITION DROP: ${mecanum.poseEstimate.x}, ${mecanum.poseEstimate.y}, ${mecanum.poseEstimate.heading}º")
 

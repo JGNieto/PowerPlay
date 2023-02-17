@@ -41,16 +41,16 @@ object Globals {
     // I2C
     const val distanceSensor = "distanceSensor"
 
-    const val optimalReleaseDistance = 3.0
-    const val optimalReleaseDistanceTolerance = 2.0
+    const val optimalReleaseDistance = 2.57
+    const val optimalReleaseDistanceTolerance = 0.5
     const val seeingPoleThreshold = 15.0 // If distance is higher than this, assume we are not pointing at the pole.
 
-    const val junctionYPosition = 100 // Lower values mean too far to the left.
-    const val junctionYPositionTolerance = 200
+    const val junctionYPosition = 210 // Lower values mean too far to the left.
+    const val junctionYPositionTolerance = 50
     const val junctionWidthMinimum = 500
 
     // Lift presets
-    val liftDropHigh = LiftPositionAngle(1.86, 1.044, 0.0)
+    val liftDropHigh = LiftPositionAngle(1.86, 1.044, 0.071)
     val liftGrabTeleOp = LiftPositionAngle(-0.007, -1.042, 0.892)
 
     // Positioning measurements
@@ -59,8 +59,8 @@ object Globals {
 
     const val tileWidth = 24.0
 
-    val rightStartPosition = Pose2d(tileWidth + driveTrainWidth / 2.0, - 3 * tileWidth + frontPlaneDistance, Math.toRadians(270.0))
-    val leftStartPosition = Pose2d(- tileWidth - driveTrainWidth / 2.0, - 3 * tileWidth + frontPlaneDistance, Math.toRadians(270.0))
+    val rightStartPosition = Pose2d(tileWidth + driveTrainWidth / 2.0 + 0.4, - 3 * tileWidth + frontPlaneDistance, Math.toRadians(270.0))
+    val leftStartPosition = Pose2d(- tileWidth - driveTrainWidth / 2.0 - 0.4, - 3 * tileWidth + frontPlaneDistance, Math.toRadians(270.0))
 
     const val clawYaw = "clawYaw"
 
@@ -85,8 +85,8 @@ object Globals {
 
     // const val liftProximalStartAngle = - 317 * 2 * PI / 3373.5
     // const val liftDistalStartAngle = - 321 * 2 * PI / 537.7
-    const val liftProximalStartAngle = - 243 * 2 * PI / 2698.8
-    const val liftDistalStartAngle = 1211 * 2 * PI / 3243.75
+    const val liftProximalStartAngle = - 261 * 2 * PI / 2698.8
+    const val liftDistalStartAngle = 1235 * 2 * PI / 3243.75
 
     const val highProximalAngle = 1.7
     const val highDistalAngle = -3.3

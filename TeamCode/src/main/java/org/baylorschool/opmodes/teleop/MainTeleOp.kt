@@ -20,11 +20,11 @@ import kotlin.math.abs
 
 @TeleOp(name = "MainTeleOp", group = "AA Main")
 class MainTeleOp: LinearOpMode() {
-    private val PRESET_UP_DISTAL = 1.044
-    private val PRESET_UP_PROXIMAL = 1.86
+    private val PRESET_UP_DISTAL = Globals.liftDropHigh.distal
+    private val PRESET_UP_PROXIMAL = Globals.liftDropHigh.proximal
 
-    private val PRESET_DOWN_DISTAL = -1.042
-    private val PRESET_DOWN_PROXIMAL = -0.007
+    private val PRESET_DOWN_DISTAL = Globals.liftGrabTeleOp.distal
+    private val PRESET_DOWN_PROXIMAL = Globals.liftGrabTeleOp.proximal
 
     override fun runOpMode() {
         //PhotonCore.enable()
@@ -100,11 +100,15 @@ class MainTeleOp: LinearOpMode() {
             }
 
             if (gamepad2.dpad_down) {
-                clawPosition = 0.892
+                clawPosition = Globals.liftGrabTeleOp.claw
             }
 
-            if (gamepad2.b || gamepad2.dpad_up) {
-                clawPosition = 0.071
+            if (gamepad2.b) {
+                clawPosition = 0.0
+            }
+
+            if (gamepad2.dpad_up) {
+                clawPosition = Globals.liftDropHigh.claw
             }
 
             if (gamepad2.right_bumper) {
@@ -121,8 +125,8 @@ class MainTeleOp: LinearOpMode() {
 
             mecanum.telemetry(telemetry)
             telemetry.addData("Claw pos", clawPosition)
-//            telemetry.addData("Proximal position", motorA1.currentPosition)
-//            telemetry.addData("Distal position", motorB.getPosition())
+            telemetry.addData("Proximal position", motorA1.currentPosition)
+            telemetry.addData("Distal position", motorB.getPosition())
 
             telemetry.addData("Distal status", motorB.motorStatus.toString())
             telemetry.addData("Distal motor mode", motorB.motor.mode)

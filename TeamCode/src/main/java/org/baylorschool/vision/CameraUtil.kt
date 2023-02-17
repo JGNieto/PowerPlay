@@ -1,5 +1,6 @@
 package org.baylorschool.vision
 
+import com.acmerobotics.dashboard.FtcDashboard
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import org.baylorschool.Globals
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName
@@ -49,6 +50,8 @@ object CameraUtil {
                 println("There was an error opening the camera. Error code $errorCode")
             }
         })
+
+        //FtcDashboard.getInstance().startCameraStream(webcam, 0.0)
 
         return webcam
     }

@@ -21,16 +21,21 @@ object AdjustJunctionWebcam {
             val rect = junctionPipeline.junctionRect
             if (rect == null) break
 
-            if (distance.getDistance(DistanceUnit.INCH) < Globals.seeingPoleThreshold && System.currentTimeMillis() - correctionStartTime > 1500) break
+            val x = rect.x + rect.width / 2.0
+            val y = rect.y + rect.height / 2.0
 
-            if (rect.width < Globals.junctionWidthMinimum || rect.y < Globals.junctionYPosition - Globals.junctionYPositionTolerance) {
+            val yTolerance = rect.height / 4.0
+
+            //if (distance.getDistance(DistanceUnit.INCH) < Globals.seeingPoleThreshold && System.currentTimeMillis() - correctionStartTime > 1500) break
+
+            if (rect.width < Globals.junctionWidthMinimum || y < Globals.junctionYPosition - yTolerance) {
                 if (direction == -1) speed *= 0.7
                 direction = 1
 
                 mecanum.setWeightedDrivePower(Pose2d(0.0, speed, 0.0))
 
                 opMode.telemetry.addData("Direction", "Right")
-            } else if (rect.y > Globals.junctionYPosition + Globals.junctionYPositionTolerance) {
+            } else if (y > Globals.junctionYPosition + yTolerance) {
                 if (direction == 1) speed *= 0.7
                 direction = -1
 
@@ -42,6 +47,7 @@ object AdjustJunctionWebcam {
             }
 
             opMode.telemetry.addData("Rect Y", rect.y)
+            opMode.telemetry.addData("Y", y)
             opMode.telemetry.addData("Speed", speed)
             opMode.telemetry.update()
         }
