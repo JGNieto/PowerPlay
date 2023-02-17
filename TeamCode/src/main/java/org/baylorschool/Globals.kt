@@ -41,7 +41,7 @@ object Globals {
     // I2C
     const val distanceSensor = "distanceSensor"
 
-    const val optimalReleaseDistance = 2.57
+    const val optimalReleaseDistance = 3.0
     const val optimalReleaseDistanceTolerance = 0.5
     const val seeingPoleThreshold = 15.0 // If distance is higher than this, assume we are not pointing at the pole.
 

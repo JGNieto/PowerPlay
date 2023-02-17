@@ -112,6 +112,7 @@ class RightPreloadCameraParkOdometry: LinearOpMode() {
         mecanum.sleep(500, this)
 
         mecanum.updatePoseEstimate()
+        claw.close()
 
         val clearSpaceTraj = mecanum.trajectoryBuilder(mecanum.poseEstimate)
             .forward(3.0)

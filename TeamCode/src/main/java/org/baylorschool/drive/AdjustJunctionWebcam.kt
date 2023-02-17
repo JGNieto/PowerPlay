@@ -76,6 +76,9 @@ object AdjustJunctionWebcam {
                 if (direction == 1) speed *= 0.7
                 direction = -1
             } else {
+                opMode.telemetry.addData("Distance", dist)
+                opMode.telemetry.addData("Speed", speed)
+                opMode.telemetry.update()
                 break
             }
 
