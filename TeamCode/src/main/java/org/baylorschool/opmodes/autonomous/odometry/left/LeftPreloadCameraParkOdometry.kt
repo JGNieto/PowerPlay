@@ -26,7 +26,7 @@ class LeftPreloadCameraParkOdometry: LinearOpMode() {
     // POSITIONS ARE DESIGNED FOR LEFT RED, BUT WORK FOR LEFT BLUE AS WELL
     private val startPosition = Globals.leftStartPosition
 
-    private val dropPosition = Pose2d(-Globals.tileWidth, -Globals.tileWidth / 2.0, Math.toRadians(270.0))
+    private val dropPosition = Pose2d(-Globals.tileWidth * 1.2, -Globals.tileWidth / 2.0, Math.toRadians(270.0))
 
     override fun runOpMode() {
         //PhotonCore.enable()
@@ -103,7 +103,7 @@ class LeftPreloadCameraParkOdometry: LinearOpMode() {
 
         println("ROBOT POSITION UP: ${mecanum.poseEstimate.x}, ${mecanum.poseEstimate.y}, ${mecanum.poseEstimate.heading}º")
 
-        AdjustJunctionWebcam.adjustJunctionWebcam(this, distance, junctionPipeline, mecanum, AdjustJunctionWebcam.Side.LEFT)
+        AdjustJunctionWebcam.adjustJunctionWebcam(this, distance, junctionPipeline, mecanum, AdjustJunctionWebcam.Side.RIGHT)
 
         mecanum.sleep(2000, this)
 
