@@ -1,4 +1,4 @@
-package org.baylorschool.opmodes.autonomous.odometry.right
+package org.baylorschool.opmodes.autonomous.odometry.left
 
 //import com.outoftheboxrobotics.photoncore.PhotonCore
 import com.acmerobotics.roadrunner.geometry.Pose2d
@@ -20,13 +20,13 @@ import org.baylorschool.vision.CameraUtil
 import org.baylorschool.vision.YellowJunctionPipeline
 import kotlin.math.PI
 
-@Autonomous(name = "RightPreloadCameraParkOdometry", group = "AA Odometry Right")
-class RightPreloadCameraParkOdometry: LinearOpMode() {
+@Autonomous(name = "LeftPreloadCameraParkOdometry", group = "AA Odometry Left")
+class LeftPreloadCameraParkOdometry: LinearOpMode() {
 
-    // POSITIONS ARE DESIGNED FOR RIGHT RED, BUT WORK FOR RIGHT BLUE AS WELL
-    private val startPosition = Globals.rightStartPosition
+    // POSITIONS ARE DESIGNED FOR LEFT RED, BUT WORK FOR LEFT BLUE AS WELL
+    private val startPosition = Globals.leftStartPosition
 
-    private val dropPosition = Pose2d(Globals.tileWidth * 0.9, -Globals.tileWidth / 2.0, Math.toRadians(270.0))
+    private val dropPosition = Pose2d(-Globals.tileWidth, -Globals.tileWidth / 2.0, Math.toRadians(270.0))
 
     override fun runOpMode() {
         //PhotonCore.enable()
@@ -77,8 +77,8 @@ class RightPreloadCameraParkOdometry: LinearOpMode() {
 
         val trajToDeliver = mecanum.trajectorySequenceBuilder(startPosition)
             .back(2.0)
-            .lineToLinearHeading(Pose2d(Globals.tileWidth / 2.0, startPosition.y + 2.0, startPosition.heading))
-            .lineToLinearHeading(Pose2d(Globals.tileWidth / 2.0, -Globals.tileWidth / 2.0, startPosition.heading))
+            .lineToLinearHeading(Pose2d(- Globals.tileWidth / 2.0, startPosition.y + 2.0, startPosition.heading))
+            .lineToLinearHeading(Pose2d(- Globals.tileWidth / 2.0, -Globals.tileWidth / 2.0, startPosition.heading))
             .lineToLinearHeading(dropPosition)
             .build()
 
@@ -103,7 +103,7 @@ class RightPreloadCameraParkOdometry: LinearOpMode() {
 
         println("ROBOT POSITION UP: ${mecanum.poseEstimate.x}, ${mecanum.poseEstimate.y}, ${mecanum.poseEstimate.heading}º")
 
-        AdjustJunctionWebcam.adjustJunctionWebcam(this, distance, junctionPipeline, mecanum, AdjustJunctionWebcam.Side.RIGHT)
+        AdjustJunctionWebcam.adjustJunctionWebcam(this, distance, junctionPipeline, mecanum, AdjustJunctionWebcam.Side.LEFT)
 
         mecanum.sleep(2000, this)
 
@@ -140,18 +140,18 @@ class RightPreloadCameraParkOdometry: LinearOpMode() {
         val parkingTraj =
             if (targetTag == 1) {
                 mecanum.trajectorySequenceBuilder(mecanum.poseEstimate)
-                    .lineToConstantHeading(Vector2d(Globals.tileWidth * 1.5, - Globals.tileWidth * 0.5))
+                    .lineToConstantHeading(Vector2d(-Globals.tileWidth * 1.5, - Globals.tileWidth * 0.5))
                     .forward(9.0)
                     .build()
-            } else if (targetTag == 0) {
+            } else if (targetTag == 2) {
                 mecanum.trajectorySequenceBuilder(mecanum.poseEstimate)
-                    .lineToConstantHeading(Vector2d(Globals.tileWidth * 0.5, - Globals.tileWidth * 0.5))
+                    .lineToConstantHeading(Vector2d(-Globals.tileWidth * 0.5, - Globals.tileWidth * 0.5))
                     .forward(9.0)
                     .build()
             } else {
                 mecanum.trajectorySequenceBuilder(mecanum.poseEstimate)
                     .lineToConstantHeading(
-                        Vector2d(Globals.tileWidth * 2.5, - Globals.tileWidth * 0.5),
+                        Vector2d(-Globals.tileWidth * 2.5, - Globals.tileWidth * 0.5),
                         Mecanum.getVelocityConstraint(30.0, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         Mecanum.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
                     )

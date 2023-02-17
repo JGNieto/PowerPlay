@@ -9,7 +9,12 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit
 
 object AdjustJunctionWebcam {
 
-    fun adjustJunctionWebcam(opMode: LinearOpMode, distance: Rev2mDistanceSensor, junctionPipeline: YellowJunctionPipeline, mecanum: Mecanum) {
+    enum class Side {
+        RIGHT,
+        LEFT
+    }
+
+    fun adjustJunctionWebcam(opMode: LinearOpMode, distance: Rev2mDistanceSensor, junctionPipeline: YellowJunctionPipeline, mecanum: Mecanum, fieldSide: Side) {
         var correctionStartTime = System.currentTimeMillis()
 
         var speed = 0.2
@@ -28,14 +33,16 @@ object AdjustJunctionWebcam {
 
             //if (distance.getDistance(DistanceUnit.INCH) < Globals.seeingPoleThreshold && System.currentTimeMillis() - correctionStartTime > 1500) break
 
-            if (rect.width < Globals.junctionWidthMinimum || y < Globals.junctionYPosition - yTolerance) {
+            val poleVisible = rect.width >= Globals.junctionWidthMinimum
+
+            if ((!poleVisible && fieldSide == Side.RIGHT) || y < Globals.junctionYPosition - yTolerance) {
                 if (direction == -1) speed *= 0.7
                 direction = 1
 
                 mecanum.setWeightedDrivePower(Pose2d(0.0, speed, 0.0))
 
                 opMode.telemetry.addData("Direction", "Right")
-            } else if (y > Globals.junctionYPosition + yTolerance) {
+            } else if ((!poleVisible && fieldSide == Side.LEFT) || y > Globals.junctionYPosition + yTolerance) {
                 if (direction == 1) speed *= 0.7
                 direction = -1
 
@@ -57,6 +64,7 @@ object AdjustJunctionWebcam {
         correctionStartTime = System.currentTimeMillis()
 
         while (System.currentTimeMillis() - correctionStartTime < 3000 && opMode.opModeIsActive()) {
+            mecanum.updatePoseEstimate()
             val dist = distance.getDistance(DistanceUnit.INCH)
 
             if (dist > Globals.seeingPoleThreshold) {

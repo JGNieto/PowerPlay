@@ -128,8 +128,8 @@ public class ManualFeedforwardTuner extends LinearOpMode {
                     telemetry.addData("Right", drive.rightFront.getCurrentPosition());
                     telemetry.addData("Center", drive.rightRear.getCurrentPosition());
 
-                    telemetry.addData("VLeft", ((StandardTrackingWheelLocalizer) drive.getLocalizer()).getWheelVelocities().get(0));
-                    telemetry.addData("VRight", ((StandardTrackingWheelLocalizer) drive.getLocalizer()).getWheelVelocities().get(1));
+                    //telemetry.addData("VLeft", ((StandardTrackingWheelLocalizer) drive.getLocalizer()).getWheelVelocities().get(0));
+                    //telemetry.addData("VRight", ((StandardTrackingWheelLocalizer) drive.getLocalizer()).getWheelVelocities().get(1));
 
                     telemetry.addData("VLeft Raw", drive.leftRear.getVelocity());
                     telemetry.addData("VRight Raw", drive.rightFront.getVelocity());

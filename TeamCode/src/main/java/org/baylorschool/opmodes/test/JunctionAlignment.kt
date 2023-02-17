@@ -20,7 +20,7 @@ class JunctionAlignment: LinearOpMode() {
 
         waitForStart()
 
-        AdjustJunctionWebcam.adjustJunctionWebcam(this, distance, junctionPipeline, mecanum)
+        AdjustJunctionWebcam.adjustJunctionWebcam(this, distance, junctionPipeline, mecanum, AdjustJunctionWebcam.Side.RIGHT)
     }
 
 }

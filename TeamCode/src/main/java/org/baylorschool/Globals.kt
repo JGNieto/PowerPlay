@@ -50,6 +50,8 @@ object Globals {
     const val junctionWidthMinimum = 500
 
     // Lift presets
+    val startingClawAngle = 0.071
+
     val liftDropHigh = LiftPositionAngle(1.86, 1.044, 0.071)
     val liftGrabTeleOp = LiftPositionAngle(-0.007, -1.042, 0.892)
 
@@ -60,7 +62,7 @@ object Globals {
     const val tileWidth = 24.0
 
     val rightStartPosition = Pose2d(tileWidth + driveTrainWidth / 2.0 + 0.4, - 3 * tileWidth + frontPlaneDistance, Math.toRadians(270.0))
-    val leftStartPosition = Pose2d(- tileWidth - driveTrainWidth / 2.0 - 0.4, - 3 * tileWidth + frontPlaneDistance, Math.toRadians(270.0))
+    val leftStartPosition = Pose2d(-(tileWidth + driveTrainWidth / 2.0 + 0.4), - 3 * tileWidth + frontPlaneDistance, Math.toRadians(270.0))
 
     const val clawYaw = "clawYaw"
 
@@ -85,8 +87,8 @@ object Globals {
 
     // const val liftProximalStartAngle = - 317 * 2 * PI / 3373.5
     // const val liftDistalStartAngle = - 321 * 2 * PI / 537.7
-    const val liftProximalStartAngle = - 261 * 2 * PI / 2698.8
-    const val liftDistalStartAngle = 1235 * 2 * PI / 3243.75
+    const val liftProximalStartAngle = - 255 * 2 * PI / 2698.8
+    const val liftDistalStartAngle = 1169 * 2 * PI / 3243.75
 
     const val highProximalAngle = 1.7
     const val highDistalAngle = -3.3
