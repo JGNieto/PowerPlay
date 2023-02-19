@@ -52,6 +52,7 @@ object Globals {
     // Lift presets
     val startingClawAngle = 0.071
 
+    //val liftDropHigh = LiftPositionAngle(1.86, 0.933, 0.071)
     val liftDropHigh = LiftPositionAngle(1.86, 1.044, 0.071)
     val liftGrabTeleOp = LiftPositionAngle(-0.007, -1.042, 0.892)
 

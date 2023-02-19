@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import org.baylorschool.Globals
 import org.baylorschool.drive.Mecanum
+import org.baylorschool.util.Claw
 import org.baylorschool.vision.AprilTagBinaryPipeline
 import org.baylorschool.vision.CameraUtil
 
@@ -23,6 +24,9 @@ class RightCameraParkOdometry: LinearOpMode() {
         val pipeline = AprilTagBinaryPipeline(telemetry, Globals.webcamRearRotate)
         val webcam = CameraUtil.openWebcam(this, pipeline, true, Globals.webcamRear)
         val mecanum = Mecanum(hardwareMap)
+        val claw = Claw(this)
+
+        claw.close()
 
         telemetry.addData("Status", "I'm looking for tags...")
         telemetry.update()

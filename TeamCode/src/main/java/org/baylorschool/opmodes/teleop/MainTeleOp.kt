@@ -13,6 +13,7 @@ import com.qualcomm.robotcore.hardware.Servo
 import org.baylorschool.Globals
 import org.baylorschool.util.Claw
 import org.baylorschool.util.Mecanum
+import org.baylorschool.util.angledevice.BasicMotorAngleConfig
 import org.baylorschool.util.angledevice.BasicMotorAngleDevice
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit
 import kotlin.math.PI
@@ -67,7 +68,7 @@ class MainTeleOp: LinearOpMode() {
             if (gamepad2.dpad_up) {
                 motorA1.targetPosition = ((PRESET_UP_PROXIMAL - Globals.liftProximalStartAngle) * Globals.liftProximalATicksPerRotation / (2 * PI)).toInt()
                 motorA1.mode = DcMotor.RunMode.RUN_TO_POSITION
-                motorA1.power = 0.8
+                motorA1.power = 0.7
             } else if (gamepad2.dpad_down) {
                 motorA1.targetPosition = ((PRESET_DOWN_PROXIMAL - Globals.liftProximalStartAngle) * Globals.liftProximalATicksPerRotation / (2 * PI)).toInt()
                 motorA1.mode = DcMotor.RunMode.RUN_TO_POSITION
