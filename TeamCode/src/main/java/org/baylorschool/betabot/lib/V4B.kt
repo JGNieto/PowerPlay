@@ -1,27 +1,40 @@
 package org.baylorschool.betabot.lib
 
-import com.qualcomm.robotcore.hardware.Gamepad
+  import com.qualcomm.robotcore.hardware.Gamepad
 import com.qualcomm.robotcore.hardware.HardwareMap
 import com.qualcomm.robotcore.hardware.Servo
-import org.firstinspires.ftc.robotcore.external.Telemetry
+  import org.firstinspires.ftc.robotcore.external.Telemetry
+
 
 class V4B(hardwareMap: HardwareMap) {
-    private val v4bServo: Servo
+
+    enum class IntakeState(var intakePower: Double) {
+       INTAKE(-1.0), DEPOSIT(1.0), REST(0.0)
+    }
+
+    val v4bServo1: Servo
+    val v4bServo2: Servo
 
     init {
-        v4bServo = hardwareMap.get(Servo::class.java, "v4bServo")
-        v4bServo.scaleRange(0.0, 1.0)
+        v4bServo1 = hardwareMap.get(Servo::class.java, "v4bServo1")
+        v4bServo2 = hardwareMap.get(Servo::class.java, "v4bServo2")
+        v4bServo1.scaleRange(0.0, 0.7)
+        v4bServo2.scaleRange(0.0, 0.7)
     }
 
     fun telemetry(telemetry: Telemetry) {
-        telemetry.addData("Servo Position", v4bServo.position)
-        telemetry.update()
+        telemetry.addData("V4B Position", v4bServo1.position)
+        telemetry.addData("V4B Position", v4bServo2.position)
     }
 
-    fun v4bLoop(gamepad1: Gamepad) {
-        if (gamepad1.y)
-            v4bServo.position += 0.001
-        else if (gamepad1.a)
-            v4bServo.position -= 0.001
+    fun intakeLoop(gamepad: Gamepad) {
+        if (gamepad.x) {
+            v4bServo1.position += 0.005
+            v4bServo2.position += 0.005
+        } else if (gamepad.b) {
+            v4bServo1.position -= 0.005
+            v4bServo2.position -= 0.005
+        }
+
     }
 }
