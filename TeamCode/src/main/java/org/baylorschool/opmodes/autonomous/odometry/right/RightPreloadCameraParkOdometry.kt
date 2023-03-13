@@ -13,6 +13,7 @@ import org.baylorschool.Globals
 import org.baylorschool.drive.AdjustJunctionWebcam
 import org.baylorschool.drive.DriveConstants
 import org.baylorschool.drive.Mecanum
+import org.baylorschool.opmodes.teleop.MainTeleOp
 import org.baylorschool.util.Claw
 import org.baylorschool.util.angledevice.BasicMotorAngleDevice
 import org.baylorschool.vision.AprilTagBinaryPipeline
@@ -143,12 +144,10 @@ class RightPreloadCameraParkOdometry: LinearOpMode() {
                 mecanum.trajectorySequenceBuilder(mecanum.poseEstimate)
                     .lineToConstantHeading(Vector2d(Globals.tileWidth * 1.5, - Globals.tileWidth * 0.5))
                     .forward(9.0)
-                    .build()
             } else if (targetTag == 0) {
                 mecanum.trajectorySequenceBuilder(mecanum.poseEstimate)
                     .lineToConstantHeading(Vector2d(Globals.tileWidth * 0.5, - Globals.tileWidth * 0.5))
                     .forward(9.0)
-                    .build()
             } else {
                 mecanum.trajectorySequenceBuilder(mecanum.poseEstimate)
                     .lineToConstantHeading(
@@ -157,12 +156,29 @@ class RightPreloadCameraParkOdometry: LinearOpMode() {
                         Mecanum.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
                     )
                     //.forward(9.0)
-                    .build()
             }
 
-        mecanum.followTrajectorySequence(parkingTraj)
+        mecanum.followTrajectorySequence(
+            parkingTraj.
+                addTemporalMarker(1.0) {
+                    motorA1.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.FLOAT
+                    motorA1.power = 0.0
 
-        motorB.cleanup()
+                    motorB.cleanup()
+                }
+                .addTemporalMarker(1.3) {
+                    motorA1.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.FLOAT
+                    motorA1.power = 0.0
+
+                    motorB.cleanup()
+                }
+                .addTemporalMarker(2.0) {
+                    MainTeleOp.proximalPosition = motorA1.currentPosition
+                    MainTeleOp.distalAngle = motorB.getPosition()
+                }
+                .build()
+        )
+
         webcam.closeCameraDevice()
     }
 

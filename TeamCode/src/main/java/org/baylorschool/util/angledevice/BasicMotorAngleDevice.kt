@@ -180,6 +180,11 @@ class BasicMotorAngleDevice(val motor: DcMotorEx, ticksPerTurn: Double, val conf
         motorStatus = MotorStatus.TELEOP_POWER
     }
 
+    fun floatMotor() {
+        motor.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.FLOAT
+        motor.power = 0.0
+    }
+
     override fun cleanup() {
         stop()
         needToStop = true

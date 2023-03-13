@@ -21,6 +21,12 @@ import kotlin.math.abs
 
 @TeleOp(name = "MainTeleOp", group = "AA Main")
 class MainTeleOp: LinearOpMode() {
+
+    companion object {
+        var proximalPosition = 0
+        var distalAngle = Globals.liftDistalStartAngle
+    }
+
     private val PRESET_UP_DISTAL = Globals.liftDropHigh.distal
     private val PRESET_UP_PROXIMAL = Globals.liftDropHigh.proximal
 
@@ -48,6 +54,7 @@ class MainTeleOp: LinearOpMode() {
         motorA1.mode = DcMotor.RunMode.RUN_USING_ENCODER
 
         motorB.init()
+        //motorB.reset(distalAngle)
         motorB.reset(Globals.liftDistalStartAngle)
         motorB.debug = false
 
@@ -66,11 +73,11 @@ class MainTeleOp: LinearOpMode() {
             val dt = (currentTime - previousTime) / 1000.0
 
             if (gamepad2.dpad_up) {
-                motorA1.targetPosition = ((PRESET_UP_PROXIMAL - Globals.liftProximalStartAngle) * Globals.liftProximalATicksPerRotation / (2 * PI)).toInt()
+                motorA1.targetPosition = ((PRESET_UP_PROXIMAL - Globals.liftProximalStartAngle) * Globals.liftProximalATicksPerRotation / (2 * PI)).toInt()// - proximalPosition
                 motorA1.mode = DcMotor.RunMode.RUN_TO_POSITION
                 motorA1.power = 0.7
             } else if (gamepad2.dpad_down) {
-                motorA1.targetPosition = ((PRESET_DOWN_PROXIMAL - Globals.liftProximalStartAngle) * Globals.liftProximalATicksPerRotation / (2 * PI)).toInt()
+                motorA1.targetPosition = ((PRESET_DOWN_PROXIMAL - Globals.liftProximalStartAngle) * Globals.liftProximalATicksPerRotation / (2 * PI)).toInt()// - proximalPosition
                 motorA1.mode = DcMotor.RunMode.RUN_TO_POSITION
                 motorA1.power = 0.5
             } else if (abs(gamepad2.left_stick_y) > 0.3f || motorA1.mode == DcMotor.RunMode.RUN_USING_ENCODER) {

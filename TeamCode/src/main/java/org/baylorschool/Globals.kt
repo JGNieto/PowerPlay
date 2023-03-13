@@ -23,7 +23,7 @@ object Globals {
 
     // Claw
     const val clawGrab = "clawGrab"
-    const val clawGrabOpen = 0.85
+    const val clawGrabOpen = - 0.7
     const val clawGrabClosed = - clawGrabOpen
 
     const val clawPitch = "clawPitch"
@@ -41,7 +41,7 @@ object Globals {
     // I2C
     const val distanceSensor = "distanceSensor"
 
-    const val optimalReleaseDistance = 3.0
+    const val optimalReleaseDistance = 6.0
     const val optimalReleaseDistanceTolerance = 0.5
     const val seeingPoleThreshold = 15.0 // If distance is higher than this, assume we are not pointing at the pole.
 
