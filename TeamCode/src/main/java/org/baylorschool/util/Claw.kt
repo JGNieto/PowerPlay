@@ -24,6 +24,10 @@ class Claw(opMode: OpMode) {
         grabServo.position = map(1.0, 0.0, Globals.clawGrabOpen, Globals.clawGrabClosed, position)
     }
 
+    fun getPosition(): Double {
+        return grabServo.position
+    }
+
     private fun map(inputMin: Double, inputMax: Double, outputMin: Double, outputMax: Double, value: Double): Double {
         return (value-inputMin)/(inputMax-inputMin) * (outputMax-outputMin) + outputMin
     }

@@ -136,6 +136,8 @@ class MainTeleOp: LinearOpMode() {
             telemetry.addData("Proximal position", motorA1.currentPosition)
             telemetry.addData("Distal position", motorB.getPosition())
 
+            telemetry.addData("Claw grab", claw.getPosition())
+
             telemetry.addData("Distal status", motorB.motorStatus.toString())
             telemetry.addData("Distal motor mode", motorB.motor.mode)
             telemetry.addData("Distal motor busy", motorB.motor.isBusy)
