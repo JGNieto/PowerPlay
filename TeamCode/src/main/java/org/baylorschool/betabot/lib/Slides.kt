@@ -20,34 +20,34 @@ import kotlin.math.absoluteValue
 @Config
 object SlidePIDConfig {
     @JvmField var p: Double = 0.016
-    @JvmField var kg: Double = 0.11 // gravity ong
+    @JvmField var kg: Double = 0.15 // gravity ong
 
     @JvmField var targetPos: Double = 0.0
 }
 
 enum class SlidePresets(var poles: Double) {
-    RESET(0.0),LOW_POLE(400.0), MID_POLE(800.0), HIGH_POLE(1100.0);
+    RESET(0.0),LOW_POLE(1000.0), MID_POLE(2000.0), HIGH_POLE(3350.0);
 }
 class Slides(hardwareMap: HardwareMap) {
     private var profileTimer = ElapsedTime()
     private val slideMotor1: DcMotorEx
     private val slideMotor2: DcMotorEx
-    private var slidePos: Double = 0.0
+    var slidePos: Double = 0.0
     private val pControl = PIDCoefficients(p)
-    private val controller = PIDFController(pControl, kV = 0.0, kA = 0.0, kStatic = 0.0 )
+    private val controller = PIDFController(pControl /*, kV = 0.0, kA = 0.0, kStatic = 0.0 */)
     private var slidePower = 0.0
     private var offset = 0
-    private val high: Int = 1101
+    private val high: Int = 3351
     private val low: Int = -1
     private var motionProfile: MotionProfile? = null
-    private val tolerance: Double = 20.0
+    private val tolerance: Double = 10.0
 
 
     init {
         slideMotor1 = hardwareMap.get(DcMotorEx::class.java, "rLift")
         slideMotor2 = hardwareMap.get(DcMotorEx::class.java, "lLift")
-        offset = slidePos.toInt()
-        slidePos = slideMotor1.currentPosition.toDouble() - offset
+        offset = slideMotor2.currentPosition
+        slidePos = slideMotor2.currentPosition.toDouble() - offset
         slideMotor1.direction = DcMotorSimple.Direction.FORWARD
         slideMotor2.direction = DcMotorSimple.Direction.FORWARD
         slideMotor1.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
@@ -58,14 +58,15 @@ class Slides(hardwareMap: HardwareMap) {
     }
 
     fun telemetry(telemetry: Telemetry) {
-        telemetry.addData("Slides Max Velocity", slideMotor1.velocity)
-        telemetry.addData("Slide Motors Position", slidePos)
+        telemetry.addData("Slides Max Velocity", slideMotor2.velocity)
+        telemetry.addData("Slide Motor Position", slidePos)
         telemetry.addData("Target Position", targetPos)
     }
 
-    private fun update() {
-        slidePos = slideMotor1.currentPosition.toDouble()
+    private fun update2() {
+        slidePos  = slideMotor2.currentPosition.toDouble() - offset
         controller.targetPosition = targetPos
+       /*
         motionProfile?.let {
             val state = it[profileTimer.seconds()]
             controller.apply {
@@ -75,6 +76,7 @@ class Slides(hardwareMap: HardwareMap) {
             }
         }
 
+        */
         slidePower = controller.update(slidePos) + kg
 
     }
@@ -85,23 +87,20 @@ class Slides(hardwareMap: HardwareMap) {
     }
 
     fun slideLoop(gamepad: Gamepad) {
-        update()
+        update2()
         targetPos = hardStops(targetPos.toInt(), low, high).toDouble()
         slideMotor1.power = slidePower
         slideMotor2.power = slidePower
 
         if (gamepad.dpad_up) {
-            targetPos += 10.0
+            targetPos += 25.0
         } else if (gamepad.dpad_down) {
-            targetPos -= 10.0
+            targetPos -= 25.0
         } else if (gamepad.left_stick_button) {
             targetPos = SlidePresets.HIGH_POLE.poles
         } else if (gamepad.dpad_left) {
             targetPos = SlidePresets.RESET.poles
         }
-
-        if (gamepad.dpad_up || gamepad.dpad_down || gamepad.left_stick_button || gamepad.dpad_left)
-            newProfile()
     }
 }
 
