@@ -15,6 +15,7 @@ import org.baylorschool.drive.DriveConstants
 import org.baylorschool.drive.Mecanum
 import org.baylorschool.opmodes.teleop.MainTeleOp
 import org.baylorschool.util.Claw
+import org.baylorschool.util.OhmMotor
 import org.baylorschool.util.angledevice.BasicMotorAngleDevice
 import org.baylorschool.vision.AprilTagBinaryPipeline
 import org.baylorschool.vision.CameraUtil
@@ -36,6 +37,7 @@ class RightPreloadCameraParkOdometry: LinearOpMode() {
         telemetry.update()
 
         val motorA1 = hardwareMap.get(DcMotorEx::class.java, Globals.liftProximalA)
+        val ohmMotorA1 = OhmMotor(motorA1, Globals.liftProximalATicksPerRotation)
         val motorB = BasicMotorAngleDevice(this, Globals.liftDistal, Globals.liftDistalTicksPerRotation, Globals.liftDistalConfig, Globals.liftDistalDirection)
         val claw = Claw(this)
         claw.close()
@@ -87,9 +89,7 @@ class RightPreloadCameraParkOdometry: LinearOpMode() {
 
         println("ROBOT POSITION FIRST: ${mecanum.poseEstimate.x}, ${mecanum.poseEstimate.y}, ${mecanum.poseEstimate.heading}º")
 
-        motorA1.targetPosition =
-            ((Globals.liftDropHigh.proximal - Globals.liftProximalStartAngle) * Globals.liftProximalATicksPerRotation / (2 * PI)).toInt()
-        motorA1.mode = DcMotor.RunMode.RUN_TO_POSITION
+        ohmMotorA1.motorToPosition(Globals.liftDropHigh.proximal)
         motorA1.power = 0.7
         motorB.moveToAngle(Globals.liftDropHigh.distal)
         clawPitch.position = Globals.liftDropHigh.claw
@@ -121,15 +121,15 @@ class RightPreloadCameraParkOdometry: LinearOpMode() {
 
         mecanum.followTrajectory(clearSpaceTraj)
 
-        motorA1.targetPosition =
-            ((Globals.liftProximalStartAngle - Globals.liftProximalStartAngle) * Globals.liftProximalATicksPerRotation / (2 * PI)).toInt()
-        motorA1.mode = DcMotor.RunMode.RUN_TO_POSITION
+        ohmMotorA1.motorToPosition(Globals.liftProximalStartAngle)
         motorA1.power = 0.3
+        motorA1.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.FLOAT
         clawPitch.position = Globals.liftDropHigh.claw
 
         sleep(200)
 
         motorB.moveToAngle(Globals.liftDistalStartAngle)
+        motorB.motor.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.FLOAT
 
         println("ROBOT POSITION DROP: ${mecanum.poseEstimate.x}, ${mecanum.poseEstimate.y}, ${mecanum.poseEstimate.heading}º")
 
@@ -162,15 +162,15 @@ class RightPreloadCameraParkOdometry: LinearOpMode() {
             parkingTraj.
                 addTemporalMarker(1.0) {
                     motorA1.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.FLOAT
+                    motorA1.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
                     motorA1.power = 0.0
 
                     motorB.cleanup()
                 }
-                .addTemporalMarker(1.3) {
-                    motorA1.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.FLOAT
-                    motorA1.power = 0.0
-
-                    motorB.cleanup()
+                .addTemporalMarker(1.1) {
+                    motorB.motor.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.FLOAT
+                    motorB.motor.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
+                    motorB.motor.power = 0.0
                 }
                 .addTemporalMarker(2.0) {
                     MainTeleOp.proximalPosition = motorA1.currentPosition

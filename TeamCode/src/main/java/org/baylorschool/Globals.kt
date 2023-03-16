@@ -54,7 +54,14 @@ object Globals {
 
     //val liftDropHigh = LiftPositionAngle(1.86, 0.933, 0.071)
     val liftDropHigh = LiftPositionAngle(1.86, 1.58, 0.071)
-    val liftGrabTeleOp = LiftPositionAngle(-0.007, -1.042, 0.892)
+    val liftDropMid = LiftPositionAngle(1.86, 1.58, 0.071)
+    val liftDropLow = LiftPositionAngle(1.86, 1.58, 0.071)
+
+    val liftGrab1 = LiftPositionAngle(-0.007, -1.042, 0.892)
+    val liftGrab2 = LiftPositionAngle(-0.007, -1.042, 0.892)
+    val liftGrab3 = LiftPositionAngle(-0.007, -1.042, 0.892)
+    val liftGrab4 = LiftPositionAngle(-0.007, -1.042, 0.892)
+    val liftGrab5 = LiftPositionAngle(-0.007, -1.042, 0.892)
 
     // Positioning measurements
     const val driveTrainWidth = 16.75 // Includes the widths of the mecanum wheels.
