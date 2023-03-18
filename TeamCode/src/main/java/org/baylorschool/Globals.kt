@@ -53,11 +53,11 @@ object Globals {
     val startingClawAngle = 0.071
 
     //val liftDropHigh = LiftPositionAngle(1.86, 0.933, 0.071)
-    val liftDropHigh = LiftPositionAngle(1.86, 1.58, 0.071)
-    val liftDropMid = LiftPositionAngle(1.86, 1.58, 0.071)
-    val liftDropLow = LiftPositionAngle(1.86, 1.58, 0.071)
+    val liftDropHigh = LiftPositionAngle(1.86, 1.58, 0.0)
+    val liftDropMid = LiftPositionAngle(1.65, 2.91, 0.302)
+    val liftDropLow = LiftPositionAngle(1.434, 3.985, 0.498)
 
-    val liftGrab1 = LiftPositionAngle(-0.007, -1.042, 0.892)
+    val liftGrab1 = LiftPositionAngle(-0.03, -1.35, 0.86)
     val liftGrab2 = LiftPositionAngle(-0.007, -1.042, 0.892)
     val liftGrab3 = LiftPositionAngle(-0.007, -1.042, 0.892)
     val liftGrab4 = LiftPositionAngle(-0.007, -1.042, 0.892)
@@ -84,7 +84,7 @@ object Globals {
     const val liftProximalA = "lfProxA"
     const val liftProximalATicksPerRotation = 2698.8
     val liftProximalADirection = DcMotorSimple.Direction.FORWARD
-    val liftProximalConfig = BasicMotorAngleConfig(0.0, 0.3, 0.8, 0.45)
+    val liftProximalConfig = BasicMotorAngleConfig(0.0, 0.3, 0.5, 0.45)
 
     const val liftProximalB = "lfProxB"
 
@@ -95,7 +95,7 @@ object Globals {
 
     // const val liftProximalStartAngle = - 317 * 2 * PI / 3373.5
     // const val liftDistalStartAngle = - 321 * 2 * PI / 537.7
-    const val liftProximalStartAngle = - 234 * 2 * PI / 2698.8
+    const val liftProximalStartAngle = - 253 * 2 * PI / 2698.8
     const val liftDistalStartAngle = 670 * 2 * PI / 1742.0
 
     const val highProximalAngle = 1.7

@@ -1,6 +1,7 @@
 package org.baylorschool.util.angledevice
 
 import com.acmerobotics.dashboard.FtcDashboard
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import com.qualcomm.robotcore.hardware.*
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit
@@ -34,7 +35,7 @@ class BasicMotorAngleDevice(val motor: DcMotorEx, ticksPerTurn: Double, val conf
     private var wasBusy = false
     private var newPosition = false
     
-    private val telemetry = FtcDashboard.getInstance().telemetry
+    var telemetry = FtcDashboard.getInstance().telemetry
 
     private var lastEncoderUpdate = 0L
     private var previousEncoderValue = 0
@@ -48,10 +49,12 @@ class BasicMotorAngleDevice(val motor: DcMotorEx, ticksPerTurn: Double, val conf
     }
 
     override fun moveToAngle(angle: Double, direction: TargetAngleDirection) {
-        this.motorStatus = MotorStatus.MOVING
-        this.targetAngle = angle
-        this.direction = direction
-        this.newPosition = true
+        if (this.motorStatus != MotorStatus.MOVING || this.targetAngle != angle || this.direction != direction) {
+            this.motorStatus = MotorStatus.MOVING
+            this.targetAngle = angle
+            this.direction = direction
+            this.newPosition = true
+        }
     }
 
     private fun computeTargetAngle(angle: Double, direction: TargetAngleDirection): Double {
@@ -107,9 +110,7 @@ class BasicMotorAngleDevice(val motor: DcMotorEx, ticksPerTurn: Double, val conf
                     motor.mode = DcMotor.RunMode.RUN_TO_POSITION
                     motor.power = when (motorStatus) {
                         MotorStatus.MOVING -> config.movingSpeed
-                        else -> {
-                            config.maintainingSpeed
-                        }
+                        else -> config.maintainingSpeed
                     }
 
                     this.newPosition = false
@@ -145,6 +146,8 @@ class BasicMotorAngleDevice(val motor: DcMotorEx, ticksPerTurn: Double, val conf
     fun setPIDFCoefficients(coefficients: PIDFCoefficients) {
         motor.setPIDFCoefficients(DcMotor.RunMode.RUN_TO_POSITION, coefficients)
     }
+
+    @Deprecated(message = "See deprecation message for DcMotorEx")
     fun setPIDCoefficients(coefficients: PIDCoefficients) {
         motor.setPIDCoefficients(DcMotor.RunMode.RUN_TO_POSITION, coefficients)
     }
