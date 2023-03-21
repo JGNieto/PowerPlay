@@ -42,12 +42,12 @@ class MainTeleOp: LinearOpMode() {
 
         motorA1.init()
         motorA1.reset(Globals.liftProximalStartAngle)
-        motorA1.debug = false
+        // motorA1.debug = true
 
         motorB.init()
         motorB.reset(distalAngle)
         //motorB.reset(Globals.liftDistalStartAngle)
-        motorB.debug = true
+        // motorB.debug = true
         motorB.telemetry = MultipleTelemetry(telemetry, FtcDashboard.getInstance().telemetry)
 
         clawPitch.direction = Globals.clawPitchDirection
@@ -142,7 +142,7 @@ class MainTeleOp: LinearOpMode() {
             claw.grabPosition(gamepad2.right_trigger.toDouble())
             mecanum.mecanumLoop(gamepad1)
 
-            /*mecanum.telemetry(telemetry)
+            mecanum.telemetry(telemetry)
             //telemetry.addData("Proximal position", motorA1.currentPosition)
             telemetry.addData("Proximal angle", motorA1.getPosition())
             telemetry.addData("Target proximal angle", motorA1.targetAngle)
@@ -157,7 +157,7 @@ class MainTeleOp: LinearOpMode() {
             telemetry.addData("Distance (in)", distance.getDistance(DistanceUnit.INCH))
 
             mecanum.positionTelemetry(telemetry)
-            telemetry.update()*/
+            telemetry.update()
 
             previousTime = currentTime
         }
