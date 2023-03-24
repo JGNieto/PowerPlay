@@ -1,8 +1,10 @@
 package org.baylorschool.util.angledevice
 
 import com.acmerobotics.dashboard.FtcDashboard
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import com.qualcomm.robotcore.hardware.*
+import org.firstinspires.ftc.robotcore.external.Telemetry
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit
 import kotlin.math.PI
 import kotlin.math.abs
@@ -34,10 +36,12 @@ class BasicMotorAngleDevice(val motor: DcMotorEx, ticksPerTurn: Double, val conf
     private var wasBusy = false
     private var newPosition = false
     
-    private val telemetry = FtcDashboard.getInstance().telemetry
+    var telemetry: Telemetry = FtcDashboard.getInstance().telemetry
 
     private var lastEncoderUpdate = 0L
     private var previousEncoderValue = 0
+
+    var activelyHoldPosition = true // Whether the motor should use power to hold its position or rely on the brakes.
 
     var teleOpPower = config.teleOpSpeed
 
@@ -48,10 +52,12 @@ class BasicMotorAngleDevice(val motor: DcMotorEx, ticksPerTurn: Double, val conf
     }
 
     override fun moveToAngle(angle: Double, direction: TargetAngleDirection) {
-        this.motorStatus = MotorStatus.MOVING
-        this.targetAngle = angle
-        this.direction = direction
-        this.newPosition = true
+        if (this.motorStatus != MotorStatus.MOVING || this.targetAngle != angle || this.direction != direction) {
+            this.motorStatus = MotorStatus.MOVING
+            this.targetAngle = angle
+            this.direction = direction
+            this.newPosition = true
+        }
     }
 
     private fun computeTargetAngle(angle: Double, direction: TargetAngleDirection): Double {
@@ -87,37 +93,38 @@ class BasicMotorAngleDevice(val motor: DcMotorEx, ticksPerTurn: Double, val conf
             MotorStatus.STOP -> {
                 motor.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
                 motor.power = config.stopSpeed
-                lastEncoderUpdate = currentTime
-                previousEncoderValue = motor.currentPosition
             }
             MotorStatus.TELEOP_POWER -> {
                 motor.mode = DcMotor.RunMode.RUN_USING_ENCODER
                 motor.power = teleOpPower
-                lastEncoderUpdate = currentTime
-                previousEncoderValue = motor.currentPosition
             }
             else -> {
-                if (!motor.isBusy && wasBusy && !newPosition) {
-                    motorStatus = MotorStatus.MAINTAINING
-                } else if (!motor.isBusy || newPosition) {
-                    val targetAngleComputed = computeTargetAngle(targetAngle, direction)
-                    val targetEncoder = targetAngleComputed * ticksPerRadian + encoderValueAtZero
+                if (activelyHoldPosition) {
+                    if (!motor.isBusy && wasBusy && !newPosition) {
+                        motorStatus = MotorStatus.MAINTAINING
+                    } else if (!motor.isBusy || newPosition) {
+                        val targetAngleComputed = computeTargetAngle(targetAngle, direction)
+                        val targetEncoder =
+                            targetAngleComputed * ticksPerRadian + encoderValueAtZero
 
-                    motor.targetPosition = targetEncoder.toInt()
-                    motor.mode = DcMotor.RunMode.RUN_TO_POSITION
-                    motor.power = when (motorStatus) {
-                        MotorStatus.MOVING -> config.movingSpeed
-                        else -> {
-                            config.maintainingSpeed
+                        motor.targetPosition = targetEncoder.toInt()
+                        motor.mode = DcMotor.RunMode.RUN_TO_POSITION
+                        motor.power = when (motorStatus) {
+                            MotorStatus.MOVING -> config.movingSpeed
+                            else -> config.maintainingSpeed
                         }
-                    }
 
-                    this.newPosition = false
-                    lastEncoderUpdate = currentTime
-                    previousEncoderValue = motor.currentPosition
+                        this.newPosition = false
+                    }
+                } else {
+                    motor.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
+                    motor.power = config.stopSpeed
                 }
             }
         }
+
+        lastEncoderUpdate = currentTime
+        previousEncoderValue = motor.currentPosition
 
         if (motor.currentPosition != previousEncoderValue || lastEncoderUpdate == 0L) {
             previousEncoderValue = motor.currentPosition
@@ -145,6 +152,8 @@ class BasicMotorAngleDevice(val motor: DcMotorEx, ticksPerTurn: Double, val conf
     fun setPIDFCoefficients(coefficients: PIDFCoefficients) {
         motor.setPIDFCoefficients(DcMotor.RunMode.RUN_TO_POSITION, coefficients)
     }
+
+    @Deprecated(message = "See deprecation message for DcMotorEx")
     fun setPIDCoefficients(coefficients: PIDCoefficients) {
         motor.setPIDCoefficients(DcMotor.RunMode.RUN_TO_POSITION, coefficients)
     }
@@ -178,6 +187,11 @@ class BasicMotorAngleDevice(val motor: DcMotorEx, ticksPerTurn: Double, val conf
     fun moveTeleOp(power: Double) {
         teleOpPower = power
         motorStatus = MotorStatus.TELEOP_POWER
+    }
+
+    fun floatMotor() {
+        motor.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.FLOAT
+        motor.power = 0.0
     }
 
     override fun cleanup() {

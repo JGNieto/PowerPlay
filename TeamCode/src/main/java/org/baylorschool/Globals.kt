@@ -23,8 +23,8 @@ object Globals {
 
     // Claw
     const val clawGrab = "clawGrab"
-    const val clawGrabOpen = 0.85
-    const val clawGrabClosed = - clawGrabOpen
+    const val clawGrabOpen = 0.5
+    const val clawGrabClosed = 1.0
 
     const val clawPitch = "clawPitch"
     const val clawPitchMax = PI / 4.0 // True angle of claw when position is -1.0
@@ -41,7 +41,7 @@ object Globals {
     // I2C
     const val distanceSensor = "distanceSensor"
 
-    const val optimalReleaseDistance = 3.0
+    const val optimalReleaseDistance = 6.0
     const val optimalReleaseDistanceTolerance = 0.5
     const val seeingPoleThreshold = 15.0 // If distance is higher than this, assume we are not pointing at the pole.
 
@@ -53,8 +53,15 @@ object Globals {
     val startingClawAngle = 0.071
 
     //val liftDropHigh = LiftPositionAngle(1.86, 0.933, 0.071)
-    val liftDropHigh = LiftPositionAngle(1.86, 1.044, 0.071)
-    val liftGrabTeleOp = LiftPositionAngle(-0.007, -1.042, 0.892)
+    val liftDropHigh = LiftPositionAngle(1.86, 1.58, 0.0)
+    val liftDropMid = LiftPositionAngle(1.65, 2.91, 0.302)
+    val liftDropLow = LiftPositionAngle(1.434, 3.985, 0.498)
+
+    val liftGrab1 = LiftPositionAngle(-0.03, -1.35, 0.86)
+    val liftGrab2 = LiftPositionAngle(-0.007, -1.042, 0.892)
+    val liftGrab3 = LiftPositionAngle(-0.007, -1.042, 0.892)
+    val liftGrab4 = LiftPositionAngle(-0.007, -1.042, 0.892)
+    val liftGrab5 = LiftPositionAngle(-0.007, -1.042, 0.892)
 
     // Positioning measurements
     const val driveTrainWidth = 16.75 // Includes the widths of the mecanum wheels.
@@ -77,19 +84,19 @@ object Globals {
     const val liftProximalA = "lfProxA"
     const val liftProximalATicksPerRotation = 2698.8
     val liftProximalADirection = DcMotorSimple.Direction.FORWARD
-    val liftProximalConfig = BasicMotorAngleConfig(0.0, 0.3, 0.8, 0.45)
+    val liftProximalConfig = BasicMotorAngleConfig(0.0, 0.3, 0.5, 0.45)
 
     const val liftProximalB = "lfProxB"
 
     const val liftDistal = "lfDist"
-    const val liftDistalTicksPerRotation = 3243.75
+    const val liftDistalTicksPerRotation = 2595.0 //944.0 // 3243.75 * 25 / 16
     val liftDistalDirection = DcMotorSimple.Direction.FORWARD
     val liftDistalConfig = BasicMotorAngleConfig(0.0, 0.3, 0.5, 0.5)
 
     // const val liftProximalStartAngle = - 317 * 2 * PI / 3373.5
     // const val liftDistalStartAngle = - 321 * 2 * PI / 537.7
-    const val liftProximalStartAngle = - 255 * 2 * PI / 2698.8
-    const val liftDistalStartAngle = 1169 * 2 * PI / 3243.75
+    const val liftProximalStartAngle = - 253 * 2 * PI / 2698.8
+    const val liftDistalStartAngle = 898 * 2 * PI / 2595.0
 
     const val highProximalAngle = 1.7
     const val highDistalAngle = -3.3
