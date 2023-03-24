@@ -8,7 +8,9 @@ import com.qualcomm.robotcore.hardware.Gamepad
 import com.qualcomm.robotcore.hardware.HardwareMap
 import org.firstinspires.ftc.robotcore.external.Telemetry
 import kotlin.math.abs
+import kotlin.math.cos
 import kotlin.math.max
+import kotlin.math.sin
 
 class Mecanum(hardwareMap: HardwareMap) {
     private val i: BNO055IMU
@@ -16,12 +18,10 @@ class Mecanum(hardwareMap: HardwareMap) {
     private val frMotor: DcMotorEx
     private val blMotor: DcMotorEx
     private val brMotor: DcMotorEx
-    private val tipTolerance = Math.toRadians(10.0)
-    private val tipAuthority = 0.9
-    private var x = 0f
-    private var y = 0f
     private var slowmodeToggle = false
     private var slowmode = 1.0
+    private val parameters = BNO055IMU.Parameters()
+
 
     init {
         i = hardwareMap.get(BNO055IMU::class.java, "imu")
@@ -31,6 +31,8 @@ class Mecanum(hardwareMap: HardwareMap) {
         brMotor = hardwareMap.get(DcMotorEx::class.java, "brMotor")
         frMotor.direction = DcMotorSimple.Direction.REVERSE
         brMotor.direction = DcMotorSimple.Direction.REVERSE
+        parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS
+        i.initialize(parameters)
         //PhotonCore.enable()
     }
 
@@ -42,32 +44,23 @@ class Mecanum(hardwareMap: HardwareMap) {
     }
 
     fun mecanumLoop(gamepad1: Gamepad){
-        /*
-        val i: Orientation = i.angularOrientation
-        val xOffset = i.secondAngle
-        val yOffset = i.thirdAngle
-        val adjX: Float = xOffset - i.secondAngle
-        val adjY: Float = i.thirdAngle - yOffset
-        if (abs(adjY) > tipTolerance)
-            y = adjY
-        if (abs(adjX) > tipTolerance)
-            x = adjX
-
-         */
-
         val gp1y = gamepad1.left_stick_y.toDouble()// - Range.clip(y* 2.0, -tipAuthority, tipAuthority)
         val gp1x = -(gamepad1.left_stick_x * 1.1) // +  Range.clip(x* 2.0, -tipAuthority, tipAuthority)
         val rx = -gamepad1.right_stick_x.toDouble()
 
-        val denominator = max(abs(gp1y) + abs(gp1x) + abs(rx), 1.0)
-        val frontLeftPower = (((gp1y + gp1x + rx) / denominator) * slowmode)
-        val backLeftPower = (((gp1y - gp1x + rx) / denominator) * slowmode)
-        val frontRightPower = (((gp1y - gp1x - rx) / denominator) * slowmode)
-        val backRightPower = (((gp1y + gp1x - rx) / denominator) * slowmode)
+        val botHeading = -i.angularOrientation.firstAngle.toDouble()
+        val rotX = gp1x * cos(botHeading) - gp1y * sin(botHeading)
+        val rotY = gp1x * sin(botHeading) + gp1y * cos(botHeading)
 
-        if (gamepad1.y)
+        val denominator = max(abs(gp1y) + abs(gp1x) + abs(rx), 1.0)
+        val frontLeftPower = (((rotY + rotX + rx) / denominator) * slowmode)
+        val backLeftPower = (((rotY - rotX + rx) / denominator) * slowmode)
+        val frontRightPower = (((rotY - rotX - rx) / denominator) * slowmode)
+        val backRightPower = (((rotY + rotX - rx) / denominator) * slowmode)
+
+        if (gamepad1.right_bumper)
             slowmodeToggle = false
-        else if (gamepad1.a)
+        else if (gamepad1.left_bumper)
             slowmodeToggle = true
 
         slowmode = if (slowmodeToggle)

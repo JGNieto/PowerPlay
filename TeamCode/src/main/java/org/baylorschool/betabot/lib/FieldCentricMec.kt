@@ -11,12 +11,10 @@ import kotlin.math.cos
 import kotlin.math.max
 import kotlin.math.sin
 
-@Disabled
 @TeleOp (name = "Field Centric Mec",group = "Test")
 class FieldCentricMec : LinearOpMode() {
     @Throws(InterruptedException::class)
     override fun runOpMode() {
-
         val flMotor = hardwareMap.dcMotor["flMotor"]
         val blMotor = hardwareMap.dcMotor["blMotor"]
         val frMotor = hardwareMap.dcMotor["frMotor"]

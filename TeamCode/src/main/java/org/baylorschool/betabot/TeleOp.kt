@@ -31,9 +31,9 @@ class TeleOp: LinearOpMode() {
                 }
 
                 mecanum.mecanumLoop(gamepad1)
-                v4bIntake.intakeLoop(gamepad2)
-                slides.slideLoop(gamepad2)
-                fsm.fsmLoop(gamepad1)
+                v4bIntake.intakeLoop(gamepad1)
+                slides.slideLoop(gamepad1)
+                fsm.fsmLoop(gamepad2)
 
                 mecanum.telemetry(telemetryMultiple)
                 v4bIntake.telemetry(telemetryMultiple)
