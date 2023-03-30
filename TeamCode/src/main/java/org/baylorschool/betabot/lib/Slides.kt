@@ -5,9 +5,6 @@ package org.baylorschool.betabot.lib
 import com.acmerobotics.dashboard.config.Config
 import com.acmerobotics.roadrunner.control.PIDCoefficients
 import com.acmerobotics.roadrunner.control.PIDFController
-import com.acmerobotics.roadrunner.profile.MotionProfile
-import com.acmerobotics.roadrunner.profile.MotionProfileGenerator
-import com.acmerobotics.roadrunner.profile.MotionState
 //import com.outoftheboxrobotics.photoncore.PhotonCore
 import com.qualcomm.robotcore.hardware.*
 import com.qualcomm.robotcore.util.ElapsedTime
@@ -15,7 +12,6 @@ import org.baylorschool.betabot.lib.SlidePIDConfig.kg
 import org.baylorschool.betabot.lib.SlidePIDConfig.p
 import org.baylorschool.betabot.lib.SlidePIDConfig.targetPos
 import org.firstinspires.ftc.robotcore.external.Telemetry
-import kotlin.math.absoluteValue
 
 @Config
 object SlidePIDConfig {
@@ -26,7 +22,7 @@ object SlidePIDConfig {
 }
 
 enum class SlidePresets(var poles: Double) {
-    RESET(0.0),LOW_POLE(1000.0), MID_POLE(2000.0), HIGH_POLE(3350.0);
+    RESET(0.0),LOW_POLE(1050.0), MID_POLE(2050.0), HIGH_POLE(3350.0);
 }
 class Slides(hardwareMap: HardwareMap) {
     private var profileTimer = ElapsedTime()
@@ -39,9 +35,6 @@ class Slides(hardwareMap: HardwareMap) {
     private var offset = 0
     private val high: Int = 3351
     private val low: Int = -1
-    private var motionProfile: MotionProfile? = null
-    private val tolerance: Double = 10.0
-
 
     init {
         slideMotor1 = hardwareMap.get(DcMotorEx::class.java, "rLift")
@@ -63,31 +56,14 @@ class Slides(hardwareMap: HardwareMap) {
         telemetry.addData("Target Position", targetPos)
     }
 
-    private fun update2() {
+    private fun update() {
         slidePos  = slideMotor2.currentPosition.toDouble() - offset
         controller.targetPosition = targetPos
-       /*
-        motionProfile?.let {
-            val state = it[profileTimer.seconds()]
-            controller.apply {
-                targetPosition = state.x
-                targetVelocity = state.v
-                targetAcceleration = state.a
-            }
-        }
-
-        */
         slidePower = controller.update(slidePos) + kg
-
-    }
-    private fun newProfile() {
-        motionProfile = MotionProfileGenerator.generateSimpleMotionProfile(MotionState(slidePos, 0.0, 0.0), MotionState(targetPos, 0.0, 0.0), 25.0, 40.0, 100.0 ) //place holder values
-        if ((slidePos - targetPos).absoluteValue > tolerance)
-            profileTimer.reset()
     }
 
     fun slideLoop(gamepad: Gamepad) {
-        update2()
+        update()
         targetPos = hardStops(targetPos.toInt(), low, high).toDouble()
         slideMotor1.power = slidePower
         slideMotor2.power = slidePower

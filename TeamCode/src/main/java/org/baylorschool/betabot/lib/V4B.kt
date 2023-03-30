@@ -9,17 +9,16 @@ import com.qualcomm.robotcore.hardware.Servo
 class V4B(hardwareMap: HardwareMap) {
 
     enum class IntakeState(var intakePower: Double) {
-       INTAKE(-1.0), DEPOSIT(1.0), REST(0.0)
+       INTAKE(-.5), DEPOSIT(.5), REST(0.0)
     }
-
     val v4bServo1: Servo
     val v4bServo2: Servo
 
     init {
         v4bServo1 = hardwareMap.get(Servo::class.java, "v4bServo1")
         v4bServo2 = hardwareMap.get(Servo::class.java, "v4bServo2")
-        v4bServo1.scaleRange(0.0, 0.7)
-        v4bServo2.scaleRange(0.0, 0.7)
+        v4bServo1.scaleRange(0.0, 0.9)
+        v4bServo2.scaleRange(0.0, 0.9)
     }
 
     fun telemetry(telemetry: Telemetry) {
