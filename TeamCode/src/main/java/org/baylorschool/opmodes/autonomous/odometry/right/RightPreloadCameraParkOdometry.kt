@@ -28,7 +28,7 @@ class RightPreloadCameraParkOdometry: LinearOpMode() {
     // POSITIONS ARE DESIGNED FOR RIGHT RED, BUT WORK FOR RIGHT BLUE AS WELL
     private val startPosition = Globals.rightStartPosition
 
-    private val dropPosition = Pose2d(Globals.tileWidth * 0.9, -Globals.tileWidth / 2.0, Math.toRadians(270.0))
+    private val dropPosition = Pose2d(Globals.tileWidth * 0.9, -Globals.tileWidth / 1.98, Math.toRadians(270.0))
 
     override fun runOpMode() {
         //PhotonCore.enable()
@@ -36,8 +36,7 @@ class RightPreloadCameraParkOdometry: LinearOpMode() {
         telemetry.addData("Status", "Getting ready. Please wait...")
         telemetry.update()
 
-        val motorA1 = hardwareMap.get(DcMotorEx::class.java, Globals.liftProximalA)
-        val ohmMotorA1 = OhmMotor(motorA1, Globals.liftProximalATicksPerRotation)
+        val motorA1 = BasicMotorAngleDevice(this, Globals.liftProximalA, Globals.liftProximalATicksPerRotation, Globals.liftProximalConfig, Globals.liftProximalADirection)
         val motorB = BasicMotorAngleDevice(this, Globals.liftDistal, Globals.liftDistalTicksPerRotation, Globals.liftDistalConfig, Globals.liftDistalDirection)
         val claw = Claw(this)
         claw.close()
@@ -64,10 +63,10 @@ class RightPreloadCameraParkOdometry: LinearOpMode() {
         telemetry.addLine("Tag $targetTag")
         telemetry.update()
 
-        motorA1.direction = Globals.liftProximalADirection
-        motorA1.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
-        motorA1.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
-        motorA1.mode = DcMotor.RunMode.RUN_USING_ENCODER
+
+        motorA1.init()
+        motorA1.reset(Globals.liftProximalStartAngle)
+        motorA1.debug = false
 
         motorB.init()
         motorB.reset(Globals.liftDistalStartAngle)
@@ -89,8 +88,7 @@ class RightPreloadCameraParkOdometry: LinearOpMode() {
 
         println("ROBOT POSITION FIRST: ${mecanum.poseEstimate.x}, ${mecanum.poseEstimate.y}, ${mecanum.poseEstimate.heading}º")
 
-        ohmMotorA1.motorToPosition(Globals.liftDropHigh.proximal)
-        motorA1.power = 0.7
+        motorA1.moveToAngle(Globals.liftDropHigh.proximal)
         motorB.moveToAngle(Globals.liftDropHigh.distal)
         clawPitch.position = Globals.liftDropHigh.claw
 
@@ -121,9 +119,8 @@ class RightPreloadCameraParkOdometry: LinearOpMode() {
 
         mecanum.followTrajectory(clearSpaceTraj)
 
-        ohmMotorA1.motorToPosition(Globals.liftProximalStartAngle)
-        motorA1.power = 0.3
-        motorA1.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.FLOAT
+        motorA1.moveToAngle(Globals.liftProximalStartAngle)
+        motorA1.motor.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.FLOAT
         clawPitch.position = Globals.liftDropHigh.claw
 
         sleep(200)
@@ -135,7 +132,7 @@ class RightPreloadCameraParkOdometry: LinearOpMode() {
 
         val retractStartTime = System.currentTimeMillis()
 
-        while ((motorA1.currentPosition - motorA1.targetPosition > 30 || motorB.getPosition() - motorB.targetAngle > Math.toRadians(5.0)) && System.currentTimeMillis() - retractStartTime < 2000) {
+        while ((motorA1.getPosition() - motorA1.targetAngle > Math.toRadians(1.0) || motorB.getPosition() - motorB.targetAngle > Math.toRadians(1.0)) && System.currentTimeMillis() - retractStartTime < 2000) {
             mecanum.updatePoseEstimate()
         }
 
@@ -161,24 +158,27 @@ class RightPreloadCameraParkOdometry: LinearOpMode() {
         mecanum.followTrajectorySequence(
             parkingTraj.
                 addTemporalMarker(1.0) {
-                    motorA1.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.FLOAT
-                    motorA1.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
-                    motorA1.power = 0.0
-
+                    motorA1.cleanup()
                     motorB.cleanup()
                 }
                 .addTemporalMarker(1.1) {
                     motorB.motor.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.FLOAT
                     motorB.motor.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
                     motorB.motor.power = 0.0
+
+                    motorA1.motor.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.FLOAT
+                    motorA1.motor.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
+                    motorA1.motor.power = 0.0
                 }
                 .addTemporalMarker(2.0) {
-                    MainTeleOp.proximalPosition = motorA1.currentPosition
+                    MainTeleOp.proximalAngle = motorA1.getPosition()
                     MainTeleOp.distalAngle = motorB.getPosition()
                 }
                 .build()
         )
 
+        motorA1.cleanup()
+        motorB.cleanup()
         webcam.closeCameraDevice()
     }
 

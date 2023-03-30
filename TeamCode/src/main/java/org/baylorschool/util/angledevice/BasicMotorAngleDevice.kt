@@ -61,7 +61,7 @@ class BasicMotorAngleDevice(val motor: DcMotorEx, ticksPerTurn: Double, val conf
     }
 
     private fun computeTargetAngle(angle: Double, direction: TargetAngleDirection): Double {
-        if (direction == TargetAngleDirection.ABSOLUTE) return angle
+        if (direction == TargetAngleDirection.ABSOLUTE || true) return angle
 
         val position = getPosition()
         // TODO: val baseValue = (position % (2 * PI)).toInt()

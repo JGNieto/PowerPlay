@@ -9,7 +9,7 @@ interface AngleDevice {
      * @param angle Radians
      * @param direction
      */
-    fun moveToAngle(angle: Double, direction: TargetAngleDirection = TargetAngleDirection.CLOSEST)
+    fun moveToAngle(angle: Double, direction: TargetAngleDirection = TargetAngleDirection.ABSOLUTE)
 
     var debug: Boolean
 

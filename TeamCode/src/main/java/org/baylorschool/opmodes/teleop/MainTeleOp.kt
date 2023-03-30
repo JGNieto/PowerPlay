@@ -19,7 +19,7 @@ import kotlin.math.abs
 class MainTeleOp: LinearOpMode() {
 
     companion object {
-        var proximalPosition = 0
+        var proximalAngle = Globals.liftProximalStartAngle
         var distalAngle = Globals.liftDistalStartAngle
     }
 
@@ -41,7 +41,7 @@ class MainTeleOp: LinearOpMode() {
         mecanum.resetEncoders()
 
         motorA1.init()
-        motorA1.reset(Globals.liftProximalStartAngle)
+        motorA1.reset(proximalAngle)
         // motorA1.debug = true
 
         motorB.init()
