@@ -1,4 +1,4 @@
-package org.baylorschool.opmodes.autonomous.odometry.left
+package org.baylorschool.opmodes.autonomous.odometry.right
 
 //import com.outoftheboxrobotics.photoncore.PhotonCore
 import com.acmerobotics.roadrunner.geometry.Pose2d
@@ -13,7 +13,9 @@ import org.baylorschool.Globals
 import org.baylorschool.drive.AdjustJunctionWebcam
 import org.baylorschool.drive.DriveConstants
 import org.baylorschool.drive.Mecanum
+import org.baylorschool.opmodes.teleop.MainTeleOp
 import org.baylorschool.util.Claw
+import org.baylorschool.util.OhmMotor
 import org.baylorschool.util.angledevice.BasicMotorAngleDevice
 import org.baylorschool.vision.AprilTagBinaryPipeline
 import org.baylorschool.vision.CameraUtil
@@ -34,7 +36,7 @@ class LeftPreloadCameraParkOdometry: LinearOpMode() {
         telemetry.addData("Status", "Getting ready. Please wait...")
         telemetry.update()
 
-        val motorA1 = hardwareMap.get(DcMotorEx::class.java, Globals.liftProximalA)
+        val motorA1 = BasicMotorAngleDevice(this, Globals.liftProximalA, Globals.liftProximalATicksPerRotation, Globals.liftProximalConfig, Globals.liftProximalADirection)
         val motorB = BasicMotorAngleDevice(this, Globals.liftDistal, Globals.liftDistalTicksPerRotation, Globals.liftDistalConfig, Globals.liftDistalDirection)
         val claw = Claw(this)
         claw.close()
@@ -61,10 +63,10 @@ class LeftPreloadCameraParkOdometry: LinearOpMode() {
         telemetry.addLine("Tag $targetTag")
         telemetry.update()
 
-        motorA1.direction = Globals.liftProximalADirection
-        motorA1.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
-        motorA1.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
-        motorA1.mode = DcMotor.RunMode.RUN_USING_ENCODER
+
+        motorA1.init()
+        motorA1.reset(Globals.liftProximalStartAngle)
+        motorA1.debug = false
 
         motorB.init()
         motorB.reset(Globals.liftDistalStartAngle)
@@ -86,10 +88,7 @@ class LeftPreloadCameraParkOdometry: LinearOpMode() {
 
         println("ROBOT POSITION FIRST: ${mecanum.poseEstimate.x}, ${mecanum.poseEstimate.y}, ${mecanum.poseEstimate.heading}º")
 
-        motorA1.targetPosition =
-            ((Globals.liftDropHigh.proximal - Globals.liftProximalStartAngle) * Globals.liftProximalATicksPerRotation / (2 * PI)).toInt()
-        motorA1.mode = DcMotor.RunMode.RUN_TO_POSITION
-        motorA1.power = 0.7
+        motorA1.moveToAngle(Globals.liftDropHigh.proximal)
         motorB.moveToAngle(Globals.liftDropHigh.distal)
         clawPitch.position = Globals.liftDropHigh.claw
 
@@ -120,21 +119,20 @@ class LeftPreloadCameraParkOdometry: LinearOpMode() {
 
         mecanum.followTrajectory(clearSpaceTraj)
 
-        motorA1.targetPosition =
-            ((Globals.liftProximalStartAngle - Globals.liftProximalStartAngle) * Globals.liftProximalATicksPerRotation / (2 * PI)).toInt()
-        motorA1.mode = DcMotor.RunMode.RUN_TO_POSITION
-        motorA1.power = 0.3
+        motorA1.moveToAngle(Globals.liftProximalStartAngle)
+        motorA1.motor.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.FLOAT
         clawPitch.position = Globals.liftDropHigh.claw
 
         sleep(200)
 
         motorB.moveToAngle(Globals.liftDistalStartAngle)
+        motorB.motor.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.FLOAT
 
         println("ROBOT POSITION DROP: ${mecanum.poseEstimate.x}, ${mecanum.poseEstimate.y}, ${mecanum.poseEstimate.heading}º")
 
         val retractStartTime = System.currentTimeMillis()
 
-        while ((motorA1.currentPosition - motorA1.targetPosition > 30 || motorB.getPosition() - motorB.targetAngle > Math.toRadians(5.0)) && System.currentTimeMillis() - retractStartTime < 2000) {
+        while ((motorA1.getPosition() - motorA1.targetAngle > Math.toRadians(1.0) || motorB.getPosition() - motorB.targetAngle > Math.toRadians(1.0)) && System.currentTimeMillis() - retractStartTime < 2000) {
             mecanum.updatePoseEstimate()
         }
 
@@ -143,12 +141,10 @@ class LeftPreloadCameraParkOdometry: LinearOpMode() {
                 mecanum.trajectorySequenceBuilder(mecanum.poseEstimate)
                     .lineToConstantHeading(Vector2d(-Globals.tileWidth * 1.5, - Globals.tileWidth * 0.5))
                     .forward(9.0)
-                    .build()
             } else if (targetTag == 2) {
                 mecanum.trajectorySequenceBuilder(mecanum.poseEstimate)
                     .lineToConstantHeading(Vector2d(-Globals.tileWidth * 0.5, - Globals.tileWidth * 0.5))
                     .forward(9.0)
-                    .build()
             } else {
                 mecanum.trajectorySequenceBuilder(mecanum.poseEstimate)
                     .lineToConstantHeading(
@@ -156,12 +152,32 @@ class LeftPreloadCameraParkOdometry: LinearOpMode() {
                         Mecanum.getVelocityConstraint(30.0, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         Mecanum.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
                     )
-                    //.forward(9.0)
-                    .build()
+                //.forward(9.0)
             }
 
-        mecanum.followTrajectorySequence(parkingTraj)
+        mecanum.followTrajectorySequence(
+            parkingTraj.
+            addTemporalMarker(1.0) {
+                motorA1.cleanup()
+                motorB.cleanup()
+            }
+                .addTemporalMarker(1.1) {
+                    motorB.motor.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.FLOAT
+                    motorB.motor.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
+                    motorB.motor.power = 0.0
 
+                    motorA1.motor.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.FLOAT
+                    motorA1.motor.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
+                    motorA1.motor.power = 0.0
+                }
+                .addTemporalMarker(2.0) {
+                    MainTeleOp.proximalAngle = motorA1.getPosition()
+                    MainTeleOp.distalAngle = motorB.getPosition()
+                }
+                .build()
+        )
+
+        motorA1.cleanup()
         motorB.cleanup()
         webcam.closeCameraDevice()
     }

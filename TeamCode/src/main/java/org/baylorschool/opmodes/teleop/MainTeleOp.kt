@@ -57,7 +57,12 @@ class MainTeleOp: LinearOpMode() {
         var wasMovingDistal = false
         var wasMovingProximal = false
 
+        var clawWasOpen = false
+
         var previousTime = System.currentTimeMillis()
+
+        gamepad1.rumble(1000)
+        gamepad2.rumble(1000)
 
         // RIGHT = DISTAL
         // LEFT = PROXIMAL
@@ -139,7 +144,19 @@ class MainTeleOp: LinearOpMode() {
             clawPosition = clawPosition.coerceIn(0.0, 1.0)
             clawPitch.position = clawPosition
 
-            claw.grabPosition(gamepad2.right_trigger.toDouble())
+
+            val clawGrab = gamepad2.right_trigger.toDouble()
+            if (clawGrab == 0.0) {
+                if (clawWasOpen) {
+                    gamepad1.rumble(300)
+                    gamepad2.rumble(300)
+                }
+                clawWasOpen = false
+            } else if (clawGrab > 0.4) {
+                clawWasOpen = true
+            }
+
+            claw.grabPosition(clawGrab)
             mecanum.mecanumLoop(gamepad1)
 
             mecanum.telemetry(telemetry)
@@ -150,7 +167,7 @@ class MainTeleOp: LinearOpMode() {
             telemetry.addData("Target distal angle", motorB.targetAngle)
             telemetry.addData("Target Claw pos", clawPosition)
             telemetry.addData("Claw pos", clawPitch.position)
-            //telemetry.addData("Claw grab", claw.getPosition())
+            telemetry.addData("Claw grab", claw.getPosition())
             //telemetry.addData("Distal status", motorB.motorStatus.toString())
             //telemetry.addData("Distal motor mode", motorB.motor.mode)
             //telemetry.addData("Distal motor busy", motorB.motor.isBusy)
